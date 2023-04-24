@@ -1,7 +1,7 @@
 import { User } from "@/types/user";
 import { Storage } from "./storage";
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type endpoint = `${string}`;
 
@@ -44,6 +44,7 @@ const request = async (endpoint: endpoint, method: methods = "GET", data: any = 
     const response = await fetch(url, {
         method: method,
         headers: {
+            "Content-Type": formdata ? "multipart/form-data" : "application/json",
             Authorization: auth,
             ...headers
         },
@@ -71,4 +72,20 @@ export const API = {
         me: () => request("users/me"),
         save: (details: User) => request(`users/me`, "PATCH", details),
     },
+    chat: {
+        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request("chats", "GET", filters),
+        create: (title: string, namespace: string, openai_api_key?: string) => request("chats", "POST", { title, namespace }, openai_api_key ? {
+            headers: {
+                "OpenAI-Key": openai_api_key
+            }
+        } : {}),
+        get: (id: string) => request(`chats/${id}`),
+        update: (id: string, title: string) => request(`chats/${id}`, "PATCH", { title }),
+        delete: (id: string) => request(`chats/${id}`, "DELETE"),
+        converse: (chat_id: string, text: string, openai_api_key?: string) => request(`chats/${chat_id}/converse`, "POST", { text }, openai_api_key ? {
+            headers: {
+                "OpenAI-Key": openai_api_key
+            }
+        } : {}),
+    }
 }

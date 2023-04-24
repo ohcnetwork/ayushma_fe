@@ -7,6 +7,9 @@ import { useEffect, useState } from 'react'
 import { API } from '@/utils/api'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { storageAtom } from '@/store'
+import Script from 'next/script';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import Providers from '@/utils/provider';
 
 const noAuthRoutes = ['/login', '/register', '/forgot-password', '/reset-password']
 
@@ -23,52 +26,50 @@ export default function RootLayout({
   const queryClient = new QueryClient()
 
   const getStorage = async () => {
-    const storage = localStorage.getItem("w-storage");
+    const storage = localStorage.getItem(process.env.NEXT_PUBLIC_LOCAL_STORAGE || "storage");
     if (storage) {
       setStorage(JSON.parse(storage));
     } else {
-      setStorage({ auth_token: "" });
+      setStorage({});
     }
   }
 
   useEffect(() => {
-    if (!storage) return;
-    localStorage.setItem(process.env.NEXT_PUBLIC_LOCAL_STORAGE || "storage", JSON.stringify(storage))
-  }, [storage])
+    if (storage) {
+      localStorage.setItem(process.env.NEXT_PUBLIC_LOCAL_STORAGE || "storage", JSON.stringify(storage));
+      if (!storage.auth_token) {
+        if (!noAuthRoutes.includes(pathname || "")) {
+          router.push('/login');
+        }
+      }
+    }
+  }, [storage]);
 
   const getUserDetails = async () => {
-    if (storage?.auth_token) {
-      try {
-        const user = await API.user.me();
+    try {
+      const userData = await API.user.me();
+      if (userData) {
         setStorage({
           ...storage,
-          user: {
-            ...storage.user,
-            ...user
-          }
+          user: userData,
         })
-      } catch (error) {
-        console.log(error);
-        console.log("Removing storage")
-        setStorage({
-          ...storage,
-          //user: undefined,
-          //auth_token: undefined
-        })
+        if (noAuthRoutes.includes(pathname || "")) {
+          router.push('/');
+        }
+      } else {
+        setStorage({})
       }
+    } catch (e) {
+      console.log(e);
+      setStorage({})
     }
   }
 
   useEffect(() => {
-    if (storage === null) return;
-    if (storage?.auth_token) {
-      getUserDetails()
-    } else {
-      if (!noAuthRoutes.includes(pathname)) {
-        router.push('/login')
-      }
+    if (storage && storage.auth_token) {
+      getUserDetails();
     }
-  }, [storage?.auth_token])
+  }, [storage?.auth_token]);
 
   useEffect(() => {
     getStorage();
@@ -76,10 +77,18 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body>
-        <QueryClientProvider client={queryClient}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+        <Script src="https://www.writeroo.in/inc/lib/fawesome.js" />
+      </head>
+      <body className='font-inter'>
+        <Providers>
           {children}
-        </QueryClientProvider>
+          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        </Providers>
       </body>
     </html>
   )
