@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/interactive";
+import { CheckBox, Input } from "@/components/ui/interactive";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 
@@ -20,6 +20,26 @@ export default function Page() {
                     openai_api_key: e.target.value
                 })}
             />
+            <br />
+            <br />
+            {storage?.user?.allow_key && (
+                <div>
+                    <CheckBox
+                        label="Override key"
+                        type="checkbox"
+                        checked={storage?.override_api_key}
+                        onChange={(e) => setStorage({
+                            ...storage,
+                            override_api_key: e.target.checked
+                        })}
+                    />
+                    {storage?.override_api_key && (
+                        <p className="text-gray-700 text-xs">
+                            Your key will be used instead of Ayushma&apos;s Key
+                        </p>
+                    )}
+                </div>
+            )}
         </div>
     )
 }

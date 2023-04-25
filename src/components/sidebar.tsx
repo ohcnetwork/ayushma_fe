@@ -2,7 +2,7 @@
 
 import { Chat } from "@/types/chat";
 import { API } from "@/utils/api";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { Input } from "./ui/interactive";
 import { useState } from "react";
@@ -35,21 +35,44 @@ export default function SideBar() {
         }
     ]
 
+    const deleteChatMutation = useMutation((external_id: string) => API.chat.delete(external_id), {
+        onSuccess: async () => {
+            chatsQuery.refetch();
+        }
+    });
+
+    const deleteChat = (external_id: string) => {
+        if (!confirm("Are you sure you want to delete this chat?")) return;
+        deleteChatMutation.mutate(external_id);
+    }
+
     return (
         <div className="bg-[url('/bg.png')] bg-cover bg-top backdrop-blur w-64 shrink-0 flex flex-col justify-between border-r border-gray-300">
             <div className="flex flex-col p-2 gap-2">
-                <Link href="/chat" className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center">
+                <Link href="/" className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center">
                     <i className="far fa-plus" />&nbsp; New Chat
                 </Link>
                 {chatsQuery.isLoading && (
                     <div className="flex-1 flex items-center justify-center text-gray-500">
-                        Loading...
+                        Loading Chats...
                     </div>
                 )}
                 {chatsQuery.data?.results.map((chat: Chat) => (
-                    <Link key={chat.external_id} href={`/chat/${chat.external_id}`} className="w-full hover:bg-gray-100 border border-gray-200 rounded-lg py-2 px-4 text-left">
-                        {chat.title}
-                    </Link>
+                    <div key={chat.external_id} className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between">
+                        <Link
+                            href={`/chat/${chat.external_id}`}
+                            className="w-full py-2 px-4 text-left truncate"
+                            title={chat.title}
+                        >
+                            {chat.title}
+                        </Link>
+                        <button
+                            className="py-2 px-2 hidden group-hover:block"
+                            onClick={() => deleteChat(chat.external_id)}
+                        >
+                            <i className="fal fa-trash-alt" />
+                        </button>
+                    </div>
                 ))}
             </div>
             <div className="p-2">

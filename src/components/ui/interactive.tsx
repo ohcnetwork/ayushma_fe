@@ -50,3 +50,16 @@ export function Errors(props: {
         </div>
     )
 }
+
+export function CheckBox(props: {
+    label: string,
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+    const { label, ...rest } = props;
+
+    return (
+        <label className="flex items-center">
+            <input type="checkbox" {...rest} className="mr-2" />
+            {label}
+        </label>
+    )
+}

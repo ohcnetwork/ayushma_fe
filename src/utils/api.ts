@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import { Storage } from "./storage";
+import { Storage } from "../types/storage";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 

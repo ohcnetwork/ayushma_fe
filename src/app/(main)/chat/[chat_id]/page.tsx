@@ -18,7 +18,7 @@ export default function Chat(params: { params: { chat_id: string } }) {
     const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(chat_id));
     const chat: Chat | undefined = chatQuery.data;
 
-    const converseMutation = useMutation(() => API.chat.converse(chat_id, newChat, storage.openai_api_key), {
+    const converseMutation = useMutation(() => API.chat.converse(chat_id, newChat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined), {
         onSuccess: async () => {
             chatQuery.refetch();
             setNewChat("");
