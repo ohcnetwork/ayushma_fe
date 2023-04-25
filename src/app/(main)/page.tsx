@@ -31,10 +31,10 @@ export default function Chat() {
     }
 
     const samplePrompts = [
-        "What is the best treatment for a headache?",
-        "What is the best treatment for a fever?",
-        "What is the best treatment for a cold?",
-        "What is the best treatment for a cough?",
+        "How does one prepare for advanced airway management, even before the patient has arrived?",
+        "How do you assess a ICU patient’s need for tracheal intubation?",
+        "What are the checks one needs to perform before intubation?",
+        "How do you do the initial assessment of the patient before oxygenation or ventilation?",
     ]
 
     return (
