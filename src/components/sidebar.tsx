@@ -49,7 +49,7 @@ export default function SideBar() {
     }
 
     return (
-        <div className="bg-[url('/bg.png')] bg-cover bg-top backdrop-blur w-64 shrink-0 flex flex-col justify-between border-r border-gray-300">
+        <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
             <div className="flex flex-col p-2 gap-2">
                 <Link href="/" className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center">
                     <i className="far fa-plus" />&nbsp; New Chat

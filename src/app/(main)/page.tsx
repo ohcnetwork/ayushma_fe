@@ -38,9 +38,9 @@ export default function Chat() {
     ]
 
     return (
-        <div className="flex flex-col h-screen">
-            <div className="flex-1 flex items-center justify-center">
-                <div className="text-center text-gray-500">
+        <div className="flex flex-col h-screen flex-1">
+            <div className="flex-1 items-center justify-center w-full overflow-auto">
+                <div className="text-center text-gray-500 w-full">
                     <h1 className="font-black text-4xl text-gray-600">
                         Ayushma
                     </h1>
