@@ -10,8 +10,13 @@ import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function SideBar() {
-    const chatsQuery = useQuery(["chats"], () => API.chat.list());
+export default function SideBar(props: {
+    project_id?: string;
+}) {
+
+    const { project_id } = props;
+
+    const chatsQuery = useQuery(["chats"], () => API.chat.list(project_id || ""), { enabled: !!project_id });
     const [storage, setStorage] = useAtom(storageAtom);
     const router = useRouter();
     const path = usePathname();
@@ -36,11 +41,11 @@ export default function SideBar() {
         }
     ]
 
-    const deleteChatMutation = useMutation((external_id: string) => API.chat.delete(external_id), {
+    const deleteChatMutation = useMutation((external_id: string) => API.chat.delete(project_id || "", external_id), {
         onSuccess: async (data, external_id) => {
             chatsQuery.refetch();
-            if (path === `/chat/${external_id}`) router.push("/");
-        }
+            if (path === `/project/${project_id}/chat/${external_id}`) router.push(`/project/${project_id}`);
+        },
     });
 
     const deleteChat = (external_id: string) => {
@@ -51,18 +56,18 @@ export default function SideBar() {
     return (
         <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
             <div className="flex flex-col p-2 gap-2">
-                <Link href="/" className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center">
+                <Link href={project_id ? `/project/${project_id}` : "/"} className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center">
                     <i className="far fa-plus" />&nbsp; New Chat
                 </Link>
-                {chatsQuery.isLoading && (
+                {project_id && chatsQuery.isLoading && (
                     <div className="flex-1 flex items-center justify-center text-gray-500">
                         Loading Chats...
                     </div>
                 )}
-                {chatsQuery.data?.results.map((chat: Chat) => (
+                {project_id && chatsQuery.data?.results.map((chat: Chat) => (
                     <div key={chat.external_id} className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between">
                         <Link
-                            href={`/chat/${chat.external_id}`}
+                            href={`project/${project_id}/chat/${chat.external_id}`}
                             className="w-full py-2 px-4 text-left truncate"
                             title={chat.title}
                         >

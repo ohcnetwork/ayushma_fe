@@ -72,17 +72,20 @@ export const API = {
         me: () => request("users/me"),
         save: (details: User) => request(`users/me`, "PATCH", details),
     },
+    projects: {
+        list: () => request("projects"),
+    },
     chat: {
-        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request("chats", "GET", filters),
-        create: (title: string, namespace: string, openai_api_key?: string) => request("chats", "POST", { title, namespace }, openai_api_key ? {
+        list: (project_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`projects/${project_id}/chats`, "GET", filters),
+        create: (project_id: string, title: string, openai_api_key?: string) => request(`projects/${project_id}/chats`, "POST", { title }, openai_api_key ? {
             headers: {
                 "OpenAI-Key": openai_api_key
             }
         } : {}),
-        get: (id: string) => request(`chats/${id}`),
-        update: (id: string, title: string) => request(`chats/${id}`, "PATCH", { title }),
-        delete: (id: string) => request(`chats/${id}`, "DELETE"),
-        converse: (chat_id: string, text: string, openai_api_key?: string) => request(`chats/${chat_id}/converse`, "POST", { text }, openai_api_key ? {
+        get: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`),
+        update: (project_id: string, id: string, title: string) => request(`projects/${project_id}/chats/${id}`, "PATCH", { title }),
+        delete: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`, "DELETE"),
+        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string) => request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text }, openai_api_key ? {
             headers: {
                 "OpenAI-Key": openai_api_key
             }

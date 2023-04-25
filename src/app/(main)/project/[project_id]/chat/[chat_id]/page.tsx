@@ -10,16 +10,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useState } from "react";
 
-export default function Chat(params: { params: { chat_id: string } }) {
+export default function Chat(params: { params: { project_id: string, chat_id: string } }) {
 
-    const { chat_id } = params.params;
+    const { project_id, chat_id } = params.params;
     const [newChat, setNewChat] = useState("");
     const [storage] = useAtom(storageAtom);
 
-    const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(chat_id));
+    const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id));
     const chat: Chat | undefined = chatQuery.data;
 
-    const converseMutation = useMutation(() => API.chat.converse(chat_id, newChat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined), {
+    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined), {
         onSuccess: async () => {
             chatQuery.refetch();
             setNewChat("");
