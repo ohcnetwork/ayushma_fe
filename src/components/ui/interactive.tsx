@@ -3,19 +3,21 @@ import { twMerge } from "tailwind-merge";
 export function Input(props: {
     errors?: string[],
     loading?: boolean,
+    right?: React.ReactNode,
+    left?: React.ReactNode,
 } & React.InputHTMLAttributes<HTMLInputElement>) {
 
-    const { className, loading, errors, ...rest } = props;
+    const { className, loading, errors, right, left, ...rest } = props;
 
     return (
         <div>
             <div className="border border-gray-200 w-full bg-white rounded-lg overflow-hidden relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1">
                 {loading && (
-                    <div className="absolute inset-0 bg-black/30">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-500 inline-block"></div>
-                    </div>
+                    <div className="absolute inset-0 bg-black/10" />
                 )}
+                {left}
                 <input {...rest} className={twMerge("border-none bg-transparent flex-1 p-2 px-4 outline-none", className)} disabled={loading} />
+                {right}
             </div>
             <Errors errors={errors} />
         </div>

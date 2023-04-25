@@ -8,12 +8,13 @@ import { Input } from "./ui/interactive";
 import { useState } from "react";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function SideBar() {
     const chatsQuery = useQuery(["chats"], () => API.chat.list());
     const [storage, setStorage] = useAtom(storageAtom);
     const router = useRouter();
+    const path = usePathname();
 
     const buttons = [
         {
@@ -36,8 +37,9 @@ export default function SideBar() {
     ]
 
     const deleteChatMutation = useMutation((external_id: string) => API.chat.delete(external_id), {
-        onSuccess: async () => {
+        onSuccess: async (data, external_id) => {
             chatsQuery.refetch();
+            if (path === `/chat/${external_id}`) router.push("/");
         }
     });
 

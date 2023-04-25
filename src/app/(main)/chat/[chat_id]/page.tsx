@@ -1,5 +1,6 @@
 "use client";
 
+import ChatBar from "@/components/chatbar";
 import ChatBlock from "@/components/chatblock";
 import { Input } from "@/components/ui/interactive";
 import { storageAtom } from "@/store";
@@ -41,16 +42,13 @@ export default function Chat(params: { params: { chat_id: string } }) {
                 )}
             </div>
             <div className="w-full shrink-0 p-4">
-                <form onSubmit={handleSubmit}>
-                    <Input
-                        type="text"
-                        placeholder="Chat"
-                        value={newChat || ""}
-                        onChange={(e) => setNewChat(e.target.value)}
-                        loading={converseMutation.isLoading}
-                        errors={[(converseMutation.error as any)?.error?.error]}
-                    />
-                </form>
+                <ChatBar
+                    chat={newChat || ""}
+                    onChange={(e) => setNewChat(e.target.value)}
+                    onSubmit={handleSubmit}
+                    errors={[(converseMutation.error as any)?.error?.error]}
+                    loading={converseMutation.isLoading}
+                />
             </div>
         </div>
     )
