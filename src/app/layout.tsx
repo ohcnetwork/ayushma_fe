@@ -10,6 +10,7 @@ import { storageAtom } from '@/store'
 import Script from 'next/script';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Providers from '@/utils/provider';
+import { setTheme, useThemeDetector } from '@/utils/themes';
 
 const noAuthRoutes = ['/login', '/register', '/forgot-password', '/reset-password']
 
@@ -24,6 +25,7 @@ export default function RootLayout({
 
   const [storage, setStorage] = useAtom(storageAtom);
   const queryClient = new QueryClient()
+  const isDark = useThemeDetector();
 
   const getStorage = async () => {
     const storage = localStorage.getItem(process.env.NEXT_PUBLIC_LOCAL_STORAGE || "storage");
@@ -42,6 +44,7 @@ export default function RootLayout({
           router.push('/login');
         }
       }
+      storage?.theme ? setTheme(storage.theme) : setTheme(isDark ? "dark" : "light");
     }
   }, [storage]);
 

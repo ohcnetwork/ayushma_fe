@@ -4,4 +4,5 @@ export type User = {
     username: string,
     full_name: string,
     allow_key: boolean,
+    is_staff: boolean,
 }

@@ -1,5 +1,6 @@
 "use client";
 import ChatBar from "@/components/chatbar";
+import Petals from "@/components/petals";
 import { storageAtom } from "@/store";
 import { API } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,33 +41,7 @@ export default function Chat(params: { params: { project_id: string } }) {
 
     return (
         <div className="flex flex-col h-screen flex-1">
-            <div className="flex-1 items-center justify-center w-full overflow-auto">
-                <div className="text-center text-gray-500 w-full">
-                    <h1 className="font-black text-4xl text-gray-600 mt-8">
-                        Ayushma
-                    </h1>
-                    <p>
-                        Your personal AI medical assistant
-                    </p>
-                    <h2 className="font-semibold mt-8">
-                        Try asking me -
-                    </h2>
-                    <div className="inline-flex mt-4 flex-wrap justify-center gap-4 w-1/2">
-                        {samplePrompts.map((prompt, i) => (
-                            <button
-                                onClick={() => {
-                                    setChat(prompt)
-                                    newChatMutation.mutate();
-                                }}
-                                className="bg-white border border-gray-200 rounded-xl p-4 w-64"
-                                key={i}
-                            >
-                                {prompt}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <Petals state={{ state: "idle" }} />
             <div className="w-full shrink-0 p-4">
                 <ChatBar
                     chat={chat}

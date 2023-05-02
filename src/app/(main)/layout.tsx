@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     setSidebarExpanded(!isSidebarExpanded);
   }
   return (
-    <div className="inset-0 bg-gray-100">
+    <div className="inset-0 bg-[url(/blurred.png),linear-gradient(var(--ayushma-primary),var(--ayushma-secondary))]">
       <button
         onClick={toggleSidebar}
         type="button"
@@ -38,7 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div
-          className={`overflow-auto w-full h-screen flex-1 bg-[linear-gradient(rgba(255,255,255,0.5),rgba(255,255,255,0.5)),url('/bg.png')] bg-cover bg-center`}
+          className={`overflow-auto w-full h-screen flex-1 bg-cover bg-center`}
           onClick={() => {
             if (isSidebarExpanded) setSidebarExpanded(false);
           }}

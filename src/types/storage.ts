@@ -5,4 +5,5 @@ export type Storage = {
     user?: User,
     openai_api_key?: string,
     override_api_key?: boolean,
+    theme?: string,
 }

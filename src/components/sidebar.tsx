@@ -5,10 +5,11 @@ import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { Input } from "./ui/interactive";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import { usePathname, useRouter } from "next/navigation";
+import { setTheme } from "@/utils/themes";
 
 export default function SideBar(props: {
     project_id?: string;
@@ -34,6 +35,23 @@ export default function SideBar(props: {
                 router.push("/settings");
             }
         },
+        ...(storage?.user?.is_staff ? [
+            {
+                icon: "user-crown",
+                text: "Admin Panel",
+                onclick: () => {
+                    router.push("/admin");
+                }
+            }
+        ] : []),
+        {
+            icon: "moon",
+            text: "Dark Mode",
+            onclick: () => {
+                setTheme(storage.theme === "dark" ? "light" : "dark");
+                setStorage({ ...storage, theme: storage.theme === "dark" ? "light" : "dark" });
+            }
+        },
         {
             icon: "sign-out-alt",
             text: "Logout",
@@ -41,6 +59,9 @@ export default function SideBar(props: {
         }
     ]
 
+    useEffect(() => {
+        console.log(window.speechSynthesis)
+    }, [window.speechSynthesis])
     const deleteChatMutation = useMutation((external_id: string) => API.chat.delete(project_id || "", external_id), {
         onSuccess: async (data, external_id) => {
             chatsQuery.refetch();
@@ -54,7 +75,7 @@ export default function SideBar(props: {
     }
 
     return (
-        <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
+        <div className=" bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
             <div className="flex flex-col p-2 gap-2">
                 <Link href={project_id ? `/project/${project_id}` : "/"} className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center">
                     <i className="far fa-plus" />&nbsp; New Chat
@@ -85,7 +106,12 @@ export default function SideBar(props: {
             <div className="p-2">
                 <div className="flex gap-2">
                     {buttons.map((button, i) => (
-                        <button key={i} onClick={button.onclick} className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center hover:bg-gray-100 border-gray-200">
+                        <button
+                            key={i}
+                            onClick={button.onclick}
+                            className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center hover:bg-gray-100 border-gray-200"
+                            title={button.text}
+                        >
                             <i className={`fal fa-${button.icon}`} />
                         </button>
                     ))}
