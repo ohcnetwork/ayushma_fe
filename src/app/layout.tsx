@@ -8,7 +8,6 @@ import { API } from '@/utils/api'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { storageAtom } from '@/store'
 import Script from 'next/script';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Providers from '@/utils/provider';
 
 const noAuthRoutes = ['/login', '/register', '/forgot-password', '/reset-password']

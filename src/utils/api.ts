@@ -71,6 +71,8 @@ export const API = {
         login: (email: string, password: string) => request("auth/login", "POST", { email, password }),
         me: () => request("users/me"),
         save: (details: User) => request(`users/me`, "PATCH", details),
+        register: (creds: { email: string, password: string, username: string, full_name: string }) => request("auth/register", "POST", { ...creds }),
+        forgot: (email: string) => request("auth/forgot", "POST", { email }),
     },
     projects: {
         list: () => request("projects"),
