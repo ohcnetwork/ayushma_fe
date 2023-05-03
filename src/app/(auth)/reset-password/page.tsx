@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 export default function ForgotPassword() {
 
     const sp = useSearchParams()
-    const token = sp.get("token") || "";
-    const email = sp.get("email");
+    const token = sp?.get("token") || "";
+    const email = sp?.get("email");
     const [otp, setOTP] = useState(token);
     const [password, setPassword] = useState({
         password: "",
