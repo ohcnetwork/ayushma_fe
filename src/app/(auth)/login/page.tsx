@@ -17,7 +17,7 @@ export default function Login() {
     });
     const router = useRouter();
     const sp = useSearchParams();
-    const resetSuccess = sp.get("reset_success");
+    const resetSuccess = sp?.get("reset_success");
 
     const loginMutation = useMutation(() => API.user.login(creds.email, creds.password), {
         onSuccess: (data) => {
