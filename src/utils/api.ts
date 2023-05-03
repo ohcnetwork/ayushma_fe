@@ -1,5 +1,6 @@
 import { User } from "@/types/user";
 import { Storage } from "../types/storage";
+import { Document } from "@/types/project";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -40,11 +41,21 @@ const request = async (endpoint: endpoint, method: methods = "GET", data: any = 
     const auth = isAuth === false || typeof localToken === "undefined" || localToken === null ? "" : "Token " + localToken;
 
     //console.log("Making request to", url, "with payload", payload, "and headers", headers)
-
+    console.log({
+        ...(formdata === true ? {} : {
+            'Accept': 'application/json',
+            "Content-Type": "application/json",
+        }),
+        Authorization: auth,
+        ...headers
+    })
     const response = await fetch(url, {
         method: method,
         headers: {
-            "Content-Type": formdata ? "multipart/form-data" : "application/json",
+            ...(formdata === true ? {} : {
+                'Accept': 'application/json',
+                "Content-Type": "application/json",
+            }),
             Authorization: auth,
             ...headers
         },
@@ -78,6 +89,17 @@ export const API = {
     },
     projects: {
         list: () => request("projects"),
+        get: (id: string) => request(`projects/${id}`),
+    },
+    documents: {
+        list: (project_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`projects/${project_id}/documents`, "GET", filters),
+        create: (project_id: string, document: FormData) => request(`projects/${project_id}/documents`, "POST", document, {
+            formdata: true
+        }),
+        get: (project_id: string, id: string) => request(`projects/${project_id}/documents/${id}`),
+        edit: (project_id: string, id: string, document: FormData) => request(`projects/${project_id}/documents/${id}`, "PATCH", document, {
+            formdata: true
+        }),
     },
     chat: {
         list: (project_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`projects/${project_id}/chats`, "GET", filters),

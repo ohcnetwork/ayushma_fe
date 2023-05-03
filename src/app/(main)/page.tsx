@@ -1,4 +1,5 @@
 "use client";
+import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -11,7 +12,7 @@ export default function Page() {
 
     useEffect(() => {
         if (projectsQuery.data?.results?.length > 0) {
-            router.push(`/project/${projectsQuery.data?.results?.[0]?.external_id}`);
+            router.push(`/project/${projectsQuery.data?.results?.filter((project: Project) => project.is_default)[0]?.external_id}`);
         }
     }, [projectsQuery.data]);
 

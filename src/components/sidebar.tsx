@@ -34,6 +34,13 @@ export default function SideBar(props: {
                 router.push("/settings");
             }
         },
+        ...(storage?.user?.is_staff ? [{
+            icon: "user-shield",
+            text: "Admin",
+            onclick: () => {
+                router.push("/admin");
+            }
+        }] : []),
         {
             icon: "sign-out-alt",
             text: "Logout",

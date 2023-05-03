@@ -24,9 +24,32 @@ export function Input(props: {
     )
 }
 
+export function TextArea(props: {
+    errors?: string[],
+    loading?: boolean,
+    right?: React.ReactNode,
+    left?: React.ReactNode,
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+    const { className, loading, errors, right, left, ...rest } = props;
+
+    return (
+        <div>
+            <div className="border border-gray-200 w-full bg-white rounded-lg overflow-hidden relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1">
+                {loading && (
+                    <div className="absolute inset-0 bg-black/10" />
+                )}
+                {left}
+                <textarea {...rest} className={twMerge("border-none bg-transparent flex-1 p-2 px-4 outline-none", className)} disabled={loading} />
+                {right}
+            </div>
+            <Errors errors={errors} />
+        </div>
+    )
+}
+
 export function Button(props: {
     children: React.ReactNode,
-    loading: boolean,
+    loading?: boolean,
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
 
     const { children, className, loading, ...rest } = props;
