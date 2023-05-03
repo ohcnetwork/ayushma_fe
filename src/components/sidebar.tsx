@@ -56,6 +56,12 @@ export default function SideBar(props: {
     return (
         <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
             <div className="flex flex-col p-2 gap-2">
+                <div className="h-6 flex gap-2 items-center my-4 justify-center">
+                    <img src="/ayushma_text.svg" alt="Logo" className="h-full" />
+                    <div className="text-xs">
+                        Beta
+                    </div>
+                </div>
                 <Link href={project_id ? `/project/${project_id}` : "/"} className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center">
                     <i className="far fa-plus" />&nbsp; New Chat
                 </Link>

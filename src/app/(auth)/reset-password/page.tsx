@@ -1,11 +1,9 @@
 "use client";
 import { Button, Errors, Input } from "@/components/ui/interactive";
-import { storageAtom } from "@/store";
 import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
-import { useAtom } from "jotai"
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ForgotPassword() {
