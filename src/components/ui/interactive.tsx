@@ -47,7 +47,7 @@ export function Errors(props: {
     const { errors } = props;
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
             {errors?.map((error, i) => <div key={i} className="text-red-500 text-sm mt-2">{error}</div>)}
         </div>
     )

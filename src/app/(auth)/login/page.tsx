@@ -5,7 +5,7 @@ import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
 import { useAtom } from "jotai"
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function Login() {
@@ -16,6 +16,8 @@ export default function Login() {
         password: ""
     });
     const router = useRouter();
+    const sp = useSearchParams();
+    const resetSuccess = sp.get("reset_success");
 
     const loginMutation = useMutation(() => API.user.login(creds.email, creds.password), {
         onSuccess: (data) => {
@@ -34,6 +36,11 @@ export default function Login() {
 
     return (
         <>
+            {resetSuccess && (
+                <div className="text-green-500 border border-green-500 p-3 bg-green-50 text-sm rounded-lg">
+                    Password reset successfully. Please login.
+                </div>
+            )}
             <h1 className="font-black text-2xl">
                 Login
             </h1>
