@@ -7,7 +7,8 @@ import { useState } from "react";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarExpanded, setSidebarExpanded] = useState(false);
 
-  const { project_id } = useParams();
+  const params = useParams();
+  const project_id = params?.project_id as string;
 
   function toggleSidebar() {
     setSidebarExpanded(!isSidebarExpanded);
