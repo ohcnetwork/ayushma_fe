@@ -15,7 +15,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
             </div>
             <div>
                 {loading ? "Loading..." :
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="flex-1 markdown-render">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-render">
                         {message?.message || ""}
                     </ReactMarkdown>
                 }
