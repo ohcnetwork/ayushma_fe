@@ -41,14 +41,6 @@ const request = async (endpoint: endpoint, method: methods = "GET", data: any = 
     const auth = isAuth === false || typeof localToken === "undefined" || localToken === null ? "" : "Token " + localToken;
 
     //console.log("Making request to", url, "with payload", payload, "and headers", headers)
-    console.log({
-        ...(formdata === true ? {} : {
-            'Accept': 'application/json',
-            "Content-Type": "application/json",
-        }),
-        Authorization: auth,
-        ...headers
-    })
     const response = await fetch(url, {
         method: method,
         headers: {
@@ -119,5 +111,12 @@ export const API = {
                 "OpenAI-Key": openai_api_key
             }
         } : {}),
+        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string) => request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", formdata, {
+            formdata: true,
+            headers: openai_api_key ? {
+                "OpenAI-Key": openai_api_key
+            } : {}
+        }),
+
     }
 }

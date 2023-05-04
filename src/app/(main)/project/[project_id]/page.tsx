@@ -16,19 +16,39 @@ export default function Chat(params: { params: { project_id: string } }) {
     const [storage, setStorage] = useAtom(storageAtom);
     const queryClient = useQueryClient();
 
-    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined));
+    const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
-    const newChatMutation = useMutation(() => API.chat.create(project_id, chat.slice(0, 50), storage.openai_api_key), {
-        onSuccess: async (data) => {
+    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, openai_key));
+
+    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
+        onSuccess: async (data, vars) => {
             queryClient.invalidateQueries(["chats"]);
-            await converseMutation.mutateAsync(data.external_id);
+            if (vars.type === "audio" && vars.formdata) {
+                await audioConverseMutation.mutateAsync({ external_id: data.external_id, formdata: vars.formdata });
+            } else {
+                await converseMutation.mutateAsync(data.external_id);
+            }
             router.push(`/project/${project_id}/chat/${data.external_id}`);
         }
     })
 
+    const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key));
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        newChatMutation.mutate();
+        newChatMutation.mutate({});
+    }
+
+    const handleAudio = async (blobUrl: string) => {
+        const fd = new FormData();
+        //create a file object from blob url
+        await fetch(blobUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                const file = new File([blob], "audio.wav", { type: "audio/wav" });
+                fd.append("audio", file);
+            })
+        await newChatMutation.mutateAsync({ type: "audio", formdata: fd });
     }
 
     const samplePrompts = [
@@ -56,7 +76,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                             <button
                                 onClick={() => {
                                     setChat(prompt)
-                                    newChatMutation.mutate();
+                                    newChatMutation.mutate({});
                                 }}
                                 className="bg-white border border-gray-200 rounded-xl p-4 w-64"
                                 key={i}
@@ -72,8 +92,9 @@ export default function Chat(params: { params: { project_id: string } }) {
                     chat={chat}
                     onChange={(e) => setChat(e.target.value)}
                     onSubmit={handleSubmit}
+                    onAudio={handleAudio}
                     errors={[(newChatMutation.error as any)?.error?.error]}
-                    loading={newChatMutation.isLoading || converseMutation.isLoading}
+                    loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading}
                 />
             </div>
         </div>

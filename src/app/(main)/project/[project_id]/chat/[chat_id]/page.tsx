@@ -19,16 +19,36 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id));
     const chat: Chat | undefined = chatQuery.data;
 
-    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined), {
+    const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
+
+    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, openai_key), {
         onSuccess: async () => {
             chatQuery.refetch();
             setNewChat("");
         }
     });
 
+    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key), {
+        onSuccess: async () => {
+            chatQuery.refetch();
+        }
+    });
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         converseMutation.mutate();
+    }
+
+    const handleAudio = async (blobUrl: string) => {
+        const fd = new FormData();
+        //create a file object from blob url
+        await fetch(blobUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                const file = new File([blob], "audio.wav", { type: "audio/wav" });
+                fd.append("audio", file);
+            })
+        audioConverseMutation.mutate({ formdata: fd });
     }
 
     return (
@@ -46,8 +66,12 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                     chat={newChat || ""}
                     onChange={(e) => setNewChat(e.target.value)}
                     onSubmit={handleSubmit}
-                    errors={[(converseMutation.error as any)?.error?.error]}
-                    loading={converseMutation.isLoading}
+                    onAudio={handleAudio}
+                    errors={[
+                        (converseMutation.error as any)?.error?.error,
+                        (audioConverseMutation.error as any)?.error?.error
+                    ]}
+                    loading={converseMutation.isLoading || audioConverseMutation.isLoading}
                 />
             </div>
         </div>
