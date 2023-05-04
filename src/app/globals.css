@@ -1,3 +1,70 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.markdown-render h1 {
+    display: block;
+    margin: 0.5em 0px;
+    font-size: 2em;
+    font-weight: bold;
+    font-family: sprite;
+}
+
+.markdown-render h2 {
+    display: block;
+    margin: 1em 0px;
+    font-size: 1.5em;
+    font-weight: bold;
+    position: relative;
+}
+
+.markdown-render h2::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 200px;
+    background: url("/stroke-p.png");
+    margin: 0.5em 0px;
+    z-index: 10;
+}
+
+.markdown-render h3 {
+    display: block;
+    margin: 0.5em 0px;
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+.markdown-render ul {
+    list-style-type: disc;
+    margin: 0px 0px 0px 30px;
+    padding: 0px;
+}
+
+.markdown-render ol {
+    list-style-type: decimal;
+    margin: 0px 0px 0px 30px;
+    padding: 0px;
+}
+
+.markdown-render li::marker{
+    color: gray;
+}
+
+.markdown-render {
+    text-align: justify;
+}
+
+.markdown-render pre {
+    background-color: #dfdfdf;
+    border-radius: 10px;
+    padding: 1em;
+    overflow-x: auto;
+    margin: 10px 0px;
+}
+
+.markdown-render code {
+    background-color: #dfdfdf;
+    border-radius: 5px;
+    padding: 0.2em;
+}

@@ -1,6 +1,6 @@
 import { User } from "@/types/user";
 import { Storage } from "../types/storage";
-import { Document } from "@/types/project";
+import { Document, Project } from "@/types/project";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -90,6 +90,9 @@ export const API = {
     projects: {
         list: () => request("projects"),
         get: (id: string) => request(`projects/${id}`),
+        update: (id: string, project: Partial<Project>) => request(`projects/${id}`, "PATCH", { ...project }),
+        create: (project: Partial<Project>) => request(`projects`, "POST", { ...project }),
+        delete: (id: string) => request(`projects/${id}`, "DELETE"),
     },
     documents: {
         list: (project_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`projects/${project_id}/documents`, "GET", filters),

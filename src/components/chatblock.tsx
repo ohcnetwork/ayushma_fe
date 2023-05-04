@@ -1,4 +1,6 @@
 import { ChatMessage, ChatMessageType } from "@/types/chat";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatBlock(props: { message?: ChatMessage, loading?: boolean }) {
 
@@ -12,7 +14,11 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                 </>}
             </div>
             <div>
-                {loading ? "Loading..." : message?.message}
+                {loading ? "Loading..." :
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="flex-1 markdown-render">
+                        {message?.message || ""}
+                    </ReactMarkdown>
+                }
             </div>
         </div>
     )

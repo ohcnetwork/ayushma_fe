@@ -23,6 +23,9 @@ export default function Page() {
                         {project.is_default && <span className="text-xs ml-2 bg-gray-200 text-gray-500 px-2 py-1 rounded-full">Default</span>}
                     </Link>
                 ))}
+                <Link href={`/admin/projects/new`} className="border border-dashed border-gray-300 hover:bg-gray-100 rounded-lg p-4">
+                    <i className="far fa-plus" /> New Project
+                </Link>
             </div>
         </div>
     )
