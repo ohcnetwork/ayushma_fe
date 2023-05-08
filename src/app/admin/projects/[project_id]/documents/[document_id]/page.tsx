@@ -45,7 +45,7 @@ export default function Page({ params }: { params: { project_id: string, documen
                         document={doc}
                         onSubmit={onSubmit}
                         loading={editDocumentMutation.isLoading}
-                        errors={(editDocumentMutation.error as any)?.errors}
+                        errors={(editDocumentMutation.error as any)?.error}
                     />
                 }
             </div>

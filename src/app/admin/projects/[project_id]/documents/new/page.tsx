@@ -22,11 +22,13 @@ export default function Page({ params }: { params: { project_id: string } }) {
         }
     });
 
-    const onSubmit = async (document: Partial<Document>) => {
+    const onSubmit = async (doc: Partial<Document>) => {
         const formData = new FormData();
-        formData.append("title", document.title as string);
-        formData.append("file", document.file as File);
-        formData.append("description", document.description as string);
+        doc.title && formData.append("title", doc.title as string);
+        doc.file && formData.append("file", doc.file as File);
+        doc.description && formData.append("description", doc.description as string);
+        doc.text_content && formData.append("text_content", doc.text_content as string);
+        doc.document_type && formData.append("document_type", `${doc.document_type}`);
         await createDocumentMutation.mutateAsync(formData as any);
     }
 
@@ -40,7 +42,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
                     document={{}}
                     onSubmit={onSubmit}
                     loading={createDocumentMutation.isLoading}
-                    errors={(createDocumentMutation.error as any)?.errors}
+                    errors={(createDocumentMutation.error as any)?.error}
                 />
             </div>
         </div>
