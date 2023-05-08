@@ -33,6 +33,7 @@ const request = async (
     onMessage: ((event: EventSourceMessage) => void) | null = null
 ) => {
     const { formdata, external, headers, auth: isAuth, stream } = options;
+    console.log(options)
 
     let url = external ? endpoint : API_BASE_URL + endpoint;
     let payload = formdata ? data : JSON.stringify(data);
@@ -70,7 +71,6 @@ const request = async (
         },
         body: payload,
     };
-
     if (stream) {
         return new Promise<void>(async (resolve, reject) => {
             const streamOptions: FetchEventSourceInit = {
@@ -157,12 +157,14 @@ export const API = {
         get: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`),
         update: (project_id: string, id: string, title: string) => request(`projects/${project_id}/chats/${id}`, "PATCH", { title }),
         delete: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`, "DELETE"),
-        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null) => request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text }, openai_api_key ? {
-            headers: {
-                "OpenAI-Key": openai_api_key
-            },
-            stream: true
-        } : {}, (e) => {
+        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null) => request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text }, {
+            stream: true,
+            ...(openai_api_key ? {
+                headers: {
+                    "OpenAI-Key": openai_api_key
+                },
+                } : {})
+            }, (e) => {
             if (onMessage) {
                 const data = JSON.parse(e.data);
                 if(data.error){
