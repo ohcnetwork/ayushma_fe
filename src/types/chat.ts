@@ -20,3 +20,10 @@ export type ChatMessage = BaseModelType & {
     messageType: ChatMessageType,
     message: string,
 }
+
+export type ChatConverseStream = {
+    chat: string,
+    delta: string,
+    messag: string,
+    stop: boolean,
+}

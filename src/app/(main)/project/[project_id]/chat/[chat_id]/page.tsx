@@ -2,18 +2,18 @@
 
 import ChatBar from "@/components/chatbar";
 import ChatBlock from "@/components/chatblock";
-import { Input } from "@/components/ui/interactive";
 import { storageAtom } from "@/store";
-import { Chat } from "@/types/chat";
+import { Chat, ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Chat(params: { params: { project_id: string, chat_id: string } }) {
 
     const { project_id, chat_id } = params.params;
     const [newChat, setNewChat] = useState("");
+    const [chatMessage, setChatMessage] = useState<string>("");
     const [storage] = useAtom(storageAtom);
 
     const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id));
@@ -21,10 +21,18 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
 
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
-    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, openai_key), {
+    const streamChatMessage = async (message: ChatConverseStream) => {
+        setChatMessage(prevChatMessage => {
+            const updatedChatMessage = prevChatMessage + message.delta;
+            return updatedChatMessage;
+        });
+    };
+
+    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, openai_key, streamChatMessage), {
         onSuccess: async () => {
-            chatQuery.refetch();
+            await chatQuery.refetch();
             setNewChat("");
+            setChatMessage("");
         }
     });
 
@@ -51,15 +59,24 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         audioConverseMutation.mutate({ formdata: fd });
     }
 
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (messagesContainerRef.current) {
+            const container = messagesContainerRef.current;
+            container.scrollTop = container.scrollHeight;
+        }
+    }, [chatMessage]);
+
     return (
         <div className="h-screen flex flex-col flex-1">
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
                 {chat?.chats?.map((message, i) => (
                     <ChatBlock message={message} key={i} />
                 ))}
-                {converseMutation.isLoading && (
-                    <ChatBlock loading />
-                )}
+                {chatMessage && (<>
+                    <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, created_at: "", external_id: "", modified_at: "" }} />
+                    <ChatBlock message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
+                </>)}
             </div>
             <div className="w-full shrink-0 p-4">
                 <ChatBar
