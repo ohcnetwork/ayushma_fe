@@ -33,7 +33,6 @@ const request = async (
     onMessage: ((event: EventSourceMessage) => void) | null = null
 ) => {
     const { formdata, external, headers, auth: isAuth, stream } = options;
-    console.log(options)
 
     let url = external ? endpoint : API_BASE_URL + endpoint;
     let payload = formdata ? data : JSON.stringify(data);
@@ -60,10 +59,10 @@ const request = async (
     const requestOptions = {
         method: method,
         headers: {
+            Accept: 'application/json',
             ...(formdata === true
                 ? {}
                 : {
-                    Accept: 'application/json',
                     'Content-Type': 'application/json',
                 }),
             Authorization: auth,
@@ -81,7 +80,7 @@ const request = async (
                 },
                 onerror: (error: any) => {
                     if (onMessage)
-                        onMessage({ id: "", event: "", data: JSON.stringify({ error: error.message }) })
+                        onMessage({ id: "", event: "", data: JSON.stringify({ error }) })
                     reject({ error });
                 },
                 onclose() {
@@ -157,28 +156,38 @@ export const API = {
         get: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`),
         update: (project_id: string, id: string, title: string) => request(`projects/${project_id}/chats/${id}`, "PATCH", { title }),
         delete: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`, "DELETE"),
-        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null) => request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text }, {
-            stream: true,
-            ...(openai_api_key ? {
-                headers: {
-                    "OpenAI-Key": openai_api_key
-                },
+        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null) =>
+            request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text }, {
+                stream: true,
+                ...(openai_api_key ? {
+                    headers: {
+                        "OpenAI-Key": openai_api_key
+                    },
                 } : {})
             }, (e) => {
-            if (onMessage) {
-                const data = JSON.parse(e.data);
-                if(data.error){
-                    throw Error(data.error);
+                if (onMessage) {
+                    const data = JSON.parse(e.data);
+                    if (data.error) {
+                        throw Error(data.error);
+                    }
+                    onMessage(data);
                 }
-                onMessage(data);
-            }
-        }),
-        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string) => request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", formdata, {
-            formdata: true,
-            headers: openai_api_key ? {
-                "OpenAI-Key": openai_api_key
-            } : {}
-        }),
-
+            }),
+        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null) =>
+            request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", formdata, {
+                stream: true,
+                formdata: true,
+                headers: openai_api_key ? {
+                    "OpenAI-Key": openai_api_key
+                } : {}
+            }, (e) => {
+                if (onMessage) {
+                    const data = JSON.parse(e.data);
+                    if (data.error) {
+                        throw Error(data.error);
+                    }
+                    onMessage(data);
+                }
+            }),
     }
 }

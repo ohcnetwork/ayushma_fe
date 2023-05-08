@@ -22,6 +22,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     const streamChatMessage = async (message: ChatConverseStream) => {
+        if(newChat === "") setNewChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;
             return updatedChatMessage;
@@ -36,9 +37,11 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         }
     });
 
-    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key), {
+    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage), {
         onSuccess: async () => {
-            chatQuery.refetch();
+            await chatQuery.refetch();
+            setNewChat("");
+            setChatMessage("");
         }
     });
 
