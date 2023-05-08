@@ -1,6 +1,8 @@
 "use client";
 import ChatBar from "@/components/chatbar";
+import ChatBlock from "@/components/chatblock";
 import { storageAtom } from "@/store";
+import { ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { API } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -15,10 +17,19 @@ export default function Chat(params: { params: { project_id: string } }) {
     const router = useRouter();
     const [storage, setStorage] = useAtom(storageAtom);
     const queryClient = useQueryClient();
+    const [chatMessage, setChatMessage] = useState<string>("");
 
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
-    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, openai_key));
+    const streamChatMessage = async (message: ChatConverseStream) => {
+        if(chat === "") setChat(message.input);
+        setChatMessage(prevChatMessage => {
+            const updatedChatMessage = prevChatMessage + message.delta;
+            return updatedChatMessage;
+        });
+    };
+
+    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage));
 
     const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
         onSuccess: async (data, vars) => {
@@ -32,7 +43,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         }
     })
 
-    const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key));
+    const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key, streamChatMessage));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -61,7 +72,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     return (
         <div className="flex flex-col h-screen flex-1">
             <div className="flex-1 items-center justify-center w-full overflow-auto">
-                <div className="text-center text-gray-500 w-full">
+                {!chatMessage ? (<div className="text-center text-gray-500 w-full">
                     <h1 className="font-black text-4xl text-gray-600 mt-8">
                         Ayushma
                     </h1>
@@ -85,7 +96,11 @@ export default function Chat(params: { params: { project_id: string } }) {
                             </button>
                         ))}
                     </div>
-                </div>
+                </div>) : (
+                <>
+                    <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, created_at: "", external_id: "", modified_at: "" }} />
+                    <ChatBlock message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
+                </>)}
             </div>
             <div className="w-full shrink-0 p-4">
                 <ChatBar
