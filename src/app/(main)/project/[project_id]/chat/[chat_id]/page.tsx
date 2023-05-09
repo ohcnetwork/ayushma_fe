@@ -34,7 +34,8 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
             await chatQuery.refetch();
             setNewChat("");
             setChatMessage("");
-        }
+        },
+        retry: false
     });
 
     const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage), {
@@ -42,7 +43,8 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
             await chatQuery.refetch();
             setNewChat("");
             setChatMessage("");
-        }
+        },
+        retry: false
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

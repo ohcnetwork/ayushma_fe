@@ -29,7 +29,9 @@ export default function Chat(params: { params: { project_id: string } }) {
         });
     };
 
-    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage));
+    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage), {
+        retry: false
+    });
 
     const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
         onSuccess: async (data, vars) => {
@@ -43,7 +45,9 @@ export default function Chat(params: { params: { project_id: string } }) {
         }
     })
 
-    const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key, streamChatMessage));
+    const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key, streamChatMessage), {
+        retry: false
+    });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
