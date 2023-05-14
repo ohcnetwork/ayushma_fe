@@ -18,6 +18,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     const [storage, setStorage] = useAtom(storageAtom);
     const queryClient = useQueryClient();
     const [chatMessage, setChatMessage] = useState<string>("");
+    const [language, setLanguage] = useState<string>("en");
 
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
@@ -33,7 +34,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         retry: false
     });
 
-    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
+    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", language, storage.openai_api_key), {
         onSuccess: async (data, vars) => {
             queryClient.invalidateQueries(["chats"]);
             if (vars.type === "audio" && vars.formdata) {
@@ -62,7 +63,7 @@ export default function Chat(params: { params: { project_id: string } }) {
             .then(blob => {
                 const file = new File([blob], "audio.wav", { type: "audio/wav" });
                 fd.append("audio", file);
-            })
+            }) 
         await newChatMutation.mutateAsync({ type: "audio", formdata: fd });
     }
 
@@ -112,6 +113,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                     onChange={(e) => setChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
+                    onLangSet={setLanguage}
                     errors={[(newChatMutation.error as any)?.error?.error]}
                     loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading}
                 />
