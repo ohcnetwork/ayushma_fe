@@ -23,6 +23,13 @@ export default function Chat(params: { params: { project_id: string } }) {
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     const streamChatMessage = async (message: ChatConverseStream) => {
+        if(message.ayushma_voice)
+        {
+            console.log(message.ayushma_voice);
+            // play audio from source url
+            const audio = new Audio("http://127.0.0.1:8000"+message.ayushma_voice);
+            audio.play();
+        }
         if(chat === "") setChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;

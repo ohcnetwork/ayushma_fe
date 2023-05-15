@@ -10,7 +10,7 @@ import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
 export default function Chat(params: { params: { project_id: string, chat_id: string } }) {
-
+    
     const { project_id, chat_id } = params.params;
     const [newChat, setNewChat] = useState("");
     const [chatMessage, setChatMessage] = useState<string>("");
@@ -22,6 +22,13 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     const streamChatMessage = async (message: ChatConverseStream) => {
+        if(message.ayushma_voice)
+        {
+            console.log(message.ayushma_voice);
+            // play audio from source url
+            const audio = new Audio("http://127.0.0.1:8000"+message.ayushma_voice);
+            audio.play();
+        }
         if (newChat === "") setNewChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;
