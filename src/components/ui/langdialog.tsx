@@ -1,5 +1,6 @@
 import { supportedLanguages } from "@/utils/constants";
 import { useState } from "react";
+import { Button } from "./interactive";
 
 interface LangDialogProps {
     onClose: () => void;
@@ -42,7 +43,7 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                                             className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline-blue focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
                                             {supportedLanguages.map((language) => (
                                                 <option key={language.value} value={language.value}>
-                                                {language.label}
+                                                    {language.label}
                                                 </option>
                                             ))}
                                         </select>
@@ -53,22 +54,19 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                     </div>
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                            <button
-                                type="button"
-                                className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                                onClick={()=>{onSubmit(selectedLanguage)}}
+                            <Button
+                                onClick={() => { onSubmit(selectedLanguage) }}
                             >
                                 Submit
-                            </button>
+                            </Button>
                         </span>
                         <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                            <button
-                                type="button"
-                                className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                            <Button
+                                variant="secondary"
                                 onClick={onClose}
                             >
                                 Close
-                            </button>
+                            </Button>
                         </span>
                     </div>
                 </div>
