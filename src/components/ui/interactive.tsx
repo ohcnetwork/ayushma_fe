@@ -60,7 +60,7 @@ export function Button(props: {
     const classes = twMerge(baseClasses, props.variant === "secondary" ? secondaryClasses : primaryClasses, className);
     return (
         <button {...rest} className={classes}>
-            {children}
+            {loading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block"></div> : children}
         </button>
     )
 }

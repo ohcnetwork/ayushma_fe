@@ -1,6 +1,8 @@
 import { supportedLanguages } from "@/utils/constants";
 import { useState } from "react";
 import { Button } from "./interactive";
+import { useAtom } from "jotai";
+import { storageAtom } from "@/store";
 
 interface LangDialogProps {
     onClose: () => void;
@@ -9,10 +11,9 @@ interface LangDialogProps {
 }
 
 const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
-    const [selectedLanguage, setSelectedLanguage] = useState('en');
-
+    const [storage, setStorage] = useAtom(storageAtom);
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedLanguage(event.target.value);
+        setStorage({ ...storage, language: event.target.value });
     };
 
     return (
@@ -38,7 +39,7 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                                 <div className="mt-2 flex flex-col">
                                     <div className="mt-1 relative">
                                         <select id="language" name="language"
-                                            value={selectedLanguage}
+                                            value={storage.language}
                                             onChange={handleLanguageChange}
                                             className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline-blue focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
                                             {supportedLanguages.map((language) => (
@@ -55,7 +56,7 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                             <Button
-                                onClick={() => { onSubmit(selectedLanguage) }}
+                                onClick={() => { onSubmit(storage.language || "en") }}
                             >
                                 Submit
                             </Button>

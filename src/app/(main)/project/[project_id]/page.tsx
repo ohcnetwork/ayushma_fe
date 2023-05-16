@@ -18,18 +18,16 @@ export default function Chat(params: { params: { project_id: string } }) {
     const [storage, setStorage] = useAtom(storageAtom);
     const queryClient = useQueryClient();
     const [chatMessage, setChatMessage] = useState<string>("");
-    const [language, setLanguage] = useState<string>("en");
 
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     const streamChatMessage = async (message: ChatConverseStream) => {
-        if(message.ayushma_voice)
-        {
+        if (message.ayushma_voice) {
             // play audio from source url
             const audio = new Audio(message.ayushma_voice);
             audio.play();
         }
-        if(chat === "") setChat(message.input);
+        if (chat === "") setChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;
             return updatedChatMessage;
@@ -40,7 +38,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         retry: false
     });
 
-    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", language, storage.openai_api_key), {
+    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.language || "en", storage.openai_api_key), {
         onSuccess: async (data, vars) => {
             queryClient.invalidateQueries(["chats"]);
             if (vars.type === "audio" && vars.formdata) {
@@ -69,7 +67,7 @@ export default function Chat(params: { params: { project_id: string } }) {
             .then(blob => {
                 const file = new File([blob], "audio.wav", { type: "audio/wav" });
                 fd.append("audio", file);
-            }) 
+            })
         await newChatMutation.mutateAsync({ type: "audio", formdata: fd });
     }
 
@@ -108,10 +106,10 @@ export default function Chat(params: { params: { project_id: string } }) {
                         ))}
                     </div>
                 </div>) : (
-                <>
-                    <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, created_at: "", external_id: "", modified_at: "" }} />
-                    <ChatBlock message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
-                </>)}
+                    <>
+                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
+                    </>)}
             </div>
             <div className="w-full shrink-0 p-4">
                 <ChatBar
@@ -119,7 +117,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                     onChange={(e) => setChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
-                    onLangSet={setLanguage}
+                    onLangSet={(language) => setStorage({ ...storage, language })}
                     errors={[(newChatMutation.error as any)?.error?.error]}
                     loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading}
                 />
