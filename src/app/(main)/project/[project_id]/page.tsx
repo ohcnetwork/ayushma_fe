@@ -27,7 +27,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         {
             console.log(message.ayushma_voice);
             // play audio from source url
-            const audio = new Audio("http://127.0.0.1:8000"+message.ayushma_voice);
+            const audio = new Audio(message.ayushma_voice);
             audio.play();
         }
         if(chat === "") setChat(message.input);
