@@ -51,7 +51,10 @@ export default function Chat(params: { params: { project_id: string } }) {
     })
 
     const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key, streamChatMessage), {
-        retry: false
+        retry: false,
+        onSuccess: async (data, vars) => {
+            queryClient.invalidateQueries(["chats"]);
+        }
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

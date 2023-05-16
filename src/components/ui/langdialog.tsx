@@ -39,7 +39,7 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                                 <div className="mt-2 flex flex-col">
                                     <div className="mt-1 relative">
                                         <select id="language" name="language"
-                                            value={storage.language}
+                                            value={storage?.language || "en"}
                                             onChange={handleLanguageChange}
                                             className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline-blue focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
                                             {supportedLanguages.map((language) => (
