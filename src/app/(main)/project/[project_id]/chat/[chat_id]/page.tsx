@@ -10,7 +10,7 @@ import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
 export default function Chat(params: { params: { project_id: string, chat_id: string } }) {
-
+    
     const { project_id, chat_id } = params.params;
     const [newChat, setNewChat] = useState("");
     const [chatMessage, setChatMessage] = useState<string>("");
@@ -22,12 +22,22 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     const streamChatMessage = async (message: ChatConverseStream) => {
-        if(newChat === "") setNewChat(message.input);
+        if(message.ayushma_voice)
+        {
+            // play audio from source url
+            const audio = new Audio(message.ayushma_voice);
+            audio.play();
+        }
+        if (newChat === "") setNewChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;
             return updatedChatMessage;
         });
     };
+
+    const chatUpdateMutation = useMutation((language: string) => API.chat.update(project_id, chat_id, { language }), {
+        retry: false
+    });
 
     const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, openai_key, streamChatMessage), {
         onSuccess: async () => {
@@ -89,6 +99,10 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                     onChange={(e) => setNewChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
+                    language={chat?.language || "en"}
+                    onLangSet={(lang) => {
+                        chatUpdateMutation.mutate(lang);
+                    }}
                     errors={[
                         (converseMutation.error as any)?.error?.error,
                         (audioConverseMutation.error as any)?.error?.error

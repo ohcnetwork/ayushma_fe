@@ -50,15 +50,16 @@ export function TextArea(props: {
 export function Button(props: {
     children: React.ReactNode,
     loading?: boolean,
+    variant?: "primary" | "secondary",
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
-
     const { children, className, loading, ...rest } = props;
 
+    const baseClasses = "rounded-lg p-2 px-4 flex items-center justify-center";
+    const primaryClasses = "bg-green-500 hover:bg-green-600 transition-all text-white";
+    const secondaryClasses = "bg-white hover:bg-slate-200 transition-all text-gray-700";
+    const classes = twMerge(baseClasses, props.variant === "secondary" ? secondaryClasses : primaryClasses, className);
     return (
-        <button
-            {...rest}
-            className={twMerge("bg-green-500 hover:bg-green-600 transition-all text-white rounded-lg p-2 px-4 flex items-center justify-center", className)}
-        >
+        <button {...rest} className={classes}>
             {loading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block"></div> : children}
         </button>
     )

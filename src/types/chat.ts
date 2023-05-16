@@ -6,6 +6,7 @@ export type BaseModelType = {
 
 export type Chat = BaseModelType & {
     title: string,
+    language: string,
     namespace: string,
     chats?: ChatMessage[]
 }
@@ -27,4 +28,5 @@ export type ChatConverseStream = {
     delta: string,
     message: string,
     stop: boolean,
+    ayushma_voice?: string
 }
