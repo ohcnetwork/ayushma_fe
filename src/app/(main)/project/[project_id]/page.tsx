@@ -25,7 +25,6 @@ export default function Chat(params: { params: { project_id: string } }) {
     const streamChatMessage = async (message: ChatConverseStream) => {
         if(message.ayushma_voice)
         {
-            console.log(message.ayushma_voice);
             // play audio from source url
             const audio = new Audio(message.ayushma_voice);
             audio.play();
