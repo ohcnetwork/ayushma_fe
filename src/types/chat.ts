@@ -19,6 +19,7 @@ export enum ChatMessageType {
 export type ChatMessage = BaseModelType & {
     messageType: ChatMessageType,
     message: string,
+    reference_documents?: any[],
 }
 
 export type ChatConverseStream = {
