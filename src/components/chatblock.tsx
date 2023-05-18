@@ -2,9 +2,10 @@ import { ChatMessage, ChatMessageType } from "@/types/chat";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 
-export default function ChatBlock(props: { message?: ChatMessage, loading?: boolean }) {
+export default function ChatBlock(props: { message?: ChatMessage, loading?: boolean, cursor?: boolean }) {
 
-    const { message, loading } = props;
+    const { message, loading, cursor } = props;
+    const cursorText = cursor ? (message?.message?.length || 0) % 2 === 0 ? "|" : "" : "";
 
     return (
         <div className={`flex gap-6 p-6 ${message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""}`}>
@@ -16,7 +17,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
             <div>
                 {loading ? "Loading..." :
                     <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-render">
-                        {message?.message || ""}
+                        {message?.message + cursorText || ""}
                     </ReactMarkdown>
                 }
             </div>
