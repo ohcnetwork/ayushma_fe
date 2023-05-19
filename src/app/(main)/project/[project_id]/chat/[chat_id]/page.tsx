@@ -18,6 +18,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const [chatMessage, setChatMessage] = useState<string>("");
     const [storage] = useAtom(storageAtom);
     const [isTyping, setIsTyping] = useState<boolean>(false);
+    const [language, setLanguage] = useState<string>("en");
 
     const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id));
     const chat: Chat | undefined = chatQuery.data;
@@ -39,11 +40,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         if (message.stop) setIsTyping(false);
     };
 
-    const chatUpdateMutation = useMutation((language: string) => API.chat.update(project_id, chat_id, { language }), {
-        retry: false
-    });
-
-    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, openai_key, streamChatMessage, 20), {
+    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, language, openai_key, streamChatMessage), {
         onSuccess: async () => {
             await chatQuery.refetch();
             setNewChat("");
@@ -90,32 +87,33 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
 
     return (
         <div className="h-screen flex flex-col flex-1">
-            <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
-                {chat?.chats?.map((message, i) => (
-                    <ChatBlock message={message} key={message.external_id} autoplay={(!!chatMessage || shouldAutoPlay) && (i === (chat?.chats?.length || 0) - 1)} />
-                ))}
-                {chatMessage && (<>
-                    <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, created_at: "", external_id: "", modified_at: "" }} />
-                    <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
-                </>)}
-            </div>
+            <div className="flex-1 overflow-auto" ref={ messagesContainerRef }>
+                { chat?.chats?.map((message, i) => (
+                    <ChatBlock message={ message } key={ message.external_id } autoplay={ (!!chatMessage || shouldAutoPlay) && (i === (chat?.chats?.length || 0) - 1) } />
+                )) }
+                { chatMessage && (<>
+                    <ChatBlock message={ { messageType: ChatMessageType.USER, message: newChat, translated_message: newChat, language, created_at: "", external_id: "", modified_at: "" } } />
+                    <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, translated_message: newChat, language, created_at: "", external_id: "", modified_at: "" } } />
+                </>)
+                }
+            </div >
             <div className="w-full shrink-0 p-4">
                 <ChatBar
-                    chat={newChat || ""}
-                    onChange={(e) => setNewChat(e.target.value)}
-                    onSubmit={handleSubmit}
-                    onAudio={handleAudio}
-                    language={chat?.language || "en"}
-                    onLangSet={(lang) => {
-                        chatUpdateMutation.mutate(lang);
-                    }}
-                    errors={[
+                    chat={ newChat || "" }
+                    onChange={ (e) => setNewChat(e.target.value) }
+                    onSubmit={ handleSubmit }
+                    onAudio={ handleAudio }
+                    language={ language }
+                    onLangSet={ (lang) => {
+                        setLanguage(lang);
+                    } }
+                    errors={ [
                         (converseMutation.error as any)?.error?.error,
                         (audioConverseMutation.error as any)?.error?.error
-                    ]}
-                    loading={converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
+                    ] }
+                    loading={ converseMutation.isLoading || audioConverseMutation.isLoading || isTyping }
                 />
             </div>
-        </div>
+        </div >
     )
 }

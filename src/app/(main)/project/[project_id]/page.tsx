@@ -20,12 +20,13 @@ export default function Chat(params: { params: { project_id: string } }) {
     const [chatMessage, setChatMessage] = useState<string>("");
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [chatID, setChatID] = useState<string>("");
-    
+    const [language, setLanguage] = useState<string>("en");
+
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     useEffect(() => {
         if (!isTyping && chatID) router.push(`/project/${project_id}/chat/${chatID}?autoplay`);
-    }, [chatID, isTyping]);
+    }, [chatID, isTyping, project_id, router]);
 
     const streamChatMessage = async (message: ChatConverseStream) => {
         if (chat === "") setChat(message.input);
@@ -36,11 +37,11 @@ export default function Chat(params: { params: { project_id: string } }) {
         if (message.stop) setIsTyping(false);
     };
 
-    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage, 20), {
+    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, language, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage, 20), {
         retry: false
     });
 
-    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.language || "en", storage.openai_api_key), {
+    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
         onSuccess: async (data, vars) => {
             queryClient.invalidateQueries(["chats"]);
             if (vars.type === "audio" && vars.formdata) {
@@ -88,7 +89,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     return (
         <div className="flex flex-col h-screen flex-1">
             <div className="flex-1 items-center justify-center w-full overflow-auto">
-                {!chatMessage ? (<div className="text-center text-gray-500 w-full">
+                { !chatMessage ? (<div className="text-center text-gray-500 w-full">
                     <h1 className="font-black text-4xl text-gray-600 mt-8">
                         Ayushma
                     </h1>
@@ -99,34 +100,34 @@ export default function Chat(params: { params: { project_id: string } }) {
                         Try asking me -
                     </h2>
                     <div className="inline-flex mt-4 flex-wrap justify-center gap-4 w-1/2">
-                        {samplePrompts.map((prompt, i) => (
+                        { samplePrompts.map((prompt, i) => (
                             <button
-                                onClick={() => {
+                                onClick={ () => {
                                     setChat(prompt)
                                     newChatMutation.mutate({});
-                                }}
+                                } }
                                 className="bg-white border border-gray-200 rounded-xl p-4 w-64"
-                                key={i}
+                                key={ i }
                             >
-                                {prompt}
+                                { prompt }
                             </button>
-                        ))}
+                        )) }
                     </div>
                 </div>) : (
                     <>
-                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, created_at: "", external_id: "", modified_at: "" }} />
-                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
-                    </>)}
+                        <ChatBlock message={ { messageType: ChatMessageType.USER, message: chat, translated_message: chat, language, created_at: "", external_id: "", modified_at: "" } } />
+                        <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, translated_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" } } />
+                    </>) }
             </div>
             <div className="w-full shrink-0 p-4">
                 <ChatBar
-                    chat={chat}
-                    onChange={(e) => setChat(e.target.value)}
-                    onSubmit={handleSubmit}
-                    onAudio={handleAudio}
-                    onLangSet={(language) => setStorage({ ...storage, language })}
-                    errors={[(newChatMutation.error as any)?.error?.error]}
-                    loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
+                    chat={ chat }
+                    onChange={ (e) => setChat(e.target.value) }
+                    onSubmit={ handleSubmit }
+                    onAudio={ handleAudio }
+                    onLangSet={ (language) => setLanguage(language) }
+                    errors={ [(newChatMutation.error as any)?.error?.error] }
+                    loading={ newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading || isTyping }
                 />
             </div>
         </div>

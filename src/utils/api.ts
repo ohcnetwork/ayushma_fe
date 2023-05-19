@@ -27,7 +27,6 @@ type options = {
 
 type ChatUpdateFields = {
     title?: string,
-    language?: string,
 }
 
 const request = async (
@@ -176,7 +175,7 @@ export const API = {
     },
     chat: {
         list: (project_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`projects/${project_id}/chats`, "GET", filters),
-        create: (project_id: string, title: string, language: string, openai_api_key?: string) => request(`projects/${project_id}/chats`, "POST", { title, language }, openai_api_key ? {
+        create: (project_id: string, title: string, openai_api_key?: string) => request(`projects/${project_id}/chats`, "POST", { title }, openai_api_key ? {
             headers: {
                 "OpenAI-Key": openai_api_key
             }
@@ -184,8 +183,8 @@ export const API = {
         get: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`),
         update: (project_id: string, id: string, fields: ChatUpdateFields) => request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
         delete: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`, "DELETE"),
-        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
-            request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text }, {
+        converse: (project_id: string, chat_id: string, text: string, language: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
+            request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text, language }, {
                 stream: true,
                 ...(openai_api_key ? {
                     headers: {
@@ -196,6 +195,7 @@ export const API = {
                 if (onMessage) {
                     const data = JSON.parse(e.data);
                     if (data.error) {
+                        console.log(data)
                         throw Error(data.error);
                     }
                     handleMessage(data, onMessage, delay);

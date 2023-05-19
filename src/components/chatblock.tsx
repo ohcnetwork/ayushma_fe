@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import { ChatMessage, ChatMessageType } from "@/types/chat";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
-import Image from "next/image";
 import rehypeRaw from 'rehype-raw'
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
@@ -19,7 +19,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
     const isCompleteLetter = (str: string) => {
         const regex = /^\p{L}$/u;
         return regex.test(str);
-    }  
+    }
 
     const chatMessage = message?.message + cursorText || "";
 
@@ -52,7 +52,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
 
 
 
-    const loadAudio = async () => {
+    const loadAudio = useCallback(async () => {
         if (message?.messageType === ChatMessageType.AYUSHMA) {
             setAudioStatus("loading");
             const audio = new Audio(message?.ayushma_audio_url);
@@ -63,14 +63,14 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                 setAudioStatus("stopped");
             });
         }
-    }
+    }, [message]);
 
-    const togglePlay = () => {
+    const togglePlay = useCallback(() => {
         if (audioStatus === "loading") return;
         if (audioStatus === "unloaded") loadAudio();
         if (audioStatus === "playing") { audio?.pause(); setAudioStatus("paused"); }
         else { audio?.play(); setAudioStatus("playing"); }
-    }
+    }, [audioStatus, loadAudio, audio])
 
     const stopAudio = () => {
         if (!audio) return;
@@ -84,7 +84,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
 
     useEffect(() => {
         if (autoplay) togglePlay();
-    }, []);
+    }, [autoplay, togglePlay]);
 
     return (
         <div className={`flex flex-col gap-4 p-6 ${message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""}`}>
@@ -101,7 +101,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                     (
                         <div className="flex flex-col justify-center">
                             <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} className="markdown-render">
-                                {audioStatus === "unloaded" ? (message?.message + cursorText || "") : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
+                                {audioStatus === "unloaded" ? (message?.translated_message + cursorText || "") : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
                             </ReactMarkdown>
                             {message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
                                 <div className="flex gap-1 justify-left">
