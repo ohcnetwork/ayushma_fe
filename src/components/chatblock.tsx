@@ -100,7 +100,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                 {audioStatus === "unloaded" ? (message?.message || "") : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
                             </ReactMarkdown>
                             {message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
-                                <div className="flex gap-1 justify-center">
+                                <div className="flex gap-1 justify-left">
                                     <button onClick={togglePlay} className="text-gray-500 hover:text-gray-700">
                                         {audioStatus === "playing" ? (
                                             <i className="fa-regular fa-circle-pause text-gray-700"></i>
