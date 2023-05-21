@@ -15,7 +15,8 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const [newChat, setNewChat] = useState("");
     const [chatMessage, setChatMessage] = useState<string>("");
     const [storage] = useAtom(storageAtom);
-
+    const [isTyping, setIsTyping] = useState<boolean>(false);
+    
     const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id));
     const chat: Chat | undefined = chatQuery.data;
 
@@ -27,13 +28,14 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
             const updatedChatMessage = prevChatMessage + message.delta;
             return updatedChatMessage;
         });
+        if(message.stop) setIsTyping(false);
     };
 
     const chatUpdateMutation = useMutation((language: string) => API.chat.update(project_id, chat_id, { language }), {
         retry: false
     });
 
-    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, openai_key, streamChatMessage), {
+    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, openai_key, streamChatMessage, 20), {
         onSuccess: async () => {
             await chatQuery.refetch();
             setNewChat("");
@@ -42,7 +44,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         retry: false
     });
 
-    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage), {
+    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage, 20), {
         onSuccess: async () => {
             await chatQuery.refetch();
             setNewChat("");
@@ -52,11 +54,13 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        setIsTyping(true);
         e.preventDefault();
         converseMutation.mutate();
     }
 
     const handleAudio = async (blobUrl: string) => {
+        setIsTyping(true);
         const fd = new FormData();
         //create a file object from blob url
         await fetch(blobUrl)
@@ -84,7 +88,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                 ))}
                 {chatMessage && (<>
                     <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, created_at: "", external_id: "", modified_at: "" }} />
-                    <ChatBlock message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
+                    <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
                 </>)}
             </div>
             <div className="w-full shrink-0 p-4">
@@ -101,7 +105,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                         (converseMutation.error as any)?.error?.error,
                         (audioConverseMutation.error as any)?.error?.error
                     ]}
-                    loading={converseMutation.isLoading || audioConverseMutation.isLoading}
+                    loading={converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
                 />
             </div>
         </div>

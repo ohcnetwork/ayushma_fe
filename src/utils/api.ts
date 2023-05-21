@@ -124,6 +124,29 @@ const request = async (
     }
 };
 
+let messageBuffer: ChatConverseStream[] = [];
+let intervalHandle: NodeJS.Timer | number | null = null;
+
+function handleMessage(data: ChatConverseStream, onMessage: ((event: ChatConverseStream) => void), delay: number | null) {
+    if(!delay || delay == 0){
+        onMessage(data);
+        return;
+    }
+    messageBuffer.push(data);
+
+    if (!intervalHandle) {
+        intervalHandle = setInterval(() => {
+            if (messageBuffer.length > 0) {
+                const message = messageBuffer.shift();
+                if (message) onMessage(message);
+            } else {
+                intervalHandle && clearInterval(intervalHandle);
+                intervalHandle = null;
+            }
+        }, delay);
+    }
+}
+
 export const API = {
     user: {
         login: (email: string, password: string) => request("auth/login", "POST", { email, password }),
@@ -161,7 +184,7 @@ export const API = {
         get: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`),
         update: (project_id: string, id: string, fields: ChatUpdateFields) => request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
         delete: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`, "DELETE"),
-        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null) =>
+        converse: (project_id: string, chat_id: string, text: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
             request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text }, {
                 stream: true,
                 ...(openai_api_key ? {
@@ -175,10 +198,10 @@ export const API = {
                     if (data.error) {
                         throw Error(data.error);
                     }
-                    onMessage(data);
+                    handleMessage(data, onMessage, delay);
                 }
             }),
-        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null) =>
+        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
             request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", formdata, {
                 stream: true,
                 formdata: true,
@@ -191,7 +214,7 @@ export const API = {
                     if (data.error) {
                         throw Error(data.error);
                     }
-                    onMessage(data);
+                    handleMessage(data, onMessage, delay);
                 }
             }),
     }

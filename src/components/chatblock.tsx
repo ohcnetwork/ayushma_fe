@@ -18,14 +18,16 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
     const isCompleteLetter = (str: string) => {
         const regex = /^\p{L}$/u;
         return regex.test(str);
-    }
+    }  
+
+    const chatMessage = message?.message + cursorText || "";
 
     const getMessageSegments = (): { highlightText: string; blackText: string } => {
-        const messageLength = message?.message?.length || 0;
+        const messageLength = chatMessage.length || 0;
         const highlightLength = percentagePlayed === 100 ? 0 : Math.floor((percentagePlayed / 100) * messageLength);
 
-        let highlightText = message?.message?.slice(0, highlightLength) || '';
-        let blackText = message?.message?.slice(highlightLength) || '';
+        let highlightText = chatMessage.slice(0, highlightLength) || '';
+        let blackText = chatMessage.slice(highlightLength) || '';
 
         while (highlightText && blackText && percentagePlayed < 100 && highlightText.length > 0 && !isCompleteLetter(highlightText.slice(-1))) {
             highlightText += blackText[0];
@@ -97,7 +99,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                     (
                         <div className="flex flex-col justify-center">
                             <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} className="markdown-render">
-                                {audioStatus === "unloaded" ? (message?.message || "") : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
+                                {audioStatus === "unloaded" ? (message?.message + cursorText || "") : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
                             </ReactMarkdown>
                             {message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
                                 <div className="flex gap-1 justify-left">
