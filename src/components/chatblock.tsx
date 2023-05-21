@@ -7,9 +7,10 @@ import rehypeRaw from 'rehype-raw'
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
-export default function ChatBlock(props: { message?: ChatMessage, loading?: boolean, autoplay?: boolean }) {
+export default function ChatBlock(props: { message?: ChatMessage, loading?: boolean, autoplay?: boolean, cursor?: boolean }) {
 
-    const { message, loading, autoplay } = props;
+    const { message, loading, cursor, autoplay } = props;
+    const cursorText = cursor ? (message?.message?.length || 0) % 2 === 0 ? "|" : "" : "";
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     const [audioStatus, setAudioStatus] = useState<AudioStatus>("unloaded");
     const [percentagePlayed, setPercentagePlayed] = useState(0);
