@@ -23,12 +23,6 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     const streamChatMessage = async (message: ChatConverseStream) => {
-        if(message.ayushma_voice)
-        {
-            // play audio from source url
-            const audio = new Audio(message.ayushma_voice);
-            audio.play();
-        }
         if (newChat === "") setNewChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;
@@ -90,7 +84,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         <div className="h-screen flex flex-col flex-1">
             <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
                 {chat?.chats?.map((message, i) => (
-                    <ChatBlock message={message} key={i} />
+                    <ChatBlock message={message} key={message.external_id} autoplay={!!chatMessage && (i === (chat?.chats?.length || 0) - 1)} />
                 ))}
                 {chatMessage && (<>
                     <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, created_at: "", external_id: "", modified_at: "" }} />

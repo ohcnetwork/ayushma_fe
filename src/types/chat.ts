@@ -20,6 +20,7 @@ export enum ChatMessageType {
 export type ChatMessage = BaseModelType & {
     messageType: ChatMessageType,
     message: string,
+    ayushma_audio_url?: string,
 }
 
 export type ChatConverseStream = {
