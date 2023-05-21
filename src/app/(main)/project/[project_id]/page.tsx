@@ -115,8 +115,8 @@ export default function Chat(params: { params: { project_id: string } }) {
                     </div>
                 </div>) : (
                     <>
-                        <ChatBlock message={ { messageType: ChatMessageType.USER, message: chat, translated_message: chat, language, created_at: "", external_id: "", modified_at: "" } } />
-                        <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, translated_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" } } />
+                        <ChatBlock message={ { messageType: ChatMessageType.USER, message: chat, original_message: chat, language, created_at: "", external_id: "", modified_at: "" } } />
+                        <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" } } />
                     </>) }
             </div>
             <div className="w-full shrink-0 p-4">

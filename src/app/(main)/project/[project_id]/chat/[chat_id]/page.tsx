@@ -89,12 +89,14 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         <div className="h-screen flex flex-col flex-1">
             <div className="flex-1 overflow-auto" ref={ messagesContainerRef }>
                 { chat?.chats?.map((message, i) => (
-                    <ChatBlock message={ message } key={ message.external_id } autoplay={ (!!chatMessage || shouldAutoPlay) && (i === (chat?.chats?.length || 0) - 1) } />
+                    <ChatBlock message={ message } key={ message.external_id } autoplay={ !!chatMessage && (i === (chat?.chats?.length || 0) - 1) } />
                 )) }
-                { chatMessage && (<>
-                    <ChatBlock message={ { messageType: ChatMessageType.USER, message: newChat, translated_message: newChat, language, created_at: "", external_id: "", modified_at: "" } } />
-                    <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, translated_message: newChat, language, created_at: "", external_id: "", modified_at: "" } } />
-                </>)
+                { chatMessage && (
+                    <>
+                        <ChatBlock message={ { messageType: ChatMessageType.USER, message: newChat, original_message: newChat, language, created_at: "", external_id: "", modified_at: "" } } />
+                        <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" } } />
+                    </>
+                )
                 }
             </div >
             <div className="w-full shrink-0 p-4">

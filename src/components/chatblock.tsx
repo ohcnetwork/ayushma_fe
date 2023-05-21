@@ -70,7 +70,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
         if (audioStatus === "unloaded") loadAudio();
         if (audioStatus === "playing") { audio?.pause(); setAudioStatus("paused"); }
         else { audio?.play(); setAudioStatus("playing"); }
-    }, [audioStatus, loadAudio, audio])
+    }, [audioStatus, loadAudio, audio]);
 
     const stopAudio = () => {
         if (!audio) return;
@@ -87,67 +87,67 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
     }, [autoplay, togglePlay]);
 
     return (
-        <div className={`flex flex-col gap-4 p-6 ${message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""}`}>
+        <div className={ `flex flex-col gap-4 p-6 ${message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""}` }>
             <div className="flex gap-6">
-            <div>
-                <div className="w-8 text-2xl shrink-0 text-center">
-                    {message?.messageType === ChatMessageType.USER && !loading ? "👤" : <>
-                        <Image src="/ayushma.svg" alt="Logo" width={100} height={100} />
-                    </>}
+                <div>
+                    <div className="w-8 text-2xl shrink-0 text-center">
+                        { message?.messageType === ChatMessageType.USER && !loading ? "👤" : <>
+                            <Image src="/ayushma.svg" alt="Logo" width={ 100 } height={ 100 } />
+                        </> }
+                    </div>
+                </div>
+                <div className="w-full">
+                    { loading ? "Loading..." :
+                        (
+                            <div className="flex flex-col justify-center">
+                                <ReactMarkdown rehypePlugins={ [rehypeRaw] } remarkPlugins={ [remarkGfm] } className="markdown-render">
+                                    { audioStatus === "unloaded" ? (message?.message + cursorText || "") : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>` }
+                                </ReactMarkdown>
+                                { message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
+                                    <div className="flex gap-1 justify-left">
+                                        <button onClick={ togglePlay } className="text-gray-500 hover:text-gray-700">
+                                            { audioStatus === "playing" ? (
+                                                <i className="fa-regular fa-circle-pause text-gray-700"></i>
+                                            ) : (
+                                                <i className="fa-regular fa-circle-play text-black"></i>
+                                            ) }
+                                        </button>
+                                        { (audioStatus === "paused" || audioStatus === "playing") && <button onClick={ stopAudio } className="text-gray-500 hover:text-gray-700">
+                                            <i className="fa-regular fa-circle-stop text-red-400"></i>
+                                        </button> }
+                                    </div>
+                                ) }
+                            </div>
+                        )
+                    }
                 </div>
             </div>
-            <div className="w-full">
-                {loading ? "Loading..." :
-                    (
-                        <div className="flex flex-col justify-center">
-                            <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} className="markdown-render">
-                                {audioStatus === "unloaded" ? (message?.translated_message + cursorText || "") : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
-                            </ReactMarkdown>
-                            {message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
-                                <div className="flex gap-1 justify-left">
-                                    <button onClick={togglePlay} className="text-gray-500 hover:text-gray-700">
-                                        {audioStatus === "playing" ? (
-                                            <i className="fa-regular fa-circle-pause text-gray-700"></i>
-                                        ) : (
-                                            <i className="fa-regular fa-circle-play text-black"></i>
-                                        )}
-                                    </button>
-                                    {(audioStatus === "paused" || audioStatus === "playing") && <button onClick={stopAudio} className="text-gray-500 hover:text-gray-700">
-                                        <i className="fa-regular fa-circle-stop text-red-400"></i>
-                                    </button>}
-                                </div>
-                            )}
-                        </div>
-                    )
-                }
-            </div>
-            </div>
-            {message?.reference_documents && message?.reference_documents.length > 0 && (
+            { message?.reference_documents && message?.reference_documents.length > 0 && (
                 <div className="flex gap-2 pl-14 items-center pb-4">
                     <p className="font-medium mr-1 text-sm italic">References:</p>
-                    {message?.reference_documents.map((doc, i) => {
+                    { message?.reference_documents.map((doc, i) => {
                         if (doc.document_type === 1 || doc.document_type === 2)
                             return (
                                 <a
-                                    key={i}
-                                    href={doc.document_type === 1 ? process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL?.slice(0, -5) + doc?.file : doc.text_content}
+                                    key={ i }
+                                    href={ doc.document_type === 1 ? process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL?.slice(0, -5) + doc?.file : doc.text_content }
                                     target="_blank"
                                     rel="noreferrer"
                                     className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
                                 >
-                                    {i + 1}. {doc.title}
+                                    { i + 1 }. { doc.title }
                                 </a>
                             );
                         else if (doc.document_type === 3)
                             return (
                                 <div className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
-                                    {i + 1}. {doc.title}
+                                    { i + 1 }. { doc.title }
                                 </div>
                             );
                         else return null;
-                    })}
+                    }) }
                 </div>
-            )}
+            ) }
         </div>
     );
 }

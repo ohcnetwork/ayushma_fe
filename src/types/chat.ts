@@ -30,7 +30,7 @@ export type ChatMessage = BaseModelType & {
     reference_documents?: Document[],
     ayushma_audio_url?: string,
     language: string,
-    translated_message: string
+    original_message: string
 }
 
 export type ChatConverseStream = {
