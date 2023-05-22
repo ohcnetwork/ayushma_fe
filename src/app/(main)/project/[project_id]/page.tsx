@@ -24,21 +24,16 @@ export default function Chat(params: { params: { project_id: string } }) {
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     useEffect(() => {
-        if (!isTyping && chatID) router.push(`/project/${project_id}/chat/${chatID}`);
+        if (!isTyping && chatID) router.push(`/project/${project_id}/chat/${chatID}?autoplay`);
     }, [chatID, isTyping]);
 
     const streamChatMessage = async (message: ChatConverseStream) => {
-        if (message.ayushma_voice) {
-            // play audio from source url
-            const audio = new Audio(message.ayushma_voice);
-            audio.play();
-        }
         if (chat === "") setChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;
             return updatedChatMessage;
         });
-        if(message.stop) setIsTyping(false);
+        if (message.stop) setIsTyping(false);
     };
 
     const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage, 20), {
