@@ -146,6 +146,6 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                     })}
                 </div>
             )}
-        </>
+        </div>
     );
 }
