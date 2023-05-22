@@ -7,7 +7,7 @@ import { API } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Chat(params: { params: { project_id: string } }) {
 
@@ -18,22 +18,29 @@ export default function Chat(params: { params: { project_id: string } }) {
     const [storage, setStorage] = useAtom(storageAtom);
     const queryClient = useQueryClient();
     const [chatMessage, setChatMessage] = useState<string>("");
-
+    const [isTyping, setIsTyping] = useState<boolean>(false);
+    const [chatID, setChatID] = useState<string>("");
+    
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
+    useEffect(() => {
+        if (!isTyping && chatID) router.push(`/project/${project_id}/chat/${chatID}?autoplay`);
+    }, [chatID, isTyping]);
+
     const streamChatMessage = async (message: ChatConverseStream) => {
-        if(chat === "") setChat(message.input);
+        if (chat === "") setChat(message.input);
         setChatMessage(prevChatMessage => {
             const updatedChatMessage = prevChatMessage + message.delta;
             return updatedChatMessage;
         });
+        if (message.stop) setIsTyping(false);
     };
 
-    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage), {
+    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage, 20), {
         retry: false
     });
 
-    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
+    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.language || "en", storage.openai_api_key), {
         onSuccess: async (data, vars) => {
             queryClient.invalidateQueries(["chats"]);
             if (vars.type === "audio" && vars.formdata) {
@@ -41,20 +48,25 @@ export default function Chat(params: { params: { project_id: string } }) {
             } else {
                 await converseMutation.mutateAsync(data.external_id);
             }
-            router.push(`/project/${project_id}/chat/${data.external_id}`);
+            setChatID(data.external_id);
         }
     })
 
-    const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key, streamChatMessage), {
-        retry: false
+    const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key, streamChatMessage, 20), {
+        retry: false,
+        onSuccess: async (data, vars) => {
+            queryClient.invalidateQueries(["chats"]);
+        }
     });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        setIsTyping(true);
         e.preventDefault();
         newChatMutation.mutate({});
     }
 
     const handleAudio = async (blobUrl: string) => {
+        setIsTyping(true);
         const fd = new FormData();
         //create a file object from blob url
         await fetch(blobUrl)
@@ -101,10 +113,10 @@ export default function Chat(params: { params: { project_id: string } }) {
                         ))}
                     </div>
                 </div>) : (
-                <>
-                    <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, created_at: "", external_id: "", modified_at: "" }} />
-                    <ChatBlock message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
-                </>)}
+                    <>
+                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
+                    </>)}
             </div>
             <div className="w-full shrink-0 p-4">
                 <ChatBar
@@ -112,8 +124,9 @@ export default function Chat(params: { params: { project_id: string } }) {
                     onChange={(e) => setChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
+                    onLangSet={(language) => setStorage({ ...storage, language })}
                     errors={[(newChatMutation.error as any)?.error?.error]}
-                    loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading}
+                    loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
                 />
             </div>
         </div>
