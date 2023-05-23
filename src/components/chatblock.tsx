@@ -87,7 +87,8 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
     }, []);
 
     return (
-        <div className={`flex gap-6 p-6 ${message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""}`}>
+        <div className={`flex flex-col gap-4 p-6 ${message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""}`}>
+            <div className="flex gap-6">
             <div>
                 <div className="w-8 text-2xl shrink-0 text-center">
                     {message?.messageType === ChatMessageType.USER && !loading ? "👤" : <>
@@ -120,8 +121,9 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                     )
                 }
             </div>
+            </div>
             {message?.reference_documents && message?.reference_documents.length > 0 && (
-                <div className="flex gap-2 pl-20 items-center pb-4">
+                <div className="flex gap-2 pl-14 items-center pb-4">
                     <p className="font-medium mr-1 text-sm italic">References:</p>
                     {message?.reference_documents.map((doc, i) => {
                         if (doc.document_type === 1 || doc.document_type === 2)
