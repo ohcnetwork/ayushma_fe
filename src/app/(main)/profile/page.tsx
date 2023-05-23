@@ -4,11 +4,16 @@ import { Button, Input } from "@/components/ui/interactive";
 import { API } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast, { Toaster } from 'react-hot-toast';
-import { UserUpdate } from "@/types/user";
+import { User, UserUpdate } from "@/types/user";
 
 export default function Page() {
+  const router = useRouter();
+
+  const userQuery = useQuery<User, Error>(["userDetails"], API.user.me);
+  const userData: User | undefined = userQuery.data || undefined;
+
   const [formData, setFormData] = useState({
     full_name: "",
     password: "",
@@ -16,32 +21,30 @@ export default function Page() {
   });
 
   const handleSubmit = () => {
-    if(formData.password !== formData.confirm_password) return;
-    updateProfileMutation.mutate({userDetails: {
-      full_name: formData.full_name,
-      password: formData.password ? formData.password : undefined,
-    }});
+    if (formData.password !== formData.confirm_password) return;
+    updateProfileMutation.mutate({
+      userDetails: {
+        full_name: formData.full_name,
+        password: formData.password ? formData.password : undefined,
+      }
+    });
   };
-  
+
   const updateProfileMutation = useMutation((params: { userDetails: UserUpdate }) => API.user.save(params.userDetails), {
     retry: false,
     onSuccess: async (data, vars) => {
       toast.success('Profile updated successfully');
       setTimeout(() => {
         router.push('/');
-      }
-      , 1000);
+      }, 1000);
     }
-});
-  useEffect(() => {
-    async function getUserDetails() {
-      const userData = await API.user.me();
-      if (userData) setFormData(userData);
-    }
-    getUserDetails();
-  }, []);
+  });
 
-  const router = useRouter();
+  useEffect(() => {
+    if (userData) {
+      setFormData({ ...formData, full_name: userData.full_name });
+    }
+  }, [userData]);
 
   return (
     <div className="w-full p-8">
@@ -82,18 +85,18 @@ export default function Page() {
         </p>}
         <div className="flex gap-2">
           <Button
-            onClick={() => router.push('/') }
+            onClick={() => router.push('/')}
             className="w-full"
             variant="secondary">
-          Cancel
-        </Button>
+            Cancel
+          </Button>
           <Button
-          onClick={handleSubmit}
+            onClick={handleSubmit}
             className="w-full"
             variant="primary">
             Update Profile
           </Button>
-          </div>
+        </div>
       </div>
       <Toaster />
     </div >
