@@ -1,4 +1,4 @@
-import { User } from "@/types/user";
+import { UserUpdate } from "@/types/user";
 import { Project } from "@/types/project";
 import { EventSourceMessage, FetchEventSourceInit, fetchEventSource } from '@microsoft/fetch-event-source';
 import { ChatConverseStream } from "@/types/chat";
@@ -151,7 +151,7 @@ export const API = {
     user: {
         login: (email: string, password: string) => request("auth/login", "POST", { email, password }),
         me: () => request("users/me"),
-        save: (details: User) => request(`users/me`, "PATCH", details),
+        save: (details: UserUpdate) => request(`users/me`, "PATCH", details),
         register: (creds: { email: string, password: string, username: string, full_name: string }) => request("auth/register", "POST", { ...creds }),
         forgot: (email: string) => request("auth/forgot", "POST", { email }),
         verify: (token: string, email: string) => request("auth/verify", "POST", { token, email }),
