@@ -24,6 +24,7 @@
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.1",
     "react-markdown": "^8.0.7",
     "react-media-recorder-2": "^1.6.23",
     "rehype-raw": "^6.1.1",
