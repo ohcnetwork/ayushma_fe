@@ -17,7 +17,10 @@ export default function Page() {
 
   const handleSubmit = () => {
     if(formData.password !== formData.confirm_password) return;
-    updateProfileMutation.mutate({userDetails: formData});
+    updateProfileMutation.mutate({userDetails: {
+      full_name: formData.full_name,
+      password: formData.password ? formData.password : undefined,
+    }});
   };
   
   const updateProfileMutation = useMutation((params: { userDetails: UserUpdate }) => API.user.save(params.userDetails), {
