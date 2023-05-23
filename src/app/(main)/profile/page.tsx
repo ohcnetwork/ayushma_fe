@@ -56,7 +56,6 @@ export default function Page() {
             placeholder="Full Name"
             value={formData.full_name}
             onChange={(event) => setFormData({ ...formData, full_name: event.target.value })}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
           />
         </div>
         <div>
@@ -68,7 +67,6 @@ export default function Page() {
             placeholder="New Password"
             value={formData.password}
             onChange={(event) => setFormData({ ...formData, password: event.target.value })}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
           />
         </div>
         <div>
@@ -77,7 +75,6 @@ export default function Page() {
             placeholder="Confirm Password"
             value={formData.confirm_password}
             onChange={(event) => setFormData({ ...formData, confirm_password: event.target.value })}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
           />
         </div>
         {(formData.password != formData.confirm_password) && <p className="text text-sm text-red-500 mb-2">
