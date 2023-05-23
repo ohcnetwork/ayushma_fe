@@ -124,24 +124,24 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
             </div>
             {message?.reference_documents && message?.reference_documents.length > 0 && (
                 <div className="flex gap-2 pl-14 items-center pb-4">
-                    <p className="font-medium mr-1 text-sm italic">References:</p>
+                    <p className="mr-1 text-sm italic">References:</p>
                     {message?.reference_documents.map((doc, i) => {
                         if (doc.document_type === 1 || doc.document_type === 2)
                             return (
                                 <a
                                     key={i}
-                                    href={doc.document_type === 1 ? process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL?.slice(0, -5) + doc?.file : doc.text_content}
+                                    href={doc.document_type === 1 ? doc.s3_url : doc.text_content}
                                     target="_blank"
                                     rel="noreferrer"
                                     className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
                                 >
-                                    {i + 1}. {doc.title}
+                                   {doc.title}
                                 </a>
                             );
                         else if (doc.document_type === 3)
                             return (
                                 <div className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
-                                    {i + 1}. {doc.title}
+                                   {doc.title}
                                 </div>
                             );
                         else return null;
