@@ -17,9 +17,18 @@ export enum ChatMessageType {
     AYUSHMA = 3
 }
 
+export type Document = BaseModelType & {
+    title: string,
+    description?: string,
+    document_type: number,
+    text_content?: string,
+    file?: string,
+}
+
 export type ChatMessage = BaseModelType & {
     messageType: ChatMessageType,
     message: string,
+    reference_documents?: Document[],
     ayushma_audio_url?: string,
 }
 
