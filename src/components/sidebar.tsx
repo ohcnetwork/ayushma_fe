@@ -25,7 +25,7 @@ export default function SideBar(props: {
         {
             icon: "user-circle",
             text: "Profile",
-            onclick: () => { }
+            onclick: () => { router.push("/profile"); }
         },
         {
             icon: "cog",

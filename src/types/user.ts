@@ -6,3 +6,8 @@ export type User = {
     allow_key: boolean,
     is_staff: boolean,
 }
+
+export type UserUpdate = {
+    full_name?: string,
+    password?: string,
+}
