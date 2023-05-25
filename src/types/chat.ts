@@ -28,6 +28,7 @@ export type Document = BaseModelType & {
 export type ChatMessage = BaseModelType & {
     messageType: ChatMessageType,
     message: string,
+    translated_message?: string,
     reference_documents?: Document[],
     ayushma_audio_url?: string,
 }
