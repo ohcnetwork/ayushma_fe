@@ -20,12 +20,13 @@ export default function Chat(params: { params: { project_id: string } }) {
     const [chatMessage, setChatMessage] = useState<string>("");
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [chatID, setChatID] = useState<string>("");
-    
+    const [language, setLanguage] = useState<string>("en");
+
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
 
     useEffect(() => {
         if (!isTyping && chatID) router.push(`/project/${project_id}/chat/${chatID}?autoplay`);
-    }, [chatID, isTyping]);
+    }, [chatID, isTyping, project_id, router]);
 
     const streamChatMessage = async (message: ChatConverseStream) => {
         if (chat === "") setChat(message.input);
@@ -36,11 +37,11 @@ export default function Chat(params: { params: { project_id: string } }) {
         if (message.stop) setIsTyping(false);
     };
 
-    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage, 20), {
+    const converseMutation = useMutation((external_id: string) => API.chat.converse(project_id, external_id, chat, language, !storage.user?.allow_key || storage.override_api_key ? storage.openai_api_key : undefined, streamChatMessage, 20), {
         retry: false
     });
 
-    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.language || "en", storage.openai_api_key), {
+    const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
         onSuccess: async (data, vars) => {
             queryClient.invalidateQueries(["chats"]);
             if (vars.type === "audio" && vars.formdata) {
@@ -75,6 +76,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                 const file = new File([blob], "audio.wav", { type: "audio/wav" });
                 fd.append("audio", file);
             })
+        fd.append("language", language);
         await newChatMutation.mutateAsync({ type: "audio", formdata: fd });
     }
 
@@ -114,8 +116,8 @@ export default function Chat(params: { params: { project_id: string } }) {
                     </div>
                 </div>) : (
                     <>
-                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, created_at: "", external_id: "", modified_at: "" }} />
-                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, original_message: chat, language, created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" }} />
                     </>)}
             </div>
             <div className="w-full shrink-0 p-4">
@@ -124,7 +126,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                     onChange={(e) => setChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
-                    onLangSet={(language) => setStorage({ ...storage, language })}
+                    onLangSet={(language) => setLanguage(language)}
                     errors={[(newChatMutation.error as any)?.error?.error]}
                     loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
                 />

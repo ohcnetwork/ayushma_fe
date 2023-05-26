@@ -1,5 +1,4 @@
 import { supportedLanguages } from "@/utils/constants";
-import { useState } from "react";
 import { Button } from "./interactive";
 import { useAtom } from "jotai";
 import { storageAtom } from "@/store";
@@ -17,7 +16,7 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
     };
 
     return (
-        <div className={`fixed z-10 inset-0 overflow-y-auto ${open ? 'block' : 'hidden'}`}>
+        <div className={ `fixed z-10 inset-0 overflow-y-auto ${open ? 'block' : 'hidden'}` }>
             <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
                 <div className="fixed inset-0 transition-opacity">
                     <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -39,14 +38,14 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                                 <div className="mt-2 flex flex-col">
                                     <div className="mt-1 relative">
                                         <select id="language" name="language"
-                                            value={storage?.language || "en"}
-                                            onChange={handleLanguageChange}
+                                            value={ storage?.language || "en" }
+                                            onChange={ handleLanguageChange }
                                             className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline-blue focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
-                                            {supportedLanguages.map((language) => (
-                                                <option key={language.value} value={language.value}>
-                                                    {language.label}
+                                            { supportedLanguages.map((language) => (
+                                                <option key={ language.value } value={ language.value }>
+                                                    { language.label }
                                                 </option>
-                                            ))}
+                                            )) }
                                         </select>
                                     </div>
                                 </div>
@@ -56,7 +55,7 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                             <Button
-                                onClick={() => { onSubmit(storage.language || "en") }}
+                                onClick={ () => { onSubmit(storage.language || "en") } }
                             >
                                 Submit
                             </Button>
@@ -64,7 +63,7 @@ const LangDialog: React.FC<LangDialogProps> = ({ onClose, open, onSubmit }) => {
                         <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                             <Button
                                 variant="secondary"
-                                onClick={onClose}
+                                onClick={ onClose }
                             >
                                 Close
                             </Button>
