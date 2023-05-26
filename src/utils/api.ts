@@ -127,7 +127,7 @@ let messageBuffer: ChatConverseStream[] = [];
 let intervalHandle: NodeJS.Timer | number | null = null;
 
 function handleMessage(data: ChatConverseStream, onMessage: ((event: ChatConverseStream) => void), delay: number | null) {
-    if(!delay || delay == 0){
+    if (!delay || delay == 0) {
         onMessage(data);
         return;
     }
@@ -201,8 +201,8 @@ export const API = {
                     handleMessage(data, onMessage, delay);
                 }
             }),
-        audio_converse: (project_id: string, chat_id: string, formdata: FormData, language: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
-            request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", { formdata, language }, {
+        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
+            request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", formdata, {
                 stream: true,
                 formdata: true,
                 headers: openai_api_key ? {

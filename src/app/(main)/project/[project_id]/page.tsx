@@ -76,6 +76,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                 const file = new File([blob], "audio.wav", { type: "audio/wav" });
                 fd.append("audio", file);
             })
+        fd.append("language", language);
         await newChatMutation.mutateAsync({ type: "audio", formdata: fd });
     }
 
@@ -89,7 +90,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     return (
         <div className="flex flex-col h-screen flex-1">
             <div className="flex-1 items-center justify-center w-full overflow-auto">
-                { !chatMessage ? (<div className="text-center text-gray-500 w-full">
+                {!chatMessage ? (<div className="text-center text-gray-500 w-full">
                     <h1 className="font-black text-4xl text-gray-600 mt-8">
                         Ayushma
                     </h1>
@@ -100,34 +101,34 @@ export default function Chat(params: { params: { project_id: string } }) {
                         Try asking me -
                     </h2>
                     <div className="inline-flex mt-4 flex-wrap justify-center gap-4 w-1/2">
-                        { samplePrompts.map((prompt, i) => (
+                        {samplePrompts.map((prompt, i) => (
                             <button
-                                onClick={ () => {
+                                onClick={() => {
                                     setChat(prompt)
                                     newChatMutation.mutate({});
-                                } }
+                                }}
                                 className="bg-white border border-gray-200 rounded-xl p-4 w-64"
-                                key={ i }
+                                key={i}
                             >
-                                { prompt }
+                                {prompt}
                             </button>
-                        )) }
+                        ))}
                     </div>
                 </div>) : (
                     <>
-                        <ChatBlock message={ { messageType: ChatMessageType.USER, message: chat, original_message: chat, language, created_at: "", external_id: "", modified_at: "" } } />
-                        <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" } } />
-                    </>) }
+                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: chat, original_message: chat, language, created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" }} />
+                    </>)}
             </div>
             <div className="w-full shrink-0 p-4">
                 <ChatBar
-                    chat={ chat }
-                    onChange={ (e) => setChat(e.target.value) }
-                    onSubmit={ handleSubmit }
-                    onAudio={ handleAudio }
-                    onLangSet={ (language) => setLanguage(language) }
-                    errors={ [(newChatMutation.error as any)?.error?.error] }
-                    loading={ newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading || isTyping }
+                    chat={chat}
+                    onChange={(e) => setChat(e.target.value)}
+                    onSubmit={handleSubmit}
+                    onAudio={handleAudio}
+                    onLangSet={(language) => setLanguage(language)}
+                    errors={[(newChatMutation.error as any)?.error?.error]}
+                    loading={newChatMutation.isLoading || converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
                 />
             </div>
         </div>

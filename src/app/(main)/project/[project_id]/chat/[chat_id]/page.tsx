@@ -7,11 +7,14 @@ import { Chat, ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function Chat(params: { params: { project_id: string, chat_id: string } }) {
 
     const { project_id, chat_id } = params.params;
+    const searchParams = useSearchParams();
+    const shouldAutoPlay = searchParams?.get("autoplay") !== null;
     const [newChat, setNewChat] = useState("");
     const [chatMessage, setChatMessage] = useState<string>("");
     const [storage] = useAtom(storageAtom);
@@ -46,7 +49,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         retry: false
     });
 
-    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, language, openai_key, streamChatMessage, 20), {
+    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage, 20), {
         onSuccess: async () => {
             await chatQuery.refetch();
             setNewChat("");
@@ -71,6 +74,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                 const file = new File([blob], "audio.wav", { type: "audio/wav" });
                 fd.append("audio", file);
             })
+        fd.append("language", language);
         audioConverseMutation.mutate({ formdata: fd });
     }
 
@@ -84,33 +88,33 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
 
     return (
         <div className="h-screen flex flex-col flex-1">
-            <div className="flex-1 overflow-auto" ref={ messagesContainerRef }>
-                { chat?.chats?.map((message, i) => (
-                    <ChatBlock message={ message } key={ message.external_id } autoplay={ !!chatMessage && (i === (chat?.chats?.length || 0) - 1) } />
-                )) }
-                { chatMessage && (
+            <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
+                {chat?.chats?.map((message, i) => (
+                    <ChatBlock message={message} key={message.external_id} autoplay={(!!chatMessage || shouldAutoPlay) && (i === (chat?.chats?.length || 0) - 1)} />
+                ))}
+                {chatMessage && (
                     <>
-                        <ChatBlock message={ { messageType: ChatMessageType.USER, message: newChat, original_message: newChat, language, created_at: "", external_id: "", modified_at: "" } } />
-                        <ChatBlock cursor={ true } message={ { messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" } } />
+                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, original_message: newChat, language, created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" }} />
                     </>
                 )
                 }
             </div >
             <div className="w-full shrink-0 p-4">
                 <ChatBar
-                    chat={ newChat || "" }
-                    onChange={ (e) => setNewChat(e.target.value) }
-                    onSubmit={ handleSubmit }
-                    onAudio={ handleAudio }
-                    language={ language }
-                    onLangSet={ (lang) => {
+                    chat={newChat || ""}
+                    onChange={(e) => setNewChat(e.target.value)}
+                    onSubmit={handleSubmit}
+                    onAudio={handleAudio}
+                    language={language}
+                    onLangSet={(lang) => {
                         setLanguage(lang);
-                    } }
-                    errors={ [
+                    }}
+                    errors={[
                         (converseMutation.error as any)?.error?.error,
                         (audioConverseMutation.error as any)?.error?.error
-                    ] }
-                    loading={ converseMutation.isLoading || audioConverseMutation.isLoading || isTyping }
+                    ]}
+                    loading={converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
                 />
             </div>
         </div >
