@@ -10,7 +10,7 @@ type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 export default function ChatBlock(props: { message?: ChatMessage, loading?: boolean, autoplay?: boolean, cursor?: boolean }) {
 
     const { message, loading, cursor, autoplay } = props;
-    const cursorText = cursor ? (message?.message?.length || 0) % 2 === 0 ? "|" : "" : "";
+    const cursorText = cursor ? (message?.original_message?.length || 0) % 2 === 0 ? "|" : "" : "";
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     const [audioStatus, setAudioStatus] = useState<AudioStatus>("unloaded");
     const [percentagePlayed, setPercentagePlayed] = useState(0);
@@ -21,7 +21,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
         return regex.test(str);
     }
 
-    const chatMessage = (message?.translated_message ? message?.translated_message : message?.message) + cursorText;
+    const chatMessage = (message?.message != message?.original_message ? message?.message : message?.original_message) + cursorText;
 
     const getMessageSegments = (): { highlightText: string; blackText: string } => {
         const messageLength = chatMessage.length || 0;
@@ -103,9 +103,9 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                 <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} className="markdown-render">
                                     {
                                         (audioStatus === "unloaded" ?
-                                            ((message?.translated_message || message?.message) + cursorText || "") :
+                                            ((message?.message || message?.original_message) + cursorText || "") :
                                             `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`
-                                        ) + (message?.translated_message ? `<hr className="border-gray-300 my-4"></hr>${message?.message || ""}` : "")
+                                        ) + (message?.message != message?.original_message ? `<hr className="border-gray-300 my-4"></hr>${message?.original_message || ""}` : "")
                                     }
                                 </ReactMarkdown>
                                 {message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
