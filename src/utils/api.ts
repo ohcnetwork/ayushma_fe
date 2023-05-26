@@ -201,8 +201,8 @@ export const API = {
                     handleMessage(data, onMessage, delay);
                 }
             }),
-        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
-            request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", formdata, {
+        audio_converse: (project_id: string, chat_id: string, formdata: FormData, language: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
+            request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", { formdata, language }, {
                 stream: true,
                 formdata: true,
                 headers: openai_api_key ? {

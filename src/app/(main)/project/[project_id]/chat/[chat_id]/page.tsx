@@ -7,13 +7,11 @@ import { Chat, ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function Chat(params: { params: { project_id: string, chat_id: string } }) {
 
     const { project_id, chat_id } = params.params;
-    const searchParams = useSearchParams();
     const [newChat, setNewChat] = useState("");
     const [chatMessage, setChatMessage] = useState<string>("");
     const [storage] = useAtom(storageAtom);
@@ -24,7 +22,6 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const chat: Chat | undefined = chatQuery.data;
 
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
-    const shouldAutoPlay = searchParams?.get("autoplay") !== null;
 
     useEffect(() => {
         const uri = window.location.toString();
@@ -49,7 +46,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         retry: false
     });
 
-    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage, 20), {
+    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, language, openai_key, streamChatMessage, 20), {
         onSuccess: async () => {
             await chatQuery.refetch();
             setNewChat("");
