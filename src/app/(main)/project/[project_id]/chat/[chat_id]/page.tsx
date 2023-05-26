@@ -40,7 +40,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         if (message.stop) setIsTyping(false);
     };
 
-    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, language, openai_key, streamChatMessage), {
+    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, language, openai_key, streamChatMessage, 20), {
         onSuccess: async () => {
             await chatQuery.refetch();
             setNewChat("");
