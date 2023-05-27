@@ -1,8 +1,8 @@
 <a href="https://ayushma.ohc.network/">
   <p align="center">
     <picture style="">
-      <source media="(prefers-color-scheme: dark)" srcset="public/ayushma_white.svg">
-      <img alt="CARE Logo" src="public/ayushma_text.svg" style="max-width:500px;">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/coronasafe/ayushma_fe/900a17a617354d647a2113d51ebdf666dbcb9a16/public/ayushma_white.svg">
+      <img alt="Ayushma Logo" src="https://raw.githubusercontent.com/coronasafe/ayushma_fe/900a17a617354d647a2113d51ebdf666dbcb9a16/public/ayushma_text.svg" style="max-width:500px;">
     </picture>
   </p>
 </a>
