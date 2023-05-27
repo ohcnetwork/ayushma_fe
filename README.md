@@ -54,6 +54,12 @@ You can also register as a new user.
 
 - [Swagger API Documentation](https://ayushma-api.ohc.network)
 
+## 💎 Backend
+
+Ayushma's backend is built on Django.
+
+- [Backend Repository](https://github.com/coronasafe/ayushma)
+
 ## 🚀 Production
 
 #### Build the app for production
