@@ -10,7 +10,7 @@
     Ayushma is a digital AI health and nursing assistant to help Nurses and Doctors in the most remote parts of the world. It is a part of the <a href="https://ohc.network"> Open Health Care Network</a>
 </p>
 <hr>
-<h3 align="center"><a href="https://care.coronasafe.in/" target="_blank">🚀 Staging Deployment</a></h3>
+<h3 align="center"><a href="https://ayushma.ohc.network" target="_blank">🚀 Staging Deployment</a></h3>
 <p align="center"><img src="https://vercelbadge.vercel.app/api/coronasafe/ayushma_fe"></p>
 <p align="center">Auto deployed to <a href="https://ayushma.ohc.network">ayushma.ohc.in</a> for <code>master</code> branch. All pull requests have preview builds powered by <a href="https://vercel.com">Vercel</a>.</p>
 
