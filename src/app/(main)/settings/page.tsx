@@ -40,6 +40,15 @@ export default function Page() {
                     )}
                 </div>
             )}
+            <CheckBox
+                label="Show stats for nerds"
+                type="checkbox"
+                checked={storage?.show_stats}
+                onChange={(e) => setStorage({
+                    ...storage,
+                    show_stats: e.target.checked
+                })}
+            />
         </div>
     )
 }

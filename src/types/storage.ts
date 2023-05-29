@@ -6,4 +6,5 @@ export type Storage = {
     openai_api_key?: string,
     override_api_key?: boolean,
     language?: string,
+    show_stats?: boolean,
 }

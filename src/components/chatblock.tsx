@@ -4,11 +4,15 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import Image from "next/image";
 import rehypeRaw from 'rehype-raw'
+import { storageAtom } from "@/store";
+import { useAtom } from "jotai";
+import Stats from "./stats";
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
 export default function ChatBlock(props: { message?: ChatMessage, loading?: boolean, autoplay?: boolean, cursor?: boolean }) {
 
+    const [storage] = useAtom(storageAtom);
     const { message, loading, cursor, autoplay } = props;
     const cursorText = cursor ? (message?.original_message?.length || 0) % 2 === 0 ? "|" : "" : "";
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -121,6 +125,12 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                             <i className="fa-regular fa-circle-stop text-red-400"></i>
                                         </button>}
                                     </div>
+                                )}
+                                {message && (
+                                    <>
+                                        <hr className="border-gray-300 my-4" />
+                                        <Stats message={message} />
+                                    </>
                                 )}
                             </div>
                         )
