@@ -183,8 +183,8 @@ export const API = {
         get: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`),
         update: (project_id: string, id: string, fields: ChatUpdateFields) => request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
         delete: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`, "DELETE"),
-        converse: (project_id: string, chat_id: string, text: string, language: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
-            request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text, language }, {
+        converse: (project_id: string, chat_id: string, text: string, language: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null, match_number: number = 100, temperature: number = 0.1) =>
+            request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text, language, match_number, temperature }, {
                 stream: true,
                 ...(openai_api_key ? {
                     headers: {

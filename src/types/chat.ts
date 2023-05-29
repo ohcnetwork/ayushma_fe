@@ -32,7 +32,9 @@ export type ChatMessage = BaseModelType & {
     ayushma_audio_url?: string,
     language: string,
     original_message: string
-    meta?: ChatMessageMeta
+    meta?: ChatMessageMeta,
+    top_k?: number,
+    temperature?: number,
 }
 
 export type ChatConverseStream = {

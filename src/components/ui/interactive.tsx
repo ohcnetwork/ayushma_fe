@@ -83,9 +83,12 @@ export function CheckBox(props: {
     const { label, ...rest } = props;
 
     return (
-        <label className="flex items-center">
-            <input type="checkbox" {...rest} className="mr-2" />
-            {label}
-        </label>
+        <div>
+            <label className="switch">
+                <input type="checkbox" {...rest} />
+                <span className="switch-slider" />
+            </label>
+            <span className="ml-2">{label}</span>
+        </div>
     )
 }

@@ -40,7 +40,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         if (message.stop) setIsTyping(false);
     };
 
-    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, language, openai_key, streamChatMessage, 20), {
+    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, language, openai_key, streamChatMessage, 20, storage.top_k, storage.temperature), {
         onSuccess: async () => {
             await chatQuery.refetch();
             setNewChat("");
@@ -73,8 +73,10 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
             .then(blob => {
                 const file = new File([blob], "audio.wav", { type: "audio/wav" });
                 fd.append("audio", file);
+                fd.append("language", language);
+                fd.append("temperature", (storage.temperature || 0.1).toString());
+                fd.append("match_number", (storage.top_k || 100).toString());
             })
-        fd.append("language", language);
         audioConverseMutation.mutate({ formdata: fd });
     }
 

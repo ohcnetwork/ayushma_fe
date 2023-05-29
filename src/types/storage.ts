@@ -7,4 +7,7 @@ export type Storage = {
     override_api_key?: boolean,
     language?: string,
     show_stats?: boolean,
+    show_english?: boolean,
+    temperature?: number,
+    top_k?: number,
 }

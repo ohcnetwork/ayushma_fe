@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatMessage, ChatMessageType } from "@/types/chat";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
@@ -109,7 +109,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                         (audioStatus === "unloaded" ?
                                             ((message?.message || message?.original_message) + cursorText || "") :
                                             `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`
-                                        ) + (message?.message != message?.original_message ? `<hr className="border-gray-300 my-4"></hr>${message?.original_message || ""}` : "")
+                                        )
                                     }
                                 </ReactMarkdown>
                                 {message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
@@ -122,9 +122,17 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                             )}
                                         </button>
                                         {(audioStatus === "paused" || audioStatus === "playing") && <button onClick={stopAudio} className="text-gray-500 hover:text-gray-700">
-                                            <i className="fa-regular fa-circle-stop text-red-400"></i>
+                                            <i className="fa-regular fa-circle-stop text-red-500"></i>
                                         </button>}
                                     </div>
+                                )}
+                                {storage?.show_english && message?.message && message?.message !== message?.original_message && (
+                                    <>
+                                        <hr className="border-gray-300 my-4" />
+                                        <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} className="markdown-render text-sm text-gray-700">
+                                            {message?.original_message || ""}
+                                        </ReactMarkdown>
+                                    </>
                                 )}
                                 {storage?.show_stats && message && (
                                     <>
