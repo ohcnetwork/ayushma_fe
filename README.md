@@ -39,7 +39,7 @@ Authenticate to staging API with the following credentials
 
 ```yaml
 - email: demo@ayushma.ohc.network
-  password: Ayushma@123
+  password: Demo@Ayu
 ```
 
 You can also register as a new user.
