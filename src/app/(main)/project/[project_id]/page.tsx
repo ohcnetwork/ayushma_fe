@@ -42,8 +42,9 @@ export default function Chat(params: { params: { project_id: string } }) {
     });
 
     const newChatMutation = useMutation((params: { type?: string, formdata?: FormData }) => API.chat.create(project_id, chat !== "" ? chat.slice(0, 50) : "new chat", storage.openai_api_key), {
+        retry: false,
         onSuccess: async (data, vars) => {
-            queryClient.invalidateQueries(["chats"]);
+            await queryClient.invalidateQueries(["chats"]);
             if (vars.type === "audio" && vars.formdata) {
                 await audioConverseMutation.mutateAsync({ external_id: data.external_id, formdata: vars.formdata });
             } else {
@@ -56,7 +57,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     const audioConverseMutation = useMutation((params: { external_id: string, formdata: FormData }) => API.chat.audio_converse(project_id, params.external_id, params.formdata, openai_key, streamChatMessage, 20), {
         retry: false,
         onSuccess: async (data, vars) => {
-            queryClient.invalidateQueries(["chats"]);
+            await queryClient.invalidateQueries(["chats"]);
         }
     });
 
