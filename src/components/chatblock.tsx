@@ -126,7 +126,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                         </button>}
                                     </div>
                                 )}
-                                {message && (
+                                {storage?.show_stats && message && (
                                     <>
                                         <hr className="border-gray-300 my-4" />
                                         <Stats message={message} />
