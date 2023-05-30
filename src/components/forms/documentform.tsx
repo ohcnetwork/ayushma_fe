@@ -1,21 +1,39 @@
 import { Document, DocumentType, Project } from "@/types/project";
 import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { API } from "@/utils/api";
 import { Button, Errors, Input, TextArea } from "../ui/interactive";
 import { API_BASE_URL } from "@/utils/api";
+import { useRouter } from "next/navigation";
 
 export default function DocumentForm(props: {
     document: Partial<Document>,
+    project_id: string,
     onSubmit: (document: Partial<Document>) => void,
     errors?: any
     loading?: boolean
 }) {
 
-    const { document: doc, onSubmit, errors, loading } = props;
+    const { document: doc, onSubmit, errors, loading, project_id } = props;
     const [document, setDocument] = useState<Partial<Document>>(doc);
+
+    const router = useRouter();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         onSubmit(document);
+    }
+
+    const deleteDocumentMutation = useMutation(() => API.documents.delete(project_id, doc.external_id ?? ""), {
+        onSuccess: () => {
+            router.push(`/admin/projects/${project_id}`);
+        }
+    });
+
+    const handleDelete = async () => {
+        if (confirm("Are you sure you want to delete this document?")) {
+            await deleteDocumentMutation.mutateAsync();
+        }
     }
 
     useEffect(() => {
@@ -112,6 +130,16 @@ export default function DocumentForm(props: {
                     >
                         {doc.external_id ? "Save" : "Create"}
                     </Button>
+
+                    {doc.external_id && (
+                        <Button
+                            className="bg-red-500 hover:bg-red-600 mt-8"
+                            onClick={handleDelete}
+                            type="button"
+                        >
+                            Delete Document
+                        </Button>
+                    )}
                 </div>
             </form>
         </div>

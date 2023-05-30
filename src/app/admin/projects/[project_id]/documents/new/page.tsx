@@ -40,6 +40,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
             <div className="mt-8">
                 <DocumentForm
                     document={{}}
+                    project_id={project_id}
                     onSubmit={onSubmit}
                     loading={createDocumentMutation.isLoading}
                     errors={(createDocumentMutation.error as any)?.error}
