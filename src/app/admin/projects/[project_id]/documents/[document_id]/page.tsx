@@ -43,6 +43,7 @@ export default function Page({ params }: { params: { project_id: string, documen
                 {doc &&
                     <DocumentForm
                         document={doc}
+                        project_id={project_id}
                         onSubmit={onSubmit}
                         loading={editDocumentMutation.isLoading}
                         errors={(editDocumentMutation.error as any)?.error}

@@ -172,6 +172,7 @@ export const API = {
         edit: (project_id: string, id: string, document: FormData) => request(`projects/${project_id}/documents/${id}`, "PATCH", document, {
             formdata: true
         }),
+        delete: (project_id: string, id: string) => request(`projects/${project_id}/documents/${id}`, "DELETE"),
     },
     chat: {
         list: (project_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`projects/${project_id}/chats`, "GET", filters),
