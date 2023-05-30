@@ -21,7 +21,9 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [language, setLanguage] = useState<string>("en");
 
-    const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id));
+    const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id), {
+        refetchOnWindowFocus: false,
+    });
     const chat: Chat | undefined = chatQuery.data;
 
     const openai_key = !storage?.user?.allow_key || storage?.override_api_key ? storage?.openai_api_key : undefined
