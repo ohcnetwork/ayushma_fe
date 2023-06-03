@@ -184,26 +184,15 @@ export const API = {
         get: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`),
         update: (project_id: string, id: string, fields: ChatUpdateFields) => request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
         delete: (project_id: string, id: string) => request(`projects/${project_id}/chats/${id}`, "DELETE"),
-        converse: (project_id: string, chat_id: string, text: string, language: string, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null, match_number: number = 100, temperature: number = 0.1) =>
-            request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", { text, language, match_number, temperature }, {
-                stream: true,
-                ...(openai_api_key ? {
-                    headers: {
-                        "OpenAI-Key": openai_api_key
-                    },
-                } : {})
-            }, (e) => {
-                if (onMessage) {
-                    const data = JSON.parse(e.data);
-                    if (data.error) {
-                        console.log(data)
-                        throw Error(data.error);
-                    }
-                    handleMessage(data, onMessage, delay);
-                }
-            }),
-        audio_converse: (project_id: string, chat_id: string, formdata: FormData, openai_api_key?: string, onMessage: ((event: ChatConverseStream) => void) | null = null, delay: number | null = null) =>
-            request(`projects/${project_id}/chats/${chat_id}/audio_converse`, "POST", formdata, {
+        converse: (
+            project_id: string,
+            chat_id: string,
+            formdata: FormData,
+            openai_api_key?: string,
+            onMessage: ((event: ChatConverseStream) => void) | null = null,
+            delay: number | null = null
+        ) =>
+            request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", formdata, {
                 stream: true,
                 formdata: true,
                 headers: openai_api_key ? {
