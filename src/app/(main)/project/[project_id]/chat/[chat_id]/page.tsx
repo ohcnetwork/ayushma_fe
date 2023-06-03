@@ -5,6 +5,7 @@ import ChatBlock from "@/components/chatblock";
 import { storageAtom } from "@/store";
 import { Chat, ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { API } from "@/utils/api";
+import { getFormData } from "@/utils/converse";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useSearchParams } from "next/navigation";
@@ -19,7 +20,6 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
     const [chatMessage, setChatMessage] = useState<string>("");
     const [storage] = useAtom(storageAtom);
     const [isTyping, setIsTyping] = useState<boolean>(false);
-    const [language, setLanguage] = useState<string>("en");
 
     const chatQuery = useQuery(["chat", chat_id], () => API.chat.get(project_id, chat_id), {
         refetchOnWindowFocus: false,
@@ -42,44 +42,24 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         if (message.stop) setIsTyping(false);
     };
 
-    const converseMutation = useMutation(() => API.chat.converse(project_id, chat_id, newChat, language, openai_key, streamChatMessage, 20, storage.top_k, storage.temperature), {
-        onSuccess: async () => {
+    const converseMutation = useMutation((params: { formdata: FormData }) => API.chat.converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage, 20), {
+        retry: false,
+        onSuccess: async (data, vars) => {
             await chatQuery.refetch();
-            setNewChat("");
-            setChatMessage("");
-        },
-        retry: false
+        }
     });
 
-    const audioConverseMutation = useMutation((params: { formdata: FormData }) => API.chat.audio_converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage, 20), {
-        onSuccess: async () => {
-            await chatQuery.refetch();
-            setNewChat("");
-            setChatMessage("");
-        },
-        retry: false
-    });
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setIsTyping(true);
         e.preventDefault();
-        converseMutation.mutate();
+        const fd = await getFormData(storage, undefined, newChat);
+        converseMutation.mutate({ formdata: fd });
     }
 
     const handleAudio = async (blobUrl: string) => {
         setIsTyping(true);
-        const fd = new FormData();
-        //create a file object from blob url
-        await fetch(blobUrl)
-            .then(res => res.blob())
-            .then(blob => {
-                const file = new File([blob], "audio.wav", { type: "audio/wav" });
-                fd.append("audio", file);
-                fd.append("language", language);
-                fd.append("temperature", (storage.temperature || 0.1).toString());
-                fd.append("match_number", (storage.top_k || 100).toString());
-            })
-        audioConverseMutation.mutate({ formdata: fd });
+        const fd = await getFormData(storage, blobUrl);
+        converseMutation.mutate({ formdata: fd });
     }
 
     const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -98,8 +78,8 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                 ))}
                 {chatMessage && (
                     <>
-                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, original_message: newChat, language, created_at: "", external_id: "", modified_at: "" }} />
-                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language, created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, original_message: newChat, language: storage.language || "en", created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language: storage.language || "en", created_at: "", external_id: "", modified_at: "" }} />
                     </>
                 )
                 }
@@ -110,15 +90,10 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                     onChange={(e) => setNewChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
-                    language={language}
-                    onLangSet={(lang) => {
-                        setLanguage(lang);
-                    }}
                     errors={[
                         (converseMutation.error as any)?.error?.error,
-                        (audioConverseMutation.error as any)?.error?.error
                     ]}
-                    loading={converseMutation.isLoading || audioConverseMutation.isLoading || isTyping}
+                    loading={converseMutation.isLoading || isTyping}
                 />
             </div>
         </div >

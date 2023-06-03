@@ -4,19 +4,22 @@ import Loading from "./ui/loading";
 import { useReactMediaRecorder } from "react-media-recorder-2";
 import LangDialog from "./ui/langdialog";
 import { supportedLanguages } from "@/utils/constants";
+import { storageAtom } from "@/store";
+import { useAtom } from "jotai";
+import Modal from "./modal";
 
 export default function ChatBar(props: {
     chat: string,
-    language?: string,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
     onAudio: (blobUrl: string) => void,
-    onLangSet?: (lang: string) => void,
     errors: string[],
     loading?: boolean
 }) {
 
-    const { chat, language, onChange, onSubmit, onLangSet, errors, loading, onAudio } = props;
+    const { chat, onChange, onSubmit, errors, loading, onAudio } = props;
+
+    const [storage, setStorage] = useAtom(storageAtom);
 
     const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
         audio: true,
@@ -24,31 +27,49 @@ export default function ChatBar(props: {
     });
 
     const [langDialogOpen, setLangDialogOpen] = useState<boolean>(false);
-    const [selectedLanguage, setSelectedLanguage] = useState<string>(language || "en");
 
     return (
         <>
             <div className={`fixed inset-0 flex items-center justify-center transition-all ${status === "recording" ? "visible opacity-100" : "invisible opacity-0"}`}>
                 <div className="bg-black/40 absolute inset-0 -z-10" />
                 <div className="md:min-w-[300px] md:min-h-[300px] bg-white rounded-xl p-4 flex items-center flex-col gap-4">
-                    <div className="mb-4"> <i className="fa-regular fa-language"></i> <strong>{supportedLanguages.find(l => l.value === selectedLanguage)?.label}</strong> </div>
+                    <div className="mb-4">
+                        <i className="fa-regular fa-language"></i>
+                        <strong>
+                            {supportedLanguages.find(l => l.value === storage?.language || "en")?.nativeLabel}
+                        </strong>
+                        <span className="text-sm text-gray-500">
+                            ({storage?.language !== "en" && supportedLanguages.find(l => l.value === storage?.language || "en")?.label})
+                        </span>
+                    </div>
                     Listening...
                     <button className="flex w-28 h-28 items-center justify-center text-4xl bg-red-500 rounded-full text-white hover:bg-red-600" onClick={stopRecording}>
                         <i className="fas fa-microphone-slash" />
                     </button>
                 </div>
             </div>
-            <LangDialog
-                open={langDialogOpen}
+            <Modal
+                show={langDialogOpen}
                 onClose={() => {
                     setLangDialogOpen(false);
                 }}
-                onSubmit={(lang) => {
-                    setLangDialogOpen(false);
-                    setSelectedLanguage(lang);
-                    onLangSet?.(lang);
-                }}
-            />
+                className="md:w-auto md:h-auto"
+            >
+                <h1 className="text-2xl font-black">
+                    <i className="far fa-language" /> Select conversation language
+                </h1>
+                <br />
+                <select
+                    value={storage?.language || "en"}
+                    onChange={(e) => setStorage({ ...storage, language: e.target.value })}
+                    className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline-blue focus:border-green-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
+                    {supportedLanguages.map((language) => (
+                        <option key={language.value} value={language.value}>
+                            {language.label} ({language.nativeLabel})
+                        </option>
+                    ))}
+                </select>
+            </Modal>
             <form onSubmit={onSubmit}>
                 <Input
                     type="text"
