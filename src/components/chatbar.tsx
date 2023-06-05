@@ -34,12 +34,12 @@ export default function ChatBar(props: {
                 <div className="bg-black/40 absolute inset-0 -z-10" />
                 <div className="md:min-w-[300px] md:min-h-[300px] bg-white rounded-xl p-4 flex items-center flex-col gap-4">
                     <div className="mb-4">
-                        <i className="fa-regular fa-language"></i>
+                        <i className="fa-regular fa-language"></i>&nbsp;
                         <strong>
-                            {supportedLanguages.find(l => l.value === storage?.language || "en")?.nativeLabel}
+                            {supportedLanguages.find(l => l.value === (storage?.language || "en"))?.nativeLabel}
                         </strong>
                         <span className="text-sm text-gray-500">
-                            ({storage?.language !== "en" && supportedLanguages.find(l => l.value === storage?.language || "en")?.label})
+                            {storage?.language !== "en" && (<>({supportedLanguages.find(l => l.value === (storage?.language || "en"))?.label})</>)}
                         </span>
                     </div>
                     Listening...
