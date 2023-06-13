@@ -153,7 +153,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                             return (
                                 <a
                                     key={i}
-                                    href={doc.document_type === 1 ? doc.s3_url : doc.text_content}
+                                    href={doc.document_type === 1 ? doc.file : doc.text_content}
                                     target="_blank"
                                     rel="noreferrer"
                                     className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"

@@ -21,7 +21,7 @@ export type Document = BaseModelType & {
     description?: string,
     document_type: number,
     text_content?: string,
-    s3_url?: string,
+    file?: string,
 }
 
 export type ChatMessage = BaseModelType & {
