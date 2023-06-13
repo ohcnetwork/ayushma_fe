@@ -29,7 +29,7 @@ export type ChatMessage = BaseModelType & {
     message: string,
     translated_message?: string,
     reference_documents?: Document[],
-    ayushma_audio_url?: string,
+    audio?: string,
     language: string,
     original_message: string
     meta?: ChatMessageMeta,
