@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     )
 
     return (
-        <div className="w-[1000px] m-auto mt-10">
+        <div className="max-w-[1000px] mx-5 mb-5 md:mx-auto md:mb-auto mt-6">
             {children}
         </div>
     )

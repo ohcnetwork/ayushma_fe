@@ -33,7 +33,7 @@ export function TextArea(props: {
     const { className, loading, errors, right, left, ...rest } = props;
 
     return (
-        <div>
+        <>
             <div className="border border-gray-200 w-full bg-white rounded-lg overflow-hidden relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1">
                 {loading && (
                     <div className="absolute inset-0 bg-black/10" />
@@ -43,21 +43,22 @@ export function TextArea(props: {
                 {right}
             </div>
             <Errors errors={errors} />
-        </div>
+        </>
     )
 }
 
 export function Button(props: {
     children: React.ReactNode,
     loading?: boolean,
-    variant?: "primary" | "secondary",
+    variant?: "primary" | "secondary" | "danger",
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
     const { children, className, loading, ...rest } = props;
 
     const baseClasses = "rounded-lg p-2 px-4 flex items-center justify-center";
     const primaryClasses = "bg-green-500 hover:bg-green-600 transition-all text-white";
     const secondaryClasses = "bg-white hover:bg-slate-200 transition-all text-gray-700";
-    const classes = twMerge(baseClasses, props.variant === "secondary" ? secondaryClasses : primaryClasses, className);
+    const dangerClasses = "bg-red-500 hover:bg-red-600 transition-all text-white";
+    const classes = twMerge(baseClasses, props.variant === "secondary" ? secondaryClasses : props.variant === "danger" ? dangerClasses : primaryClasses, className);
     return (
         <button {...rest} className={classes}>
             {loading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block"></div> : children}
