@@ -4,6 +4,7 @@ import ProjectForm from "@/components/forms/projectform";
 import TestSuiteForm from "@/components/forms/testsuiteform";
 import { Button } from "@/components/ui/interactive";
 import { Document, Project } from "@/types/project";
+import { TestSuite } from "@/types/test";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
