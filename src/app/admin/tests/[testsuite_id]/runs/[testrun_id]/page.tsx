@@ -189,6 +189,7 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                     <div className="text-md font-bold mb-2">Average Feedback</div>
                     <div className="text-sm font-bold text-gray-700 mb-1">
                         <p className="text-gray-700">
+                            {feedbackStats.total === 0 ? "-" : ""}
                             {ratingOptions.map(
                                 (rating: any) => rating.id === Math.min(Math.max(Math.round(feedbackStats.average), 1), 6) && (
                                     <span
