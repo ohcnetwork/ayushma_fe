@@ -5,7 +5,7 @@ import { API } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import { User, UserUpdate } from "@/types/user";
 
 export default function Page() {
@@ -26,19 +26,22 @@ export default function Page() {
       userDetails: {
         full_name: formData.full_name,
         password: formData.password ? formData.password : undefined,
-      }
+      },
     });
   };
 
-  const updateProfileMutation = useMutation((params: { userDetails: UserUpdate }) => API.user.save(params.userDetails), {
-    retry: false,
-    onSuccess: async (data, vars) => {
-      toast.success('Profile updated successfully');
-      setTimeout(() => {
-        router.push('/');
-      }, 1000);
+  const updateProfileMutation = useMutation(
+    (params: { userDetails: UserUpdate }) => API.user.save(params.userDetails),
+    {
+      retry: false,
+      onSuccess: async (data, vars) => {
+        toast.success("Profile updated successfully");
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
+      },
     }
-  });
+  );
 
   useEffect(() => {
     if (userData) {
@@ -47,58 +50,89 @@ export default function Page() {
   }, [userData]);
 
   return (
-    <div className="w-full p-8">
-      <h2 className="text-center text-3xl font-extrabold text-gray-900">Edit Profile</h2>
-      <div className="mt-8 space-y-4">
-        <div>
-          <p className="text text-sm text-gray-500 mb-2">
-            Full Name:
-          </p>
-          <Input
-            type="text"
-            placeholder="Full Name"
-            value={formData.full_name}
-            onChange={(event) => setFormData({ ...formData, full_name: event.target.value })}
-          />
-        </div>
-        <div>
-          <p className="text text-sm text-gray-500 mb-2">
-            Change Password:
-          </p>
-          <Input
-            type="password"
-            placeholder="New Password"
-            value={formData.password}
-            onChange={(event) => setFormData({ ...formData, password: event.target.value })}
-          />
-        </div>
-        <div>
-          <Input
-            type="password"
-            placeholder="Confirm Password"
-            value={formData.confirm_password}
-            onChange={(event) => setFormData({ ...formData, confirm_password: event.target.value })}
-          />
-        </div>
-        {(formData.password != formData.confirm_password) && <p className="text text-sm text-red-500 mb-2">
-          Passwords do not match
-        </p>}
-        <div className="flex gap-2">
-          <Button
-            onClick={() => router.push('/')}
-            className="w-full"
-            variant="secondary">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            className="w-full"
-            variant="primary">
-            Update Profile
-          </Button>
+    <div className="ml-10 ">
+      <div className="mx-auto">
+        <div className="my-24 py-10 px-2 content-center rounded-xl">
+          <div className="flex flex-col items-center text-gray-200 justify-center ">
+            <div className="w-[70%] rounded-xl bg-gradient-to-r from-blue-400/40 to-emerald-400/40 shadow-md p-0.5">
+              <div className="bg-white rounded-xl p-7">
+                <h2 className="text-center text-3xl font-extrabold text-gray-900">
+                  Edit Profile
+                </h2>
+                <div className="mt-8 space-y-4">
+                  <div>
+                    <p className="text text-sm text-gray-500 mb-2">
+                      Full Name:
+                    </p>
+                    <Input
+                      type="text"
+                      placeholder="Full Name"
+                      value={formData.full_name}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          full_name: event.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <p className="text text-sm text-gray-500 mb-2">
+                      Change Password:
+                    </p>
+                    <Input
+                      type="password"
+                      placeholder="New Password"
+                      value={formData.password}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          password: event.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      type="password"
+                      placeholder="Confirm Password"
+                      value={formData.confirm_password}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          confirm_password: event.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  {formData.password != formData.confirm_password && (
+                    <p className="text text-sm text-red-500 mb-2">
+                      Passwords do not match
+                    </p>
+                  )}
+                  <div className="flex gap-2 py-4">
+                    <Button
+                      onClick={() => router.push("/")}
+                      className="w-full bg-gray-100"
+                      variant="secondary"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSubmit}
+                      className="w-full"
+                      variant="primary"
+                    >
+                      Update Profile
+                    </Button>
+                  </div>
+                </div>
+                <Toaster />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <Toaster />
-    </div >
+    </div>
   );
 }
