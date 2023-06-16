@@ -1,7 +1,6 @@
 "use client";
 
 import ChatSideBar from "@/components/sidebar/chatSidebar";
-import SideBar from "@/components/sidebar/sidebar";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
@@ -38,9 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               : "-translate-x-full absolute"
           } md:translate-x-0 md:contents items-stretch z-40 md:z-0 duration-200 ease-in-out h-screen`}
         >
-          <SideBar>
-            <ChatSideBar project_id={project_id} />
-          </SideBar>
+          <ChatSideBar project_id={project_id} />
         </div>
 
         <div
