@@ -24,7 +24,7 @@ export default function AdminSideBar() {
     {
       text: "Tests",
       url: "/tests",
-      icon: "cogs",
+      icon: "wrench",
     },
   ];
 
