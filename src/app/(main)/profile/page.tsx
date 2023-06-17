@@ -53,7 +53,7 @@ export default function Page() {
     <div className="mx-auto">
       <div className="my-24 py-10 px-2">
         <div className="flex flex-col items-center text-gray-200 justify-center ">
-          <div className="w-[70%] ">
+          <div className="w-[95%] md:w-[75%] lg:w-[75%]">
             <h2 className="text-center text-3xl font-extrabold text-gray-900">
               Edit Profile
             </h2>
