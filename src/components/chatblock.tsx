@@ -59,7 +59,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
     const loadAudio = async () => {
         if (message?.messageType === ChatMessageType.AYUSHMA) {
             setAudioStatus("loading");
-            const audio = new Audio(message?.ayushma_audio_url);
+            const audio = new Audio(message?.audio);
             setAudio(audio);
             setAudioStatus("playing");
             audio.play();
@@ -112,7 +112,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                         )
                                     }
                                 </ReactMarkdown>
-                                {message?.messageType === ChatMessageType.AYUSHMA && message?.ayushma_audio_url && (
+                                {message?.messageType === ChatMessageType.AYUSHMA && message?.audio && (
                                     <div className="flex gap-1 justify-left">
                                         <button onClick={togglePlay} className="text-gray-500 hover:text-gray-700">
                                             {audioStatus === "playing" ? (
@@ -153,7 +153,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                             return (
                                 <a
                                     key={i}
-                                    href={doc.document_type === 1 ? doc.s3_url : doc.text_content}
+                                    href={doc.document_type === 1 ? doc.file : doc.text_content}
                                     target="_blank"
                                     rel="noreferrer"
                                     className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"

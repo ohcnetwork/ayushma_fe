@@ -160,7 +160,7 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
         <div>
             <Toaster />
             <div className="flex justify-between items-center mb-8"><h1 className="text-2xl font-black">Test Run Results</h1><Button variant="secondary" className="bg-gray-100" onClick={() => { router.push(`/admin/tests/${testsuite_id}/`) }}>Back</Button></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border border-gray-300 p-4 rounded-lg my-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border border-gray-300 bg-white p-4 rounded-lg my-4">
                 <div>
                     <div className="flex flex-col justify-end">
                         <div>Project: <span className="font-bold">{testRun?.project_object.title}</span></div>
@@ -178,49 +178,49 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-gray-300 p-3 rounded-lg my-4">
-              {feedbackStats.total !== -1 ? (<>  <div className="flex flex-col items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-gray-300 bg-white p-3 rounded-lg my-4">
+                {feedbackStats.total !== -1 ? (<>  <div className="flex flex-col items-center">
                     <div className="text-md font-bold mb-2">Total Feedback</div>
                     <div className="text-2xl font-bold text-gray-700 mb-1">
                         {feedbackStats.total}
                     </div>
                 </div>
-                <div className="flex flex-col items-center">
-                    <div className="text-md font-bold mb-2">Average Feedback</div>
-                    <div className="text-sm font-bold text-gray-700 mb-1">
-                        <p className="text-gray-700">
-                            {feedbackStats.total === 0 ? "-" : ""}
-                            {ratingOptions.map(
-                                (rating: any) => rating.id === Math.min(Math.max(Math.round(feedbackStats.average), 1), 6) && (
-                                    <span
-                                        key={rating.id}
-                                        className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
-                                    >
-                                        {rating.label}
-                                    </span>
-                                )
-                            )}
-                        </p>
+                    <div className="flex flex-col items-center">
+                        <div className="text-md font-bold mb-2">Average Feedback</div>
+                        <div className="text-sm font-bold text-gray-700 mb-1">
+                            <p className="text-gray-700">
+                                {feedbackStats.total === 0 ? "-" : ""}
+                                {ratingOptions.map(
+                                    (rating: any) => rating.id === Math.min(Math.max(Math.round(feedbackStats.average), 1), 6) && (
+                                        <span
+                                            key={rating.id}
+                                            className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
+                                        >
+                                            {rating.label}
+                                        </span>
+                                    )
+                                )}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col items-center">
-                    <div className="text-md font-bold mb-2">Positive Feedback</div>
-                    <div className="text-2xl font-bold text-green-500 mb-1">
-                        {feedbackStats.positive}
+                    <div className="flex flex-col items-center">
+                        <div className="text-md font-bold mb-2">Positive Feedback</div>
+                        <div className="text-2xl font-bold text-green-500 mb-1">
+                            {feedbackStats.positive}
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col items-center">
-                    <div className="text-md font-bold mb-2">Neutral Feedback</div>
-                    <div className="text-2xl font-bold text-gray-500 mb-1">
-                        {feedbackStats.neutral}
+                    <div className="flex flex-col items-center">
+                        <div className="text-md font-bold mb-2">Neutral Feedback</div>
+                        <div className="text-2xl font-bold text-gray-500 mb-1">
+                            {feedbackStats.neutral}
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col items-center">
-                    <div className="text-md font-bold mb-2">Negative Feedback</div>
-                    <div className="text-2xl font-bold text-red-500 mb-1">
-                        {feedbackStats.negative}
-                    </div>
-                </div></>) : (<div className="sm:col-span-5 justify-center items-center flex"><Loading /></div>)}
+                    <div className="flex flex-col items-center">
+                        <div className="text-md font-bold mb-2">Negative Feedback</div>
+                        <div className="text-2xl font-bold text-red-500 mb-1">
+                            {feedbackStats.negative}
+                        </div>
+                    </div></>) : (<div className="sm:col-span-5 justify-center items-center flex"><Loading /></div>)}
             </div>
             {testRun?.test_results?.map((test: TestResult) => (
                 <div key={test.external_id} className="bg-white rounded-lg border-gray-200 border p-6 my-4">
@@ -286,7 +286,7 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                     </div>
                 </div>
             ))}
-            {showFeedback && feedbackTestResult && (
+            {feedbackTestResult && (
                 <Modal
                     className="md:h-auto"
                     show={showFeedback}

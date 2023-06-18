@@ -271,7 +271,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         variant="secondary"
                         className="bg-gray-100 text-gray-700"
                         onClick={() => {
-                            router.push(`/admin`);
+                            router.push(`/admin/tests`);
                         }}
                     >
                         Back
@@ -288,101 +288,99 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     </Button>
                 </div>
             </div>
-
-            {showAddQuestion && (
-                <Modal
-                    show={showAddQuestion}
-                    onClose={() => setShowAddQuestion(false)}
-                >
-                    <div className="justify-center flex"><h1 className="block font-medium text-lg">Add Question</h1></div>
-                    <div className="p-3">
-                        <label className="block font-medium text-gray-700 mb-2">
-                            Question
-                        </label>
-                        <TextArea
-                            rows={2}
-                            className="border-gray-300 rounded-md shadow-sm w-full p-2"
-                            value={currentQuestion.question}
-                            onChange={(e) => setCurrentQuestion({ ...currentQuestion, question: e.target.value })}
-                        />
-                        <label className="block font-medium text-gray-700 mt-4 mb-2">
-                            Human Answer
-                        </label>
-                        <TextArea
-                            rows={3}
-                            className="border-gray-300 rounded-md shadow-sm w-full p-2"
-                            value={currentQuestion.human_answer}
-                            onChange={(e) => setCurrentQuestion({ ...currentQuestion, human_answer: e.target.value })}
-                        />
-                        <label className="block font-medium text-gray-700 mt-4 mb-2">
-                            Language
-                        </label>
-                        <select id="language" name="language"
-                            value={currentQuestion.language || "en"}
-                            onChange={(e) => setCurrentQuestion({ ...currentQuestion, language: e.target.value })}
-                            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
-                            {supportedLanguages.map((language) => (
-                                <option key={language.value} value={language.value}>
-                                    {language.label}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="flex space-x-4 mt-5 justify-end">
-                            <Button
-                                variant="secondary"
-                                onClick={() => { setCurrentQuestion({}); setShowAddQuestion(false) }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                loading={saveBtnLoading}
-                                onClick={() => handleAddQuestion(currentQuestion.question, currentQuestion.human_answer, currentQuestion.language)}
-                            >
-                                Save
-                            </Button>
-                        </div>
+            <Modal
+                show={showAddQuestion}
+                onClose={() => setShowAddQuestion(false)}
+            >
+                <div className="justify-center flex"><h1 className="block font-medium text-lg">Add Question</h1></div>
+                <div className="p-3">
+                    <label className="block font-medium text-gray-700 mb-2">
+                        Question
+                    </label>
+                    <TextArea
+                        rows={2}
+                        className="border-gray-300 rounded-md shadow-sm w-full p-2"
+                        value={currentQuestion.question}
+                        onChange={(e) => setCurrentQuestion({ ...currentQuestion, question: e.target.value })}
+                    />
+                    <label className="block font-medium text-gray-700 mt-4 mb-2">
+                        Human Answer
+                    </label>
+                    <TextArea
+                        rows={3}
+                        className="border-gray-300 rounded-md shadow-sm w-full p-2"
+                        value={currentQuestion.human_answer}
+                        onChange={(e) => setCurrentQuestion({ ...currentQuestion, human_answer: e.target.value })}
+                    />
+                    <label className="block font-medium text-gray-700 mt-4 mb-2">
+                        Language
+                    </label>
+                    <select id="language" name="language"
+                        value={currentQuestion.language || "en"}
+                        onChange={(e) => setCurrentQuestion({ ...currentQuestion, language: e.target.value })}
+                        className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
+                        {supportedLanguages.map((language) => (
+                            <option key={language.value} value={language.value}>
+                                {language.label}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="flex space-x-4 mt-5 justify-end">
+                        <Button
+                            variant="secondary"
+                            onClick={() => { setCurrentQuestion({}); setShowAddQuestion(false) }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            loading={saveBtnLoading}
+                            onClick={() => handleAddQuestion(currentQuestion.question, currentQuestion.human_answer, currentQuestion.language)}
+                        >
+                            Save
+                        </Button>
                     </div>
-                </Modal>)
-            }
+                </div>
+            </Modal>
 
-            {showRunTestSuite && (
-                <Modal
-                    className="h-auto md:h-auto"
-                    show={showRunTestSuite}
-                    onClose={() => setShowRunTestSuite(false)}
-                >
-                    <div className="justify-center flex"><h1 className="block font-medium text-lg">Run {testSuite?.name}</h1></div>
-                    <div className="p-3">
-                        <label className="block font-medium text-gray-700 mb-2">
-                            Project
-                        </label>
-                        <select
-                            value={testSuiteProject || projects[0].external_id}
-                            onChange={(e) => setTestSuiteProject(e.target.value)}
-                            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
-                            {projects.map((project) => (
-                                <option key={project.external_id} value={project.external_id}>
-                                    {project.title}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="flex space-x-4 mt-5 justify-end">
-                            <Button
-                                variant="secondary"
-                                onClick={() => { setTestSuiteProject(undefined); setShowRunTestSuite(false) }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                loading={saveBtnLoading}
-                                onClick={startTestSuite}
-                            >
-                                Start Test
-                            </Button>
-                        </div>
+
+
+            <Modal
+                className="h-auto md:h-auto"
+                show={showRunTestSuite}
+                onClose={() => setShowRunTestSuite(false)}
+            >
+                <div className="justify-center flex"><h1 className="block font-medium text-lg">Run {testSuite?.name}</h1></div>
+                <div className="p-3">
+                    <label className="block font-medium text-gray-700 mb-2">
+                        Project
+                    </label>
+                    <select
+                        value={testSuiteProject || projects[0]?.external_id}
+                        onChange={(e) => setTestSuiteProject(e.target.value)}
+                        className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
+                        {projects.map((project) => (
+                            <option key={project.external_id} value={project.external_id}>
+                                {project.title}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="flex space-x-4 mt-5 justify-end">
+                        <Button
+                            variant="secondary"
+                            onClick={() => { setTestSuiteProject(undefined); setShowRunTestSuite(false) }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            loading={saveBtnLoading}
+                            onClick={startTestSuite}
+                        >
+                            Start Test
+                        </Button>
                     </div>
-                </Modal>)
-            }
+                </div>
+            </Modal>
+
             <Toaster />
         </div>
     );
