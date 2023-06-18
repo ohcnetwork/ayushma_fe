@@ -19,13 +19,13 @@ export default function Page({ params }: { params: { project_id: string } }) {
   );
   const documents: Document[] | undefined = documentsQuery.data?.results;
 
-  const docIconsClassNames = {
-    1: "fa-file-text-o",
-    2: "fa-link",
-    3: "fa-font",
-  };
-
   const router = useRouter();
+
+  const docIconsClassNames = {
+    1: "file-text-o",
+    2: "link",
+    3: "font",
+  };
 
   const updateProjectMutation = useMutation(
     (project: Partial<Project>) => API.projects.update(project_id, project),
@@ -64,19 +64,19 @@ export default function Page({ params }: { params: { project_id: string } }) {
           <Link
             href={`/admin/projects/${project_id}/documents/${document.external_id}`}
             key={i}
-            className="border border-gray-300 hover:bg-gray-100 rounded-lg p-4 flex items-center gap-2"
+            className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4 flex items-center gap-2"
           >
             <i
-              className={
-                "text-gray-800 fa " + docIconsClassNames[document.document_type]
-              }
+              className={`text-gray-800 fa fa-${
+                docIconsClassNames[document.document_type]
+              }`}
             />
             {document.title}
           </Link>
         ))}
         <Link
           href={`/admin/projects/${project_id}/documents/new`}
-          className="border border-dashed border-gray-300 hover:bg-gray-100 rounded-lg p-4"
+          className="border border-dashed border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4"
         >
           <i className="far fa-plus" /> New Document
         </Link>
