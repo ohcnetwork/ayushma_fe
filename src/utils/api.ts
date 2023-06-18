@@ -2,6 +2,7 @@ import { UserUpdate } from "@/types/user";
 import { Project } from "@/types/project";
 import { EventSourceMessage, FetchEventSourceInit, fetchEventSource } from '@microsoft/fetch-event-source';
 import { ChatConverseStream } from "@/types/chat";
+import { TestSuite, TestQuestion, TestRun, Feedback } from "@/types/test";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -207,5 +208,35 @@ export const API = {
                     handleMessage(data, onMessage, delay);
                 }
             }),
+    },
+    tests: {
+        suites:{
+            list: (filters: { ordering: string } = { ordering: "-created_at" }) => request(`tests/suites`, "GET", filters),
+            create: (testSuite: Partial<TestSuite>) => request(`tests/suites`, "POST", { ...testSuite }),
+            get: (id: string) => request(`tests/suites/${id}`),
+            update: (id: string, fields: TestSuite) => request(`tests/suites/${id}`, "PATCH", fields),
+            delete: (id: string) => request(`tests/suites/${id}`, "DELETE"),
+        },
+        questions:{
+            list: (suite_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`tests/suites/${suite_id}/questions`, "GET", filters),
+            create: (suite_id: string, question: Partial<TestQuestion>) => request(`tests/suites/${suite_id}/questions`, "POST", { ...question }),
+            get: (suite_id: string, id: string) => request(`tests/suites/${suite_id}/questions/${id}`),
+            update: (suite_id: string, id: string, fields: TestQuestion) => request(`tests/suites/${suite_id}/questions/${id}`, "PATCH", fields),
+            delete: (suite_id: string, id: string) => request(`tests/suites/${suite_id}/questions/${id}`, "DELETE"),
+        },
+        runs: {
+            list: (suite_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`tests/suites/${suite_id}/runs`, "GET", filters),
+            create: (suite_id: string, run: Partial<TestRun>) => request(`tests/suites/${suite_id}/runs`, "POST", { ...run }),
+            get: (suite_id: string, id: string) => request(`tests/suites/${suite_id}/runs/${id}`),
+            update: (suite_id: string, id: string, fields: TestRun) => request(`tests/suites/${suite_id}/runs/${id}`, "PATCH", fields),
+            delete: (suite_id: string, id: string) => request(`tests/suites/${suite_id}/runs/${id}`, "DELETE"),
+        },
+        feedback: {
+            list: (suite_id: string, run_id: string, filters: { ordering: string, test_result_id: string }) => request(`tests/suites/${suite_id}/runs/${run_id}/feedback`, "GET", filters),
+            create: (suite_id: string, run_id: string, feedback: Partial<Feedback>) => request(`tests/suites/${suite_id}/runs/${run_id}/feedback`, "POST", { ...feedback }),
+            get: (suite_id: string, run_id: string, id: string) => request(`tests/suites/${suite_id}/runs/${run_id}/feedback/${id}`),
+            update: (suite_id: string, run_id: string, id: string, fields: Feedback) => request(`tests/suites/${suite_id}/runs/${run_id}/feedback/${id}`, "PATCH", fields),
+            delete: (suite_id: string, run_id: string, id: string) => request(`tests/suites/${suite_id}/runs/${run_id}/feedback/${id}`, "DELETE"),
+        }
     }
 }

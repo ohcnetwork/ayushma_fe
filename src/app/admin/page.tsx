@@ -1,13 +1,13 @@
 "use client";
 
 import { Project } from "@/types/project";
+import { TestSuite } from "@/types/test";
 import { API } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 export default function Page() {
   const projectsQuery = useQuery(["projects"], () => API.projects.list());
-
   const projects: Project[] = projectsQuery.data?.results || [];
 
   return (
