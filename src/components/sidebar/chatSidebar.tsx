@@ -34,7 +34,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
       icon: "user-circle",
       text: "Profile",
       onclick: () => {
-        router.push("/profile");
+        router.push(`/profile/${props.project_id}`);
       },
     },
     {
