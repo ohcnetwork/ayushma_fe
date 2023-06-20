@@ -5,7 +5,7 @@ export type Project = BaseModelType & {
     description: string,
     is_default: boolean,
     prompt?: string,
-    stt_engine: string,
+    stt_engine: number,
 }
 
 export enum DocumentType {
@@ -15,8 +15,8 @@ export enum DocumentType {
 }
 
 export const STT_ENGINES = [
-    { id: 'whisper', label: 'OpenAI Whisper' },
-    { id: 'google', label: 'Google Speech to Text' },
+    { id: 1, label: 'OpenAI Whisper' },
+    { id: 2, label: 'Google Speech to Text' },
 ]
 
 export type Document = BaseModelType & {

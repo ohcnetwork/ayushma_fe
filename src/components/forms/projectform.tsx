@@ -40,11 +40,11 @@ export default function ProjectForm(props: {
                 />
                 <select
                     className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
-                    value={project.stt_engine || "whisper"}
-                    onChange={(e) => setProject({ ...project, stt_engine: e.target.value })}
+                    value={project.stt_engine || 1}
+                    onChange={(e) => setProject({ ...project, stt_engine: parseInt(e.target.value) })}
                 >
                     {STT_ENGINES.map((engine, i) => (
-                        <option key={i} value={engine.id}>{engine.label}</option>
+                        <option key={engine.id} value={engine.id}>{engine.label}</option>
                     ))}
                 </select>
                 <Button
