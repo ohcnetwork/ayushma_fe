@@ -5,6 +5,7 @@ import { API } from "@/utils/api";
 import { Button, Dropdown, Errors, Input, TextArea } from "../ui/interactive";
 import { API_BASE_URL } from "@/utils/api";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function DocumentForm(props: {
   document: Partial<Document>;
@@ -121,7 +122,17 @@ export default function DocumentForm(props: {
                   <span>{DocumentType[doc.document_type]}</span>
                 </div>
               )}
-              <p>{doc.text_content}</p>
+              {doc.document_type === DocumentType.URL ? (
+                <a
+                  target="_blank"
+                  href={doc.text_content}
+                  className="underline text-green-500 hover:text-green-700 transition-all"
+                >
+                  {doc.text_content}
+                </a>
+              ) : (
+                <p>{doc.text_content}</p>
+              )}
             </div>
           ) : (
             <>
