@@ -106,7 +106,9 @@ export default function Page() {
                   Passwords do not match
                 </p>
               ) : (
-                <p className="text-transparent text-sm mb-2">Hidden Text</p>
+                <p className="text-transparent select-none text-sm mb-2">
+                  &nbsp;
+                </p>
               )}
               <div className="flex gap-2 py-4">
                 <Button
