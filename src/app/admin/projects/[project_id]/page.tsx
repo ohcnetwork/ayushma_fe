@@ -116,15 +116,12 @@ export default function Page({ params }: { params: { project_id: string } }) {
         />
       )}
       <div className="flex gap-2 mt-4 items-center justify-stretch">
-        <Button
-          className="bg-red-500 hover:bg-red-600 w-full"
-          onClick={handleDelete}
-        >
+        <Button className="w-full" variant="danger" onClick={handleDelete}>
           Delete Project
         </Button>
         <Button
           variant="secondary"
-          className="w-full"
+          className="w-full bg-slate-200 enabled:hover:bg-slate-300"
           onClick={handleSetAsDefault}
           disabled={project?.is_default}
         >

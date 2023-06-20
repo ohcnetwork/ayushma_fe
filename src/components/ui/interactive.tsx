@@ -70,15 +70,12 @@ export function Button(
   const { children, className, disabled, loading, ...rest } = props;
 
   const baseClasses = "rounded-lg p-2 px-4 flex items-center justify-center";
-  const primaryClasses = `bg-green-500 transition-all text-white cursor-not-allowed ${
-    !disabled && "hover:bg-green-600 cursor-auto"
-  }`;
-  const secondaryClasses = `bg-white transition-all text-gray-700 cursor-not-allowed ${
-    !disabled && "hover:bg-slate-200 cursor-auto"
-  }`;
-  const dangerClasses = `bg-red-500 transition-all text-white cursor-not-allowed ${
-    !disabled && "hover:bg-red-600 cursor-auto"
-  }`;
+  const primaryClasses =
+    "bg-green-500 enabled:hover:bg-green-600 transition-all text-white disabled:cursor-not-allowed";
+  const secondaryClasses =
+    "bg-white enabled:hover:bg-slate-200 transition-all text-gray-700 disabled:cursor-not-allowed";
+  const dangerClasses =
+    "bg-red-500 enabled:hover:bg-red-600 transition-all text-white disabled:cursor-not-allowed";
   const classes = twMerge(
     baseClasses,
     props.variant === "secondary"
