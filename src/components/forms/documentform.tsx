@@ -187,7 +187,7 @@ export default function DocumentForm(props: {
                     <span>URL</span>
                   </div>
                   <Input
-                    placeholder="Please enter the URL"
+                    placeholder="Corpus URL"
                     className="bg-[#fbfffd] rounded-md text-black"
                     value={document.text_content}
                     onChange={(e) =>
