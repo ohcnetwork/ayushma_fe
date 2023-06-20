@@ -109,7 +109,7 @@ export default function DocumentForm(props: {
         <div className="flex-1 w-full">
           {doc.file ? (
             <div>
-              <iframe src={doc.file as any} className="w-full h-64" />
+              <iframe src={doc.file as any} className="w-full h-96" />
             </div>
           ) : doc.text_content ? (
             <div className="flex flex-col gap-2 bg-[#fbfffd] h-full border border-gray-200 rounded-md p-4 ">
@@ -169,6 +169,7 @@ export default function DocumentForm(props: {
                     <span>TEXT</span>
                   </div>
                   <TextArea
+                    rows={7}
                     placeholder="Corpus text"
                     className="bg-[#fbfffd] rounded-md text-black"
                     value={document.text_content}
