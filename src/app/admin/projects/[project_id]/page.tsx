@@ -115,7 +115,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
           errors={updateProjectMutation.error}
         />
       )}
-      <div className="flex gap-1 mt-4 items-center justify-stretch">
+      <div className="flex gap-2 mt-4 items-center justify-stretch">
         <Button
           className="bg-red-500 hover:bg-red-600 w-full"
           onClick={handleDelete}
@@ -124,7 +124,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         </Button>
         <Button
           variant="secondary"
-          className="w-full border border-gray-400"
+          className="w-full"
           onClick={handleSetAsDefault}
           disabled={project?.is_default}
         >
