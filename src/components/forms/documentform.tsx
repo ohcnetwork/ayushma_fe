@@ -169,7 +169,7 @@ export default function DocumentForm(props: {
                     <span>TEXT</span>
                   </div>
                   <TextArea
-                    placeholder="Please enter the text"
+                    placeholder="Corpus text"
                     className="bg-[#fbfffd] rounded-md text-black"
                     value={document.text_content}
                     onChange={(e) =>
