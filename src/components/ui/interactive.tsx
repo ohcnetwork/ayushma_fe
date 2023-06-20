@@ -86,7 +86,7 @@ export function Button(
     className
   );
   return (
-    <button {...rest} className={classes}>
+    <button {...rest} className={classes} disabled={disabled}>
       {loading ? (
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block"></div>
       ) : (
