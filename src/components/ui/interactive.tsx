@@ -67,7 +67,7 @@ export function Button(
     variant?: "primary" | "secondary" | "danger";
   } & React.ButtonHTMLAttributes<HTMLButtonElement>
 ) {
-  const { children, className, disabled, loading, ...rest } = props;
+  const { children, className, loading, ...rest } = props;
 
   const baseClasses = "rounded-lg p-2 px-4 flex items-center justify-center";
   const primaryClasses =
@@ -86,7 +86,7 @@ export function Button(
     className
   );
   return (
-    <button {...rest} className={classes} disabled={disabled}>
+    <button {...rest} className={classes}>
       {loading ? (
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block"></div>
       ) : (
