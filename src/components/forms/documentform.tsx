@@ -140,7 +140,7 @@ export default function DocumentForm(props: {
                         <div className="flex gap-2 items-center">
                           <i className="fa fa-upload" aria-hidden="true" />
                           <span className="text-xl font-medium">
-                            Upload a file
+                            Ingest from file
                           </span>
                         </div>
                       )}
