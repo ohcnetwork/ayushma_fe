@@ -42,6 +42,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
         if (message.stop) {
             setNewChat("");
             setIsTyping(false);
+            setChatMessage("");
         }
     };
 
@@ -79,6 +80,14 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                 {chat?.chats?.map((message, i) => (
                     <ChatBlock message={message} key={message.external_id} autoplay={(!!chatMessage || shouldAutoPlay) && (i === (chat?.chats?.length || 0) - 1)} />
                 ))}
+
+               {chatMessage && (
+                    <>
+                        <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, original_message: newChat, language: storage.language || "en", created_at: "", external_id: "", modified_at: "" }} />
+                        <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language: storage.language || "en", created_at: "", external_id: "", modified_at: "" }} />
+                    </>
+                )
+                }
             </div >
             <div className="w-full shrink-0 p-4">
                 <ChatBar
