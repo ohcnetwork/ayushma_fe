@@ -40,6 +40,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
             return updatedChatMessage;
         });
         if (message.stop) {
+            await chatQuery.refetch();
             setNewChat("");
             setIsTyping(false);
             setChatMessage("");
@@ -48,9 +49,9 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
 
     const converseMutation = useMutation((params: { formdata: FormData }) => API.chat.converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage, 20), {
         retry: false,
-        onSuccess: async (data, vars) => {
-            await chatQuery.refetch();
-        }
+        // onSuccess: async (data, vars) => {
+        //     await chatQuery.refetch();
+        // }
     });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
