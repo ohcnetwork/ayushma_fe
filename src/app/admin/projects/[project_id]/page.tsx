@@ -45,6 +45,18 @@ export default function Page({ params }: { params: { project_id: string } }) {
     }
   );
 
+  const setAsDefautMutation = useMutation(
+    () =>
+      API.projects.update(project_id, {
+        is_default: true,
+      }),
+    {
+      onSuccess: () => {
+        projectsQuery.refetch();
+      },
+    }
+  );
+
   const handleProjectSave = async (project: Partial<Project>) => {
     await updateProjectMutation.mutateAsync(project);
   };
@@ -55,9 +67,22 @@ export default function Page({ params }: { params: { project_id: string } }) {
     }
   };
 
+  const handleSetAsDefault = async () => {
+    if (confirm("Are you sure you want to set this project as default?")) {
+      await setAsDefautMutation.mutateAsync();
+    }
+  };
+
   return (
     <div>
-      <h1 className="text-3xl font-black">{project?.title}</h1>
+      <div className="flex gap-2 items-center">
+        <h1 className="text-3xl font-black">{project?.title}</h1>
+        {project?.is_default && (
+          <span className="text-xs ml-2 bg-gray-200 text-gray-500 px-2 py-1 rounded-full">
+            Default
+          </span>
+        )}
+      </div>
       <h2 className="text-2xl mt-6 font-bold mb-4">Documents</h2>
       <div className="grid grid-cols-4 gap-4 mt-8">
         {documents?.map((document, i) => (
@@ -90,12 +115,19 @@ export default function Page({ params }: { params: { project_id: string } }) {
           errors={updateProjectMutation.error}
         />
       )}
-      <Button
-        className="bg-red-500 hover:bg-red-600 mt-8"
-        onClick={handleDelete}
-      >
-        Delete Project
-      </Button>
+      <div className="flex gap-2 mt-4 items-center justify-stretch">
+        <Button className="w-full" variant="danger" onClick={handleDelete}>
+          Delete Project
+        </Button>
+        <Button
+          variant="secondary"
+          className="w-full bg-slate-200 enabled:hover:bg-slate-300"
+          onClick={handleSetAsDefault}
+          disabled={project?.is_default}
+        >
+          Set as default project
+        </Button>
+      </div>
     </div>
   );
 }
