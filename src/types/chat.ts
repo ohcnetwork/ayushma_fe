@@ -21,7 +21,7 @@ export type Document = BaseModelType & {
     description?: string,
     document_type: number,
     text_content?: string,
-    s3_url?: string,
+    file?: string,
 }
 
 export type ChatMessage = BaseModelType & {
@@ -29,7 +29,7 @@ export type ChatMessage = BaseModelType & {
     message: string,
     translated_message?: string,
     reference_documents?: Document[],
-    ayushma_audio_url?: string,
+    audio?: string,
     language: string,
     original_message: string
     meta?: ChatMessageMeta,
