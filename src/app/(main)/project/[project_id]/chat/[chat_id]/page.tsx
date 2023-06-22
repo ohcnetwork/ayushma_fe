@@ -39,14 +39,19 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
             const updatedChatMessage = prevChatMessage + message.delta;
             return updatedChatMessage;
         });
-        if (message.stop) setIsTyping(false);
+        if (message.stop) {
+            await chatQuery.refetch();
+            setNewChat("");
+            setIsTyping(false);
+            setChatMessage("");
+        }
     };
 
     const converseMutation = useMutation((params: { formdata: FormData }) => API.chat.converse(project_id, chat_id, params.formdata, openai_key, streamChatMessage, 20), {
         retry: false,
-        onSuccess: async (data, vars) => {
-            await chatQuery.refetch();
-        }
+        // onSuccess: async (data, vars) => {
+        //     await chatQuery.refetch();
+        // }
     });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -76,7 +81,8 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                 {chat?.chats?.map((message, i) => (
                     <ChatBlock message={message} key={message.external_id} autoplay={(!!chatMessage || shouldAutoPlay) && (i === (chat?.chats?.length || 0) - 1)} />
                 ))}
-                {chatMessage && (
+
+               {chatMessage && (
                     <>
                         <ChatBlock message={{ messageType: ChatMessageType.USER, message: newChat, original_message: newChat, language: storage.language || "en", created_at: "", external_id: "", modified_at: "" }} />
                         <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language: storage.language || "en", created_at: "", external_id: "", modified_at: "" }} />
