@@ -44,7 +44,7 @@ const request = async (
     
     let url = external ? endpoint : API_BASE_URL + endpoint;
     let payload = formdata ? data : JSON.stringify(data);
-    
+
     if (method === 'GET') {
         const requestParams = data
             ? `?${Object.keys(data)
