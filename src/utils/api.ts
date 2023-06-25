@@ -39,9 +39,12 @@ const request = async (
 ) => {
     const { formdata, external, headers, auth: isAuth, stream } = options;
 
+    const noonce = (new Date().getTime() + Math.random()).toString();
+    if(formdata) data.append('noonce', noonce); else data['noonce'] = noonce;
+    
     let url = external ? endpoint : API_BASE_URL + endpoint;
     let payload = formdata ? data : JSON.stringify(data);
-
+    
     if (method === 'GET') {
         const requestParams = data
             ? `?${Object.keys(data)
