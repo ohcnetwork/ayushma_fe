@@ -25,12 +25,13 @@ export type Document = BaseModelType & {
 }
 
 export type ChatFeedback = {
-  chat_message: string;
+  chat_message: number;
   liked: boolean;
   message: string;
 } | null;
 
 export type ChatMessage = BaseModelType & {
+  id: number;
   messageType: ChatMessageType;
   message: string;
   translated_message?: string;

@@ -10,6 +10,8 @@ import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import Modal from "./modal";
 import { Button } from "./ui/interactive";
+import { useMutation } from "@tanstack/react-query";
+import { API } from "@/utils/api";
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
@@ -226,15 +228,21 @@ export default function ChatBlock(props: {
           </div>
         )}
       {message?.messageType === ChatMessageType.AYUSHMA && (
-        <ChatFeedback feedback={message?.feedback ?? null} />
+        <ChatFeedback
+          message_id={message.id}
+          feedback={message?.feedback ?? null}
+        />
       )}
     </div>
   );
 }
 
-const ChatFeedback = (props: { feedback: ChatFeedback }) => {
-  const { feedback } = props;
-  const [liked, setLiked] = useState<boolean | null>(false);
+const ChatFeedback = (props: {
+  message_id: number;
+  feedback: ChatFeedback;
+}) => {
+  const { feedback, message_id } = props;
+  const [liked, setLiked] = useState<boolean | null>(null);
   const [message, setMessage] = useState("");
   const [messageSuggestions, setMessageSuggestions] = useState({
     liked: ["This is helpful."],
@@ -245,12 +253,21 @@ const ChatFeedback = (props: { feedback: ChatFeedback }) => {
     ],
   });
 
+  const createChatFeedbackMutation = useMutation(
+    (feedback: Partial<ChatFeedback>) => API.feedback.create(feedback),
+    {
+      onSuccess: (_) => {
+        window.location.reload();
+      },
+    }
+  );
+
   return feedback ? (
-    <div>
+    <div className="text-right">
       {feedback.liked ? (
-        <i className="fal fa-thumbs-up p-1 rounded text-gray-900 bg-gray-100" />
+        <i className="fas fa-thumbs-up p-1 rounded text-green-900 bg-green-100" />
       ) : (
-        <i className="fal fa-thumbs-down p-1 rounded text-gray-900 bg-gray-100" />
+        <i className="fas fa-thumbs-down p-1 rounded text-red-900 bg-red-100" />
       )}
     </div>
   ) : (
@@ -310,7 +327,16 @@ const ChatFeedback = (props: { feedback: ChatFeedback }) => {
         </div>
 
         <div className="mt-10 flex justify-end items-end">
-          <Button onClick={() => console.log("submit")} variant="primary">
+          <Button
+            onClick={async () =>
+              await createChatFeedbackMutation.mutateAsync({
+                chat_message: message_id,
+                liked: liked as boolean,
+                message,
+              })
+            }
+            variant="primary"
+          >
             Submit
           </Button>
         </div>
