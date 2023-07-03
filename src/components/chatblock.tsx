@@ -265,7 +265,12 @@ const ChatFeedback = (props: {
   );
 
   return feedback ? (
-    <div className="text-right">
+    <div className="relative text-right group">
+      {feedback.message && (
+        <div className="hidden group-hover:block absolute bottom-6 right-6 text-center bg-gray-100 text-gray-900 p-2 px-4 rounded shadow">
+          {feedback.message}
+        </div>
+      )}
       {feedback.liked ? (
         <i className="fas fa-thumbs-up p-1 rounded text-green-900 bg-green-100" />
       ) : (
@@ -347,11 +352,11 @@ const ChatFeedback = (props: {
       <div className="flex items-center justify-end gap-2">
         <i
           onClick={() => setLiked(true)}
-          className="fal fa-thumbs-up p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+          className="far fa-thumbs-up cursor-pointer p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100"
         />
         <i
           onClick={() => setLiked(false)}
-          className="fal fa-thumbs-down p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+          className="far fa-thumbs-down cursor-pointer p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100"
         />
       </div>
     </>
