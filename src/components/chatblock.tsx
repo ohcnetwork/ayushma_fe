@@ -240,8 +240,9 @@ export default function ChatBlock(props: {
 const ChatFeedback = (props: {
   message_id: number;
   feedback: ChatFeedback;
+  onSuccess?: (data: ChatFeedback) => void;
 }) => {
-  const { feedback, message_id } = props;
+  const [feedback, setFeedback] = useState(props.feedback);
   const [liked, setLiked] = useState<boolean | null>(null);
   const [message, setMessage] = useState("");
   const [messageSuggestions, setMessageSuggestions] = useState({
@@ -256,8 +257,9 @@ const ChatFeedback = (props: {
   const createChatFeedbackMutation = useMutation(
     (feedback: Partial<ChatFeedback>) => API.feedback.create(feedback),
     {
-      onSuccess: (_) => {
-        window.location.reload();
+      onSuccess: (data: ChatFeedback) => {
+        setFeedback(data);
+        props.onSuccess?.(data);
       },
     }
   );
@@ -330,7 +332,7 @@ const ChatFeedback = (props: {
           <Button
             onClick={async () =>
               await createChatFeedbackMutation.mutateAsync({
-                chat_message: message_id,
+                chat_message: props.message_id,
                 liked: liked as boolean,
                 message,
               })
