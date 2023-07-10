@@ -179,7 +179,7 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
     }
 
     return (
-        <div ref={reportTemplateRef} id="wow">
+        <div ref={reportTemplateRef}>
             <Toaster />
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-black">Test Run Results</h1>
