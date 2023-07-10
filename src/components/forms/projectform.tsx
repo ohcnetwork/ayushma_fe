@@ -1,4 +1,4 @@
-import { Project, STT_ENGINES } from "@/types/project";
+import { MODELS, Project, STT_ENGINES } from "@/types/project";
 import { useState } from "react";
 import { Button, Input, TextArea } from "../ui/interactive";
 
@@ -23,12 +23,18 @@ export default function ProjectForm(props: {
         className="flex flex-col gap-2"
         encType="multipart/form-data"
       >
+        <p className="text-sm text-gray-500">
+          Title
+        </p>
         <Input
           placeholder="Title"
           value={project.title}
           onChange={(e) => setProject({ ...project, title: e.target.value })}
           errors={errors?.title}
         />
+        <p className="text-sm text-gray-500">
+          Description
+        </p>
         <TextArea
           placeholder="Description"
           value={project.description}
@@ -37,6 +43,9 @@ export default function ProjectForm(props: {
           }
           errors={errors?.description}
         />
+        <p className="text-sm text-gray-500">
+          Prompt
+        </p>
         <TextArea
           placeholder="Prompt"
           className="h-56"
@@ -44,9 +53,12 @@ export default function ProjectForm(props: {
           onChange={(e) => setProject({ ...project, prompt: e.target.value })}
           errors={errors?.prompt}
         />
+        <p className="text-sm text-gray-500">
+          Speech to text engine
+        </p>
         <select
           className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
-          value={project.stt_engine || 1}
+          value={project.stt_engine ?? 1}
           onChange={(e) =>
             setProject({ ...project, stt_engine: parseInt(e.target.value) })
           }
@@ -57,7 +69,23 @@ export default function ProjectForm(props: {
             </option>
           ))}
         </select>
-        <Button loading={loading} type="submit">
+        <p className="text-sm text-gray-500">
+          Model
+        </p>
+        <select
+          className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+          value={project.model ?? 1}
+          onChange={(e) =>
+            setProject({ ...project, model: parseInt(e.target.value) })
+          }
+        >
+          {MODELS.map((model, i) => (
+            <option key={model.id} value={model.id}>
+              {model.label}
+            </option>
+          ))}
+        </select>
+        <Button loading={loading} type="submit" className="mt-4">
           {pro.external_id ? "Save" : "Create"}
         </Button>
       </form>
