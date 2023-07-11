@@ -9,8 +9,9 @@ import { Feedback, TestResult, TestRun, TestSuite } from "@/types/test";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import jsPDF from "jspdf";
 
 export default function Page({ params }: { params: { testsuite_id: string, testrun_id: string } }) {
     const router = useRouter();
@@ -42,6 +43,27 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
         neutral: 0,
         average: 0,
     });
+
+    const reportTemplateRef = useRef<HTMLDivElement>(null);
+
+    const handleGeneratePdf = () => {
+		const doc = new jsPDF({
+			format: 'a4',
+			unit: 'pt',
+		});
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const clone = reportTemplateRef.current?.cloneNode(true) as HTMLElement;
+        clone.style.setProperty("width", `${pdfWidth - 40}px`);
+    	doc.html(clone, {
+			async callback(doc) {
+				await doc.save(`Test Run - ${testRun?.project_object.title} - ${testRun?.created_at.toString().slice(0,10)}`);
+			},
+            margin: 20,
+            html2canvas: { scale: 1 },
+            autoPaging: 'slice',
+		});
+	};
+
 
     useEffect(() => {
         if (testRun && testRun.test_results) {
@@ -157,9 +179,17 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
     }
 
     return (
-        <div>
+        <div ref={reportTemplateRef}>
             <Toaster />
-            <div className="flex justify-between items-center mb-8"><h1 className="text-2xl font-black">Test Run Results</h1><Button variant="secondary" className="bg-gray-100" onClick={() => { router.push(`/admin/tests/${testsuite_id}/`) }}>Back</Button></div>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-2xl font-black">Test Run Results</h1>
+                <div data-html2canvas-ignore="true" className="flex gap-4">
+                    <Button variant="primary" onClick={handleGeneratePdf}>
+                        <i className="fa-duotone fa-file-pdf mr-2"></i>Download PDF
+                    </Button>
+                    <Button variant="secondary" className="bg-gray-100" onClick={() => { router.push(`/admin/tests/${testsuite_id}/`) }}>Back</Button>
+                </div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border border-gray-300 bg-white p-4 rounded-lg my-4">
                 <div>
                     <div className="flex flex-col justify-end">
@@ -298,6 +328,7 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                             </div>
                             <div className="mr-0 ml-auto mb-0 mt-2 sm:mt-auto w-full sm:w-auto">
                                 <Button
+                                    data-html2canvas-ignore="true"
                                     className="w-full sm:w-auto"
                                     onClick={
                                         () => {
