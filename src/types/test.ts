@@ -1,6 +1,7 @@
 import { Project } from "./project";
 import { BaseModelType } from "./chat";
 import { User } from "./user";
+import { Document } from "./chat";
 
 export type TestSuite = BaseModelType & {
     external_id?: string;
@@ -36,6 +37,7 @@ export type TestResult = BaseModelType & {
     cosine_sim: number;
     bleu_score: number;
     feedback?: Feedback[];
+    references?: Document[]
 }
 
 export type Feedback = BaseModelType & {

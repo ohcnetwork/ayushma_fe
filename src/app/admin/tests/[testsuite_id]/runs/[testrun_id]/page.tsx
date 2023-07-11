@@ -234,6 +234,32 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                         <div>
                             <h3 className="text-md font-bold mb-2 text-center sm:text-left">AI Answer:</h3>
                             <p className="text-gray-700">{test.answer}</p>
+                            {test?.references && test?.references.length > 0 && (
+                                <div className="flex gap-2 mt-3 items-center pb-4">
+                                    <p className="mr-1 text-sm italic">References:</p>
+                                    {test?.references.map((doc, i) => {
+                                        if (doc.document_type === 1 || doc.document_type === 2)
+                                            return (
+                                                <a
+                                                    key={i}
+                                                    href={doc.document_type === 1 ? doc.file : doc.text_content}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                                                >
+                                                    {doc.title}
+                                                </a>
+                                            );
+                                        else if (doc.document_type === 3)
+                                            return (
+                                                <div className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
+                                                    {doc.title}
+                                                </div>
+                                            );
+                                        else return null;
+                                    })}
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="border-b border-gray-200 my-4"></div>
