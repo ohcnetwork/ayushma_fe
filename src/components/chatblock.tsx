@@ -230,7 +230,7 @@ export default function ChatBlock(props: {
         )}
       {message?.messageType === ChatMessageType.AYUSHMA && (
         <ChatFeedback
-          message_id={message.id}
+          message_id={message.id!}
           feedback={message?.feedback ?? null}
         />
       )}

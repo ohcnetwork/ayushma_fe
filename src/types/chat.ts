@@ -31,7 +31,7 @@ export type ChatFeedback = {
 } | null;
 
 export type ChatMessage = BaseModelType & {
-  id: number;
+  id?: number;
   messageType: ChatMessageType;
   message: string;
   translated_message?: string;
@@ -42,7 +42,7 @@ export type ChatMessage = BaseModelType & {
   meta?: ChatMessageMeta;
   top_k?: number;
   temperature?: number;
-  feedback: ChatFeedback;
+  feedback?: ChatFeedback;
 };
 
 export type ChatConverseStream = {
