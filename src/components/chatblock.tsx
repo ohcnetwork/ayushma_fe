@@ -10,8 +10,9 @@ import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import Modal from "./modal";
 import { Button } from "./ui/interactive";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { API } from "@/utils/api";
+import { useParams } from "next/navigation";
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
@@ -237,12 +238,16 @@ export default function ChatBlock(props: {
   );
 }
 
-const ChatFeedback = (props: {
+const ChatFeedback = ({
+  feedback,
+  message_id,
+  onSuccess,
+}: {
   message_id: number;
   feedback: ChatFeedback;
   onSuccess?: (data: ChatFeedback) => void;
 }) => {
-  const [feedback, setFeedback] = useState(props.feedback);
+  const queryClient = useQueryClient();
   const [liked, setLiked] = useState<boolean | null>(null);
   const [message, setMessage] = useState("");
   const [messageSuggestions, setMessageSuggestions] = useState({
@@ -253,13 +258,14 @@ const ChatFeedback = (props: {
       "This is harmful / unsafe.",
     ],
   });
+  const { chat_id } = useParams();
 
   const createChatFeedbackMutation = useMutation(
     (feedback: Partial<ChatFeedback>) => API.feedback.create(feedback),
     {
-      onSuccess: (data: ChatFeedback) => {
-        setFeedback(data);
-        props.onSuccess?.(data);
+      onSuccess: async (data: ChatFeedback) => {
+        await queryClient.invalidateQueries(["chat", chat_id]);
+        onSuccess?.(data);
       },
     }
   );
@@ -337,7 +343,7 @@ const ChatFeedback = (props: {
           <Button
             onClick={async () =>
               await createChatFeedbackMutation.mutateAsync({
-                chat_message: props.message_id,
+                chat_message: message_id,
                 liked: liked as boolean,
                 message,
               })
