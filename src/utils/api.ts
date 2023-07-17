@@ -291,13 +291,16 @@ export const API = {
         request(`tests/suites/${suite_id}/questions/${id}`, "PATCH", fields),
       delete: (suite_id: string, id: string) =>
         request(`tests/suites/${suite_id}/questions/${id}`, "DELETE"),
-    }
+    },
     projects: {
-        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request("projects","GET", filters),
-        get: (id: string) => request(`projects/${id}`),
-        update: (id: string, project: Partial<Project>) => request(`projects/${id}`, "PATCH", { ...project }),
-        create: (project: Partial<Project>) => request(`projects`, "POST", { ...project }),
-        delete: (id: string) => request(`projects/${id}`, "DELETE"),
+      list: (filters: { ordering: string } = { ordering: "-created_at" }) =>
+        request("projects", "GET", filters),
+      get: (id: string) => request(`projects/${id}`),
+      update: (id: string, project: Partial<Project>) =>
+        request(`projects/${id}`, "PATCH", { ...project }),
+      create: (project: Partial<Project>) =>
+        request(`projects`, "POST", { ...project }),
+      delete: (id: string) => request(`projects/${id}`, "DELETE"),
     },
     runs: {
       list: (
