@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function Input(
@@ -124,6 +125,35 @@ export function CheckBox(
         <span className="switch-slider" />
       </label>
       <span className="ml-2">{label}</span>
+    </div>
+  );
+}
+
+export function Dropdown(
+  props: {
+    errors?: string[];
+    loading?: boolean;
+    children: ReactNode;
+  } & React.SelectHTMLAttributes<HTMLSelectElement>
+) {
+  const { className, children, loading, errors, ...rest } = props;
+
+  return (
+    <div>
+      <div className="border border-gray-200 w-full bg-white rounded-lg overflow-hidden relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1">
+        {loading && <div className="absolute inset-0 bg-black/10" />}
+        <select
+          {...rest}
+          className={twMerge(
+            "border-none bg-transparent flex-1 p-2 px-4 outline-none",
+            className
+          )}
+          disabled={loading}
+        >
+          {children}
+        </select>
+      </div>
+      <Errors errors={errors} />
     </div>
   );
 }

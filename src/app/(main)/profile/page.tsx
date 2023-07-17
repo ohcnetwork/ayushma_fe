@@ -101,9 +101,13 @@ export default function Page() {
                   }
                 />
               </div>
-              {formData.password != formData.confirm_password && (
+              {formData.password != formData.confirm_password ? (
                 <p className="text text-sm text-red-500 mb-2">
                   Passwords do not match
+                </p>
+              ) : (
+                <p className="text-transparent select-none text-sm mb-2">
+                  &nbsp;
                 </p>
               )}
               <div className="flex gap-2 py-4">
