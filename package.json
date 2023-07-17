@@ -36,6 +36,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@types/json2csv": "^5.0.3",
     "husky": "^8.0.3"
   }
 }
