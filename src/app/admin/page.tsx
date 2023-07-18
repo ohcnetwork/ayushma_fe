@@ -42,7 +42,7 @@ export default function Page() {
           <Link
             href={`/admin/projects/${project.external_id}`}
             key={i}
-            className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4"
+            className="border border-gray-300 hover:bg-gray-200 bg-gray-100 rounded-lg p-4"
           >
             {project.title}
             {project.is_default && (

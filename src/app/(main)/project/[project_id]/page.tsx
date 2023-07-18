@@ -3,7 +3,6 @@ import ChatBar from "@/components/chatbar";
 import ChatBlock from "@/components/chatblock";
 import { storageAtom } from "@/store";
 import { ChatConverseStream, ChatMessageType } from "@/types/chat";
-import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -13,8 +12,6 @@ import { useEffect, useState } from "react";
 export default function Chat(params: { params: { project_id: string } }) {
 
     const { project_id } = params.params;
-    const projectQuery = useQuery(["project", project_id], () => API.projects.get(project_id));
-    const project: Project | undefined = projectQuery.data || undefined;
     const [chat, setChat] = useState("");
     const router = useRouter();
     const [storage] = useAtom(storageAtom);
@@ -127,12 +124,11 @@ export default function Chat(params: { params: { project_id: string } }) {
             </div>
             <div className="w-full shrink-0 p-4">
                 <ChatBar
-                    disabled={project?.archived}
                     chat={chat}
                     onChange={(e) => setChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
-                    errors={[(newChatMutation.error as any)?.error?.error]}
+                    errors={[(newChatMutation.error as any)?.error?.error, (newChatMutation.error as any)?.error?.non_field_errors]}
                     loading={newChatMutation.isLoading || converseMutation.isLoading || isTyping}
                 />
             </div>

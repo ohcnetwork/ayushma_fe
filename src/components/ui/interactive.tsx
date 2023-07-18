@@ -7,10 +7,9 @@ export function Input(
     loading?: boolean;
     right?: React.ReactNode;
     left?: React.ReactNode;
-    disabled?: boolean;
   } & React.InputHTMLAttributes<HTMLInputElement>
 ) {
-  const { className, loading, errors, right, left, disabled, ...rest } = props;
+  const { className, loading, errors, right, left, ...rest } = props;
 
   return (
     <div>
@@ -23,7 +22,7 @@ export function Input(
             "border-none bg-transparent flex-1 p-2 px-4 outline-none",
             className
           )}
-          disabled={loading || disabled}
+          disabled={loading}
         />
         {right}
       </div>
