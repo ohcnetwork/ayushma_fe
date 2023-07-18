@@ -4,7 +4,7 @@ import ChatBlock from "@/components/chatblock";
 import { storageAtom } from "@/store";
 import { ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { API } from "@/utils/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 export default function Chat(params: { params: { project_id: string } }) {
 
     const { project_id } = params.params;
-
     const [chat, setChat] = useState("");
     const router = useRouter();
     const [storage] = useAtom(storageAtom);
@@ -129,7 +128,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                     onChange={(e) => setChat(e.target.value)}
                     onSubmit={handleSubmit}
                     onAudio={handleAudio}
-                    errors={[(newChatMutation.error as any)?.error?.error]}
+                    errors={[(newChatMutation.error as any)?.error?.error, (newChatMutation.error as any)?.error?.non_field_errors]}
                     loading={newChatMutation.isLoading || converseMutation.isLoading || isTyping}
                 />
             </div>
