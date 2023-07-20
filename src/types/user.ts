@@ -5,6 +5,7 @@ export type User = {
     full_name: string,
     allow_key: boolean,
     is_staff: boolean,
+    is_reviewer: boolean
 }
 
 export type UserUpdate = {

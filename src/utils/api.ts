@@ -40,8 +40,8 @@ const request = async (
     const { formdata, external, headers, auth: isAuth, stream } = options;
 
     const noonce = (new Date().getTime() + Math.random()).toString();
-    if(formdata) data.append('noonce', noonce); else data['noonce'] = noonce;
-    
+    if (formdata) data.append('noonce', noonce); else data['noonce'] = noonce;
+
     let url = external ? endpoint : API_BASE_URL + endpoint;
     let payload = formdata ? data : JSON.stringify(data);
 
@@ -161,7 +161,7 @@ export const API = {
         reset: (token: string, email: string, password: string) => request("auth/reset", "POST", { token, email, password }),
     },
     projects: {
-        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request("projects","GET", filters),
+        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request("projects", "GET", filters),
         get: (id: string) => request(`projects/${id}`),
         update: (id: string, project: Partial<Project>) => request(`projects/${id}`, "PATCH", { ...project }),
         create: (project: Partial<Project>) => request(`projects`, "POST", { ...project }),
@@ -213,14 +213,14 @@ export const API = {
             }),
     },
     tests: {
-        suites:{
+        suites: {
             list: (filters: { ordering: string } = { ordering: "-created_at" }) => request(`tests/suites`, "GET", filters),
             create: (testSuite: Partial<TestSuite>) => request(`tests/suites`, "POST", { ...testSuite }),
             get: (id: string) => request(`tests/suites/${id}`),
             update: (id: string, fields: TestSuite) => request(`tests/suites/${id}`, "PATCH", fields),
             delete: (id: string) => request(`tests/suites/${id}`, "DELETE"),
         },
-        questions:{
+        questions: {
             list: (suite_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`tests/suites/${suite_id}/questions`, "GET", filters),
             create: (suite_id: string, question: Partial<TestQuestion>) => request(`tests/suites/${suite_id}/questions`, "POST", { ...question }),
             get: (suite_id: string, id: string) => request(`tests/suites/${suite_id}/questions/${id}`),
@@ -241,5 +241,8 @@ export const API = {
             update: (suite_id: string, run_id: string, id: string, fields: Feedback) => request(`tests/suites/${suite_id}/runs/${run_id}/feedback/${id}`, "PATCH", fields),
             delete: (suite_id: string, run_id: string, id: string) => request(`tests/suites/${suite_id}/runs/${run_id}/feedback/${id}`, "DELETE"),
         }
-    }
+    },
+    users: {
+        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request(`users`, "GET", filters),
+    },
 }
