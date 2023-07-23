@@ -243,6 +243,6 @@ export const API = {
         }
     },
     users: {
-        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request(`users`, "GET", filters),
+        list: (filters: { ordering: string, search?: string, is_staff?: boolean | null, is_reviewer?: boolean | null, allow_key?: boolean | null} = { ordering: "-created_at" }) => request(`users`, "GET", filters),
     },
 }
