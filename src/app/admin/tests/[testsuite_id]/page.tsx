@@ -7,12 +7,12 @@ import Modal from "@/components/modal";
 import { Button, Input, TextArea } from "@/components/ui/interactive";
 import { Document, Project } from "@/types/project";
 import { API } from "@/utils/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { QueryFunction, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { TestSuite, TestQuestion, TestRun } from "@/types/test";
+import { TestSuite, TestQuestion, TestRun, TestResult } from "@/types/test";
 
 export default function Page({ params }: { params: { testsuite_id: string } }) {
     const router = useRouter();
@@ -26,9 +26,56 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
     const ProjectListQuery = useQuery(["projects"], () => API.projects.list());
     const projects: Project[] = ProjectListQuery.data?.results || [];
+    
+    type APIResponse = {
+        results: TestRun[];
+        offset: number | null;
+    }
 
-    const TestRunListQuery = useQuery(["testruns"], () => API.tests.runs.list(testsuite_id));
-    const testRuns: TestRun[] = TestRunListQuery.data?.results || [];
+    const fetchData: QueryFunction<APIResponse> = async ({
+        pageParam,
+      }) => {
+        const offset = pageParam ? pageParam : 0;
+        const res = await API.tests.runs.list(testsuite_id, {ordering:"-created_at", offset: offset, limit: 10});
+        const testRuns: TestRun[] = res.results;
+        return {
+          results: testRuns,
+          offset: offset + 10,
+        };
+      };
+
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetching,
+        isLoading,
+        refetch,
+      } = useInfiniteQuery({
+        queryKey: ["testruns"],
+        queryFn: fetchData,
+        getNextPageParam: (lastPage, pages) => {return lastPage.results.length > 0 ? lastPage.offset : null},
+      });
+
+    const testRuns = useMemo(
+        () => (data ? data?.pages.flatMap(item => item.results) : []),
+        [data]
+    );
+
+    const observer = useRef<IntersectionObserver>();
+    const lastElementRef = useCallback(
+    (node: HTMLButtonElement) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetching) {
+          fetchNextPage();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasNextPage, fetchNextPage, isFetching]
+  );
 
     const TestQuestionsAddMutation = useMutation((question: Partial<TestQuestion>) => API.tests.questions.create(testsuite_id, question), {
         onSuccess: () => {
@@ -47,7 +94,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     const TestRunCreateMutation = useMutation((testRun: Partial<TestRun>) => API.tests.runs.create(testsuite_id, testRun), {
         onSuccess: (testRun) => {
             toast.success("Test Started");
-            TestRunListQuery.refetch();
+            refetch();
         }
     });
 
@@ -143,32 +190,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
     return (
         <div className="mx-4 md:mx-0">
-            <h1 className="text-3xl font-black mb-6">Runs for {testSuite?.name}</h1>
-            <div className="text-gray-500 justify-center my-4">
-                {testRuns.length === 0 && <p className="text-center">Test has not been run yet.</p>}
-
-                {testRuns.length > 0 && testRuns.map((testRun: TestRun) => {
-                    const date = new Date(testRun.created_at);
-                    const formattedDate = formatDate(date);
-                    return (
-                        <button key={testRun.external_id} className="w-full focus:outline-none" onClick={() => router.push(`/admin/tests/${testSuite?.external_id}/runs/${testRun.external_id}`)}>
-                            <div className="flex justify-between items-center my-2 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-100">
-                                <div className="flex items-center">
-                                    <span className="text-gray-700 font-bold">{testRun.project_object.title}</span>
-                                    <span className="text-gray-500 ml-2">({formattedDate})</span>
-                                </div>
-                                <div className="flex items-center">
-                                    <span className="text-gray-500 mr-2">Status: </span>
-                                    <span className={`text-sm font-bold ${testRun.complete ? "text-green-500" : "text-red-500"}`}>{testRun.complete ? "Completed" : "Running..."}</span>
-                                </div>
-                            </div>
-                        </button>
-                    )
-                })}
-            </div>
-
-            <hr className="text-gray-300 my-6" />
-
             <div className="flex">
                 <h1 className="text-3xl font-black mb-6">Questions for {testSuite?.name}</h1>
                 <div className="flex flex-col md:flex-row mr-0 ml-auto">
@@ -288,6 +309,43 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     </Button>
                 </div>
             </div>
+
+            <hr className="text-gray-300 my-6" />
+
+            <h1 className="text-3xl font-black mb-6">Runs for {testSuite?.name}</h1>
+            <div className="text-gray-500 justify-center my-4">
+                {testRuns.length === 0 && <p className="text-center">Test has not been run yet.</p>}
+
+                {testRuns.length > 0 && testRuns.map((testRun: TestRun, i) => {
+                    const date = new Date(testRun.created_at);
+                    const formattedDate = formatDate(date);
+                    const avgBleu = testRun && testRun.test_results ? (testRun?.test_results?.reduce((acc: number, test: TestResult) => acc + (test.bleu_score || 0), 0) / (testRun?.test_results?.length || 1)) : 0;
+                    const avgCosineSim = testRun && testRun.test_results ? (testRun?.test_results?.reduce((acc: number, test: TestResult) => acc + (test.cosine_sim || 0), 0) / (testRun?.test_results?.length || 1)) : 0;
+                    return (
+                        <button ref={testRuns.length === i + 1 ? lastElementRef : null} key={testRun.external_id} className="w-full focus:outline-none" onClick={() => router.push(`/admin/tests/${testSuite?.external_id}/runs/${testRun.external_id}`)}>
+                            <div className="flex flex-col lg:flex-row justify-between items-center my-2 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-100">
+                                <div className="flex items-center">
+                                    <span className="text-gray-700 font-bold">{testRun.project_object.title}</span>
+                                    <span className="text-gray-500 ml-2">({formattedDate})</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="text-gray-500 mr-2">Avg Cosine Sim: </span>
+                                    <span className="text-black font-bold"><span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span></span>
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="text-gray-500 mr-2">Avg BLEU: </span>
+                                    <span className="text-black font-bold"><span className={`font-bold ${avgBleu < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span></span>
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="text-gray-500 mr-2">Status: </span>
+                                    <span className={`text-sm font-bold ${testRun.complete ? "text-green-500" : "text-red-500"}`}>{testRun.complete ? "Completed" : "Running..."}</span>
+                                </div>
+                            </div>
+                        </button>
+                    )
+                })}
+            </div>
+
             <Modal
                 show={showAddQuestion}
                 onClose={() => setShowAddQuestion(false)}
