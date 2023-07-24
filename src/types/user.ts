@@ -10,5 +10,9 @@ export type User = {
 
 export type UserUpdate = {
     full_name?: string,
+    email?: string,
+    allow_key?: boolean,
+    is_staff?: boolean,
+    is_reviewer?: boolean,
     password?: string,
 }

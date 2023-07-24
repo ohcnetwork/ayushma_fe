@@ -1,4 +1,4 @@
-import { UserUpdate } from "@/types/user";
+import { User, UserUpdate } from "@/types/user";
 import { Project } from "@/types/project";
 import { EventSourceMessage, FetchEventSourceInit, fetchEventSource } from '@microsoft/fetch-event-source';
 import { ChatConverseStream } from "@/types/chat";
@@ -243,6 +243,9 @@ export const API = {
         }
     },
     users: {
+        get: (username: string) => request(`users/${username}`, "GET"),
+        update: (username: string, user: Partial<UserUpdate>) => request(`users/${username}`, "PATCH", user),
         list: (filters: { ordering: string, search?: string, is_staff?: boolean | null, is_reviewer?: boolean | null, allow_key?: boolean | null} = { ordering: "-created_at" }) => request(`users`, "GET", filters),
+        delete: (username: string) => request(`users/${username}`, "DELETE")
     },
 }

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/interactive";
 import { User } from "@/types/user";
 import { API } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -97,7 +98,7 @@ export default function Page() {
                                     </div>
                                 </td>
                                 <td className="px-6 py-2 text-right">
-                                    <a href="#" className="font-medium text-green-600 hover:underline">Edit</a>
+                                    <Link href={`/admin/users/${user.username}`} className="font-medium text-green-600 hover:underline">Edit</Link>
                                 </td>
                             </tr>
                         ) :
