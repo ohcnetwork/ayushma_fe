@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 const RoleButton = (props: {
-    color: string;
+    color: "green" | "blue" | "orange";
     text: string;
     state: boolean;
 }
@@ -16,23 +16,23 @@ const RoleButton = (props: {
 ) => {
     const { color, text, className, state, ...rest } = props;
     return (
-        <button {...rest} className={twMerge(`flex gap-1 border w-fit px-2 py-1 rounded-full items-center hover:border-${color}-400 transition-all ${state && `bg-${color}-400`}`, className)}>
-            <span className={`p-1.5 rounded-full h-fit ${state ? "bg-white" : `bg-${color}-400`}`}></span>
-            <span className={`${state ? "text-white" : `text-${color}-500`}`}>{text}</span>
+        <button {...rest} className={twMerge(`flex gap-1 border w-fit px-2 py-1 rounded-full items-center ${color === "green" && "hover:border-green-400"} ${color === "blue" && "hover:border-blue-400"} ${color === "orange" && "hover:border-orange-400"} transition-all ${state && `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"} ${color === "orange" && "bg-orange-400"}`}`, className)}>
+            <span className={`p-1.5 rounded-full h-fit ${state ? "bg-white" : `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"} ${color === "orange" && "bg-orange-400"}`}`}></span>
+            <span className={`${state ? "text-white" : `${color === "green" && "text-green-400"} ${color === "blue" && "text-blue-400"} ${color === "orange" && "text-orange-400"}`}`}>{text}</span>
         </button>
     )
 }
 
 const RoleBubble = (props: {
-    color: string;
+    color: "green" | "gray" | "orange";
     text: string;
 }
 ) => {
     const { color, text } = props;
     return (
         <div className="flex gap-1 border w-fit px-2 py-1 rounded-full items-center transition-all">
-            <span className={`p-1.5 rounded-full h-fit bg-${color}-400`}></span>
-            <span className={`$text-${color}-500`}>{text}</span>
+            <span className={`p-1.5 rounded-full h-fit ${color === "green" && "bg-green-400"} ${color === "gray" && "bg-gray-400"} ${color === "orange" && "bg-orange-400"}`}></span>
+            <span className={`${color === "green" && "text-green-400"} ${color === "gray" && "text-gray-400"} ${color === "orange" && "text-orange-400"}`}>{text}</span>
         </div>
     )
 }
