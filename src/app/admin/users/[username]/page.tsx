@@ -76,13 +76,9 @@ const Page = ({ params }: { params: { username: string } }) => {
                         <p className="mb-2 text-sm text-gray-500">
                             Full name
                         </p>
-                        {updateError && updateError.error.full_name ? (
+                        {updateError && updateError.error.full_name && (
                             <p className="text text-sm text-red-500 mb-2">
                                 ({updateError.error.full_name})
-                            </p>
-                        ) : (
-                            <p className="text-transparent select-none text-sm mb-2">
-                                &nbsp;
                             </p>
                         )}
                     </div>
@@ -98,13 +94,9 @@ const Page = ({ params }: { params: { username: string } }) => {
                         <p className="mb-2 text-sm text-gray-500">
                             Email
                         </p>
-                        {updateError && updateError.error.email ? (
+                        {updateError && updateError.error.email && (
                             <p className="text text-sm text-red-500 mb-2">
                                 ({updateError.error.email})
-                            </p>
-                        ) : (
-                            <p className="text-transparent select-none text-sm mb-2">
-                                &nbsp;
                             </p>
                         )}
                     </div>
