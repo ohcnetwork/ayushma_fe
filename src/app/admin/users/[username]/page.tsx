@@ -15,7 +15,8 @@ const Page = ({ params }: { params: { username: string } }) => {
             setUserState(data);
         },
     });
-    const userData: User = userQuery.data;
+    const userData: User | undefined = userQuery.data;
+
     const [updatingUser, setUpdatingUser] = useState(false);
     const [deletingUser, setDeletingUser] = useState(false);
 
@@ -24,36 +25,37 @@ const Page = ({ params }: { params: { username: string } }) => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         setUpdatingUser(true);
         e.preventDefault();
-        updateUserMutation.mutate({
-            userDetails: userState
-        }, {
-            onSuccess: () => setUpdatingUser(false),
-            onError: () => setUpdatingUser(false),
-        });
+        updateUserMutation.mutate();
     };
 
     const updateUserMutation = useMutation(
-        (params: { userDetails: UserUpdate }) => API.users.update(userData ? userData.username : "", userState)
+        () => API.users.update(userData ? userData.username : "", userState),
+        {
+            onSuccess: () => setUpdatingUser(false),
+            onError: () => setUpdatingUser(false),
+        }
     );
 
+    const updateError = updateUserMutation.error as any;
+
+
     const deleteUser = () => {
-        setDeletingUser(true);
-
-        deleteUserMutation.mutate({
-            username: userData.username
-        }, {
-            onSuccess: () => {
-                setDeletingUser(false);
-                router.push("/admin/users");
-            }
-        });
-
+        if (confirm("Are you sure you want to delete this user?") && userData) {
+            setDeletingUser(true);
+            deleteUserMutation.mutate({
+                username: userData.username
+            }, {
+                onSuccess: () => {
+                    setDeletingUser(false);
+                    router.push("/admin/users");
+                }
+            });
+        }
     }
 
     const deleteUserMutation = useMutation(
-        (params: { username: string }) => API.users.delete(username)
+        (params: { username: string }) => API.users.delete(params.username)
     );
-
 
     return (
         <div>
@@ -64,9 +66,21 @@ const Page = ({ params }: { params: { username: string } }) => {
                 encType="multipart/form-data"
             >
                 <div>
-                    <p className="mb-2 text-sm text-gray-500">
-                        Full name
-                    </p>
+                    <div className="flex gap-4 items-center">
+                        <p className="mb-2 text-sm text-gray-500">
+                            Full name
+                        </p>
+                        {updateError && updateError.error.full_name ? (
+                            <p className="text text-sm text-red-500 mb-2">
+                                ({updateError.error.full_name})
+                            </p>
+                        ) : (
+                            <p className="text-transparent select-none text-sm mb-2">
+                                &nbsp;
+                            </p>
+                        )}
+                    </div>
+
                     <Input
                         placeholder="Full name"
                         value={userState.full_name}
@@ -74,9 +88,20 @@ const Page = ({ params }: { params: { username: string } }) => {
                     />
                 </div>
                 <div>
-                    <p className="mb-2 text-sm text-gray-500">
-                        Email
-                    </p>
+                    <div className="flex gap-4 items-center">
+                        <p className="mb-2 text-sm text-gray-500">
+                            Email
+                        </p>
+                        {updateError && updateError.error.email ? (
+                            <p className="text text-sm text-red-500 mb-2">
+                                ({updateError.error.email})
+                            </p>
+                        ) : (
+                            <p className="text-transparent select-none text-sm mb-2">
+                                &nbsp;
+                            </p>
+                        )}
+                    </div>
                     <Input
                         placeholder="Email"
                         value={userState.email}
@@ -105,8 +130,8 @@ const Page = ({ params }: { params: { username: string } }) => {
                         </label>
                     </div>
                 </div>
-                <div className="w-full">
-                    <Button loading={updatingUser} type="submit" className="mt-6 mb-3 w-full">
+                <div className="flex items-center gap-2 mt-4">
+                    <Button loading={updatingUser} type="submit" className="w-full">
                         Update user
                     </Button>
                     <Button loading={deletingUser} variant="danger" onClick={deleteUser} className="w-full">
