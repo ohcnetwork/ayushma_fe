@@ -51,6 +51,9 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
         const testResults = testRun?.test_results || [];
 
         const fields = ['question', 'human_answer', 'answer', 'cosine_sim', 'bleu_score', 'feedback'];
+     
+        const total_cosine = testResults.reduce((acc: number, test: TestResult) => acc + (test.cosine_sim || 0), 0);
+        const total_bleu = testResults.reduce((acc: number, test: TestResult) => acc + (test.bleu_score || 0), 0);
 
         const data = testResults.map((test) => ({
             question: test.question,
@@ -61,7 +64,13 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
             feedback: test.feedback?.map((feedback) => `(${feedback.created_at}) ${feedback.user_object.username}: [${feedback.rating}] ${feedback.notes}`).join(' , '),
         }));
 
-        const csv = json2csv.parse(data, { fields });
+        let csv = json2csv.parse(data, { fields });
+
+        const avgCosineSim =total_cosine / (testRun?.test_results?.length ?? 1);
+        const avgBleu = total_bleu / (testRun?.test_results?.length ?? 1);
+        csv = csv.concat(`\nAverage Cosine Similarity: ${avgCosineSim.toFixed(3)}`);
+        csv = csv.concat(`\nAverage BLEU Score: ${avgBleu.toFixed(3)}`);
+        
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
         const url = URL.createObjectURL(blob);
