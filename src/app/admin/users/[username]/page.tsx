@@ -7,7 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const Test = ({ params }: { params: { username: string } }) => {
+const Page = ({ params }: { params: { username: string } }) => {
     const { username } = params;
     const router = useRouter();
     const userQuery = useQuery(["user", username], () => API.users.get(username), {
@@ -118,4 +118,4 @@ const Test = ({ params }: { params: { username: string } }) => {
     );
 }
 
-export default Test;
+export default Page;
