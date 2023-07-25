@@ -54,7 +54,13 @@ const Page = ({ params }: { params: { username: string } }) => {
     }
 
     const deleteUserMutation = useMutation(
-        (params: { username: string }) => API.users.delete(params.username)
+        (params: { username: string }) => API.users.delete(params.username),
+        {
+            onError: () => {
+                alert("Cannot delete account that is currently being used");
+                setDeletingUser(false);
+            }
+        }
     );
 
     return (
