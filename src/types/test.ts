@@ -24,7 +24,7 @@ export type TestRun = BaseModelType & {
     project: string;
     project_object: Project;
     test_results?: TestResult[];
-    complete?: boolean;
+    status?: "running" | "completed" | "failed" | "canceled";
 }
 
 export type TestResult = BaseModelType & {
