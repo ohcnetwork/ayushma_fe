@@ -22,7 +22,12 @@ export default function ChatSideBar(props: { project_id?: string }) {
     ["chats"],
     ({ pageParam = 1 }) => {
       const offset = (pageParam - 1) * LIMIT;
-      return API.chat.list(project_id || "", LIMIT, offset, queryInputRef.current?.value || "");
+      return API.chat.list(
+        project_id || "",
+        LIMIT,
+        offset,
+        queryInputRef.current?.value || ""
+      );
     },
     {
       enabled: !!project_id,
@@ -119,45 +124,52 @@ export default function ChatSideBar(props: { project_id?: string }) {
           />
         </div>
         <div id="scrollableDiv" className="overflow-y-auto h-4/6">
-            <InfiniteScroll
-              loadMore={() => {
-                chatsQuery.fetchNextPage();
-              }}
-              hasMore={chatsQuery.hasNextPage ? true : false}
-              useWindow={false}
-              loader={
-                <div key={0} className="flex-1 flex items-center justify-center text-gray-500">
-                  Loading Chats...
-                </div>
-              }
-            >
-              {project_id &&
-                chatsQuery.data?.pages.map((group, index) => (
-                  <div key={index} className="flex flex-col gap-2 mt-2">
-                    {group.results.map((chat: Chat) => (
-                      <div
-                        key={chat.external_id}
-                        className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between"
+          <InfiniteScroll
+            loadMore={() => {
+              chatsQuery.fetchNextPage();
+            }}
+            hasMore={chatsQuery.hasNextPage ? true : false}
+            useWindow={false}
+            loader={
+              <div className="flex justify-center items-center h-full">
+              <div
+                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                role="status"
+              >
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
+            </div>
+            }
+          >
+            {project_id &&
+              chatsQuery.data?.pages.map((group, index) => (
+                <div key={index} className="flex flex-col gap-2 mt-2">
+                  {group.results.map((chat: Chat) => (
+                    <div
+                      key={chat.external_id}
+                      className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between"
+                    >
+                      <Link
+                        href={`project/${project_id}/chat/${chat.external_id}`}
+                        className="w-full py-2 px-4 text-left truncate"
+                        title={chat.title}
                       >
-                        <Link
-                          href={`project/${project_id}/chat/${chat.external_id}`}
-                          className="w-full py-2 px-4 text-left truncate"
-                          title={chat.title}
-                        >
-                          {chat.title}
-                        </Link>
-                        <button
-                          className="py-2 px-2 hidden group-hover:block"
-                          onClick={() => deleteChat(chat.external_id)}
-                        >
-                          <i className="fal fa-trash-alt" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-            </InfiniteScroll>
-          </div>
+                        {chat.title}
+                      </Link>
+                      <button
+                        className="py-2 px-2 hidden group-hover:block"
+                        onClick={() => deleteChat(chat.external_id)}
+                      >
+                        <i className="fal fa-trash-alt" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </InfiniteScroll>
+        </div>
         <div className="p-2">
           <div className="flex gap-2">
             {buttons.map((button, i) => (
