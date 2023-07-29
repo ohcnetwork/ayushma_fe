@@ -17,7 +17,7 @@ import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
 export default function ChatSideBar(props: { project_id?: string }) {
   const { project_id } = props;
   const queryInputRef = useRef<HTMLInputElement>(null);
-  const LIMIT = 5;
+  const LIMIT = 10;
   const chatsQuery = useInfiQuery(
     ["chats"],
     ({ pageParam = 1 }) => {
