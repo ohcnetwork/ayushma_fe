@@ -179,7 +179,7 @@ export const API = {
         delete: (project_id: string, id: string) => request(`projects/${project_id}/documents/${id}`, "DELETE"),
     },
     chat: {
-        list: (project_id: string, filters: { ordering: string } = { ordering: "-created_at" }) => request(`projects/${project_id}/chats`, "GET", filters),
+        list: (project_id: string, limit: number, offset: number, search: string, filters: { ordering: string, limit: number, offset: number, search: string } = { ordering: "-created_at", limit, offset, search }) => request(`projects/${project_id}/chats`, "GET", filters),
         create: (project_id: string, title: string, openai_api_key?: string) => request(`projects/${project_id}/chats`, "POST", { title }, openai_api_key ? {
             headers: {
                 "OpenAI-Key": openai_api_key

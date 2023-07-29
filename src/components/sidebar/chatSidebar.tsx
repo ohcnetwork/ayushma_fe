@@ -2,24 +2,33 @@
 
 import { Chat } from "@/types/chat";
 import { API } from "@/utils/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { CheckBox, Input } from "../ui/interactive";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import { usePathname, useRouter } from "next/navigation";
 import Modal from "../modal";
 import Slider from "../ui/slider";
+import InfiniteScroll from "react-infinite-scroller";
+import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
 
 export default function ChatSideBar(props: { project_id?: string }) {
   const { project_id } = props;
-
-  const chatsQuery = useQuery(
+  const queryInputRef = useRef<HTMLInputElement>(null);
+  const LIMIT = 5;
+  const chatsQuery = useInfiQuery(
     ["chats"],
-    () => API.chat.list(project_id || ""),
-    { enabled: !!project_id }
+    ({ pageParam = 1 }) => {
+      const offset = (pageParam - 1) * LIMIT;
+      return API.chat.list(project_id || "", LIMIT, offset, queryInputRef.current?.value || "");
+    },
+    {
+      enabled: !!project_id,
+    }
   );
+
   const [storage, setStorage] = useAtom(storageAtom);
   const router = useRouter();
   const path = usePathname();
@@ -81,11 +90,11 @@ export default function ChatSideBar(props: { project_id?: string }) {
 
   return (
     <>
-      <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
+      <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col border-r border-gray-300 h-screen justify-between">
         <div className="flex flex-col p-2 gap-2">
           <Link
-          href={project_id ? `/project/${project_id}` : "/"}
-          className="cursor-pointer"
+            href={project_id ? `/project/${project_id}` : "/"}
+            className="cursor-pointer"
           >
             <div className="h-6 flex gap-2 items-center my-4 justify-center">
               <img src="/ayushma_text.svg" alt="Logo" className="h-full" />
@@ -99,33 +108,56 @@ export default function ChatSideBar(props: { project_id?: string }) {
             <i className="far fa-plus" />
             &nbsp; New Chat
           </Link>
-          {project_id && chatsQuery.isLoading && (
-            <div className="flex-1 flex items-center justify-center text-gray-500">
-              Loading Chats...
-            </div>
-          )}
-          {project_id &&
-            chatsQuery.data?.results.map((chat: Chat) => (
-              <div
-                key={chat.external_id}
-                className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between"
-              >
-                <Link
-                  href={`project/${project_id}/chat/${chat.external_id}`}
-                  className="w-full py-2 px-4 text-left truncate"
-                  title={chat.title}
-                >
-                  {chat.title}
-                </Link>
-                <button
-                  className="py-2 px-2 hidden group-hover:block"
-                  onClick={() => deleteChat(chat.external_id)}
-                >
-                  <i className="fal fa-trash-alt" />
-                </button>
-              </div>
-            ))}
+          <input
+            type="text"
+            placeholder="Search..."
+            ref={queryInputRef}
+            onChange={(e) => {
+              chatsQuery.refetch();
+            }}
+            className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
+          />
         </div>
+        <div id="scrollableDiv" className="overflow-y-auto h-4/6">
+            <InfiniteScroll
+              loadMore={() => {
+                chatsQuery.fetchNextPage();
+              }}
+              hasMore={chatsQuery.hasNextPage ? true : false}
+              useWindow={false}
+              loader={
+                <div key={0} className="flex-1 flex items-center justify-center text-gray-500">
+                  Loading Chats...
+                </div>
+              }
+            >
+              {project_id &&
+                chatsQuery.data?.pages.map((group, index) => (
+                  <div key={index} className="flex flex-col gap-2 mt-2">
+                    {group.results.map((chat: Chat) => (
+                      <div
+                        key={chat.external_id}
+                        className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between"
+                      >
+                        <Link
+                          href={`project/${project_id}/chat/${chat.external_id}`}
+                          className="w-full py-2 px-4 text-left truncate"
+                          title={chat.title}
+                        >
+                          {chat.title}
+                        </Link>
+                        <button
+                          className="py-2 px-2 hidden group-hover:block"
+                          onClick={() => deleteChat(chat.external_id)}
+                        >
+                          <i className="fal fa-trash-alt" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+            </InfiniteScroll>
+          </div>
         <div className="p-2">
           <div className="flex gap-2">
             {buttons.map((button, i) => (
