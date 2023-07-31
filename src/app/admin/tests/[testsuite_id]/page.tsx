@@ -371,7 +371,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                                 </div>
                                 <div className="flex col-span-2 items-baseline gap-1">
                                     <span className="text-gray-500">Avg Cosine Sim: </span>
-                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>):(<span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span>)}</span>
+                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>):(<span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgCosineSim.toFixed(3)}</span>)}</span>
                                 </div>
                                 <div className="flex col-span-2 items-baseline gap-1">
                                     <span className="text-gray-500">Avg BLEU: </span>
