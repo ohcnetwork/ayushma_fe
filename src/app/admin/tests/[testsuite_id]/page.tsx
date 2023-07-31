@@ -56,6 +56,14 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         queryFn: fetchData,
         getNextPageParam: (lastPage, pages) => { return lastPage.results.length > 0 ? lastPage.offset : null },
     });
+    
+    useEffect(() => {
+        if (data?.pages.flatMap(item => item.results).find(item => item.status === TestRunStatus.RUNNING)) {
+            setTimeout(() => {
+                refetch();
+            }, 5000);
+        }
+    }, [data, refetch]);
 
     const testRuns = useMemo(
         () => (data ? data?.pages.flatMap(item => item.results) : []),
@@ -184,6 +192,15 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         setShowRunTestSuite(false);
     }
 
+    const getCompletionStatus = (testRun: TestRun) => {
+        if (testRun.status === TestRunStatus.RUNNING) {
+            const totalQuestions = testQuestions?.length;
+            const answeredQuestions = testRun.test_results?.length;
+            const completedPercentage = ((answeredQuestions ?? 0) / (totalQuestions ?? 1)) * 100;
+            return `(${Math.round(Math.max(0, completedPercentage))}%)`;
+        } return ""
+    }
+
     function formatDate(date: Date): string {
         return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()} at ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     }
@@ -205,18 +222,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
     const iconClassName = (status: number) => {
         switch (status) {
-          case TestRunStatus.COMPLETED:
-            return "fa-regular fa-circle-check text-green-500";
-          case TestRunStatus.FAILED:
-            return "fa-solid fa-circle-exclamation text-red-500";
-          case TestRunStatus.CANCELED:
-            return "fa-solid fa-triangle-exclamation text-orange-500";
-          default:
-            return "fa-solid fa-circle-stop text-red-500 hover:text-red-700 animate-pulse hover:animate-none";
+            case TestRunStatus.COMPLETED:
+                return "fa-regular fa-circle-check text-green-500";
+            case TestRunStatus.FAILED:
+                return "fa-solid fa-circle-exclamation text-red-500";
+            case TestRunStatus.CANCELED:
+                return "fa-solid fa-triangle-exclamation text-orange-500";
+            default:
+                return "fa-solid fa-circle-stop text-red-500 hover:text-red-700 animate-pulse hover:animate-none";
         }
-      };
-      
-    
+    };
+
+
     return (
         <div className="mx-4 md:mx-0">
             <div className="flex">
@@ -352,12 +369,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     const avgCosineSim = testRun && testRun.test_results ? (testRun?.test_results?.reduce((acc: number, test: TestResult) => acc + (test.cosine_sim || 0), 0) / (testRun?.test_results?.length || 1)) : 0;
                     return (
                         <button ref={testRuns.length === i + 1 ? lastElementRef : null} key={testRun.external_id} className="w-full focus:outline-none" onClick={() => {
-                            if(testRun.status === TestRunStatus.COMPLETED) {
+                            if (testRun.status === TestRunStatus.COMPLETED) {
                                 router.push(`/admin/tests/${testsuite_id}/runs/${testRun.external_id}`);
                             }
-                            else if(testRun.status === TestRunStatus.RUNNING) {
-                                if(confirm("Are you sure you want to stop the test?")){
-                                    API.tests.runs.update(testsuite_id, testRun.external_id, {status: TestRunStatus.CANCELED}).then(() => {
+                            else if (testRun.status === TestRunStatus.RUNNING) {
+                                if (confirm("Are you sure you want to stop the test?")) {
+                                    API.tests.runs.update(testsuite_id, testRun.external_id, { status: TestRunStatus.CANCELED }).then(() => {
                                         toast.success("Test Stopped");
                                         refetch();
                                     });
@@ -371,15 +388,15 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                                 </div>
                                 <div className="flex col-span-2 items-baseline gap-1">
                                     <span className="text-gray-500">Avg Cosine Sim: </span>
-                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>):(<span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgCosineSim.toFixed(3)}</span>)}</span>
+                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>) : (<span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgCosineSim.toFixed(3)}</span>)}</span>
                                 </div>
                                 <div className="flex col-span-2 items-baseline gap-1">
                                     <span className="text-gray-500">Avg BLEU: </span>
-                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>):(<span className={`font-bold ${avgBleu < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span>)}</span>
+                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>) : (<span className={`font-bold ${avgBleu < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span>)}</span>
                                 </div>
                                 <div className="flex col-span-1 items-baseline gap-1">
                                     <span className="text-gray-500">Status: </span>
-                                    <span className={`capitalize text-sm font-bold ${getStatusClassName(testRun.status ?? TestRunStatus.FAILED)} ${testRun.status === TestRunStatus.RUNNING && "animate-pulse"}`}>{TestRunStatus[testRun.status ?? TestRunStatus.COMPLETED].toLowerCase()}</span>
+                                    <span className={`capitalize text-sm font-bold ${getStatusClassName(testRun.status ?? TestRunStatus.FAILED)} ${testRun.status === TestRunStatus.RUNNING && "animate-pulse"}`}>{TestRunStatus[testRun.status ?? TestRunStatus.COMPLETED].toLowerCase()} {getCompletionStatus(testRun)}</span>
                                     <div className="ml-auto mr-0"><span className={`${getStatusClassName(testRun.status ?? TestRunStatus.FAILED)} font-bold`}><i className={iconClassName(testRun.status ?? TestRunStatus.FAILED)}></i></span></div>
                                 </div>
                             </div>
