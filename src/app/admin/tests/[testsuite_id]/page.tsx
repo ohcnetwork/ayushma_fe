@@ -355,7 +355,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                             if(testRun.status === TestRunStatus.COMPLETED) {
                                 router.push(`/admin/tests/${testsuite_id}/runs/${testRun.external_id}`);
                             }
-                            else {
+                            else if(testRun.status === TestRunStatus.RUNNING) {
                                 if(confirm("Are you sure you want to stop the test?")){
                                     API.tests.runs.update(testsuite_id, testRun.external_id, {status: TestRunStatus.CANCELED}).then(() => {
                                         toast.success("Test Stopped");
@@ -371,11 +371,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                                 </div>
                                 <div className="flex col-span-2 items-baseline gap-1">
                                     <span className="text-gray-500">Avg Cosine Sim: </span>
-                                    <span className="text-black font-bold"><span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span></span>
+                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>):(<span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span>)}</span>
                                 </div>
                                 <div className="flex col-span-2 items-baseline gap-1">
                                     <span className="text-gray-500">Avg BLEU: </span>
-                                    <span className="text-black font-bold"><span className={`font-bold ${avgBleu < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span></span>
+                                    <span className="text-black font-bold">{testRun.status == TestRunStatus.RUNNING ? (<span className="font-bold">-</span>):(<span className={`font-bold ${avgBleu < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span>)}</span>
                                 </div>
                                 <div className="flex col-span-1 items-baseline gap-1">
                                     <span className="text-gray-500">Status: </span>
