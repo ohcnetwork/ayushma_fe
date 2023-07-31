@@ -231,7 +231,7 @@ export const API = {
             list: (suite_id: string, filters: { ordering: string, limit: number, offset: number } = { ordering: "-created_at", limit: 10, offset: 0 }) => request(`tests/suites/${suite_id}/runs`, "GET", filters),
             create: (suite_id: string, run: Partial<TestRun>) => request(`tests/suites/${suite_id}/runs`, "POST", { ...run }),
             get: (suite_id: string, id: string) => request(`tests/suites/${suite_id}/runs/${id}`),
-            update: (suite_id: string, id: string, fields: TestRun) => request(`tests/suites/${suite_id}/runs/${id}`, "PATCH", fields),
+            update: (suite_id: string, id: string, fields: Partial<TestRun>) => request(`tests/suites/${suite_id}/runs/${id}`, "PATCH", fields),
             delete: (suite_id: string, id: string) => request(`tests/suites/${suite_id}/runs/${id}`, "DELETE"),
         },
         feedback: {

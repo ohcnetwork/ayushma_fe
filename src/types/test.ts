@@ -18,13 +18,20 @@ export type TestQuestion = BaseModelType & {
     language: string;
 }
 
+export enum TestRunStatus {
+    RUNNING = 1,
+    COMPLETED = 2,
+    CANCELED = 3,
+    FAILED = 4
+}
+
 export type TestRun = BaseModelType & {
     external_id?: string;
     test_suite: TestSuite;
     project: string;
     project_object: Project;
     test_results?: TestResult[];
-    complete?: boolean;
+    status?: TestRunStatus;
 }
 
 export type TestResult = BaseModelType & {

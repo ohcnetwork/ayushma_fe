@@ -86,13 +86,13 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
         });
         const pdfWidth = doc.internal.pageSize.getWidth();
         const clone = reportTemplateRef.current?.cloneNode(true) as HTMLElement;
-        clone.style.setProperty("width", `${pdfWidth - 40}px`);
+        clone.style.setProperty("width", `${pdfWidth * 1.25}px`);
         doc.html(clone, {
             async callback(doc) {
                 await doc.save(`Test Run - ${testRun?.project_object.title} - ${testRun?.created_at.toString().slice(0, 10)}`);
             },
             margin: 20,
-            html2canvas: { scale: 1 },
+            html2canvas: { scale: 0.75 },
             autoPaging: 'slice',
         });
     };
