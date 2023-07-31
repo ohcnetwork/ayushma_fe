@@ -352,12 +352,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     const avgCosineSim = testRun && testRun.test_results ? (testRun?.test_results?.reduce((acc: number, test: TestResult) => acc + (test.cosine_sim || 0), 0) / (testRun?.test_results?.length || 1)) : 0;
                     return (
                         <button ref={testRuns.length === i + 1 ? lastElementRef : null} key={testRun.external_id} className="w-full focus:outline-none" onClick={() => {
-                            if(testRun.status === "completed") {
+                            if(testRun.status === TestRunStatus.COMPLETED) {
                                 router.push(`/admin/tests/${testsuite_id}/runs/${testRun.external_id}`);
                             }
                             else {
                                 if(confirm("Are you sure you want to stop the test?")){
-                                    API.tests.runs.update(testsuite_id, testRun.external_id, {status: "canceled"}).then(() => {
+                                    API.tests.runs.update(testsuite_id, testRun.external_id, {status: TestRunStatus.CANCELED}).then(() => {
                                         toast.success("Test Stopped");
                                         refetch();
                                     });
