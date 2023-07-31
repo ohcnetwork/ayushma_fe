@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { TestSuite, TestQuestion, TestRun, TestResult } from "@/types/test";
+import { TestSuite, TestQuestion, TestRun, TestResult, TestRunStatus } from "@/types/test";
 
 export default function Page({ params }: { params: { testsuite_id: string } }) {
     const router = useRouter();
@@ -188,28 +188,28 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()} at ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     }
 
-    function getStatusClassName(status: string): string {
+    function getStatusClassName(status: number): string {
         switch (status) {
-            case "completed":
+            case TestRunStatus.COMPLETED:
                 return "text-green-500";
-            case "failed":
+            case TestRunStatus.FAILED:
                 return "text-red-500";
-            case "canceled":
+            case TestRunStatus.CANCELED:
                 return "text-orange-500";
-            case "running":
+            case TestRunStatus.RUNNING:
                 return "text-blue-400";
             default:
                 return "text-gray-500";
         }
     }
 
-    const iconClassName = (status: string) => {
+    const iconClassName = (status: number) => {
         switch (status) {
-          case "completed":
+          case TestRunStatus.COMPLETED:
             return "fa-regular fa-circle-check text-green-500";
-          case "failed":
+          case TestRunStatus.FAILED:
             return "fa-solid fa-circle-exclamation text-red-500";
-          case "canceled":
+          case TestRunStatus.CANCELED:
             return "fa-solid fa-triangle-exclamation text-orange-500";
           default:
             return "fa-solid fa-circle-stop text-red-500 hover:text-red-700 animate-pulse hover:animate-none";
@@ -379,8 +379,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                                 </div>
                                 <div className="flex col-span-1 items-baseline gap-1">
                                     <span className="text-gray-500">Status: </span>
-                                    <span className={`capitalize text-sm font-bold ${getStatusClassName(testRun.status ?? "failed")} ${testRun.status === "running" && "animate-pulse"}`}>{testRun.status}</span>
-                                    <div className="ml-auto mr-0"><span className={`${getStatusClassName(testRun.status ?? "failed")} font-bold`}><i className={iconClassName(testRun.status ?? "failed")}></i></span></div>
+                                    <span className={`capitalize text-sm font-bold ${getStatusClassName(testRun.status ?? TestRunStatus.FAILED)} ${testRun.status === TestRunStatus.RUNNING && "animate-pulse"}`}>{TestRunStatus[testRun.status ?? TestRunStatus.COMPLETED].toLowerCase()}</span>
+                                    <div className="ml-auto mr-0"><span className={`${getStatusClassName(testRun.status ?? TestRunStatus.FAILED)} font-bold`}><i className={iconClassName(testRun.status ?? TestRunStatus.FAILED)}></i></span></div>
                                 </div>
                             </div>
                         </button>
