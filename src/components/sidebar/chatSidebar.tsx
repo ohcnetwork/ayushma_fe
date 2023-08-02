@@ -123,7 +123,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
           />
         </div>
-        <div id="scrollableDiv" className="overflow-y-auto h-4/6">
+        <div id="scrollableDiv" className="overflow-y-auto h-4/6 px-2">
           <InfiniteScroll
             loadMore={() => {
               chatsQuery.fetchNextPage();
@@ -146,7 +146,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
           >
             {project_id &&
               chatsQuery.data?.pages.map((group, index) => (
-                <div key={index} className="flex flex-col gap-2 mt-2">
+                <div key={index} className="flex flex-col gap-2">
                   {group.results.map((chat: Chat) => (
                     <div
                       key={chat.external_id}
