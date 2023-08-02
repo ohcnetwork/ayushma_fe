@@ -130,6 +130,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             }}
             hasMore={chatsQuery.hasNextPage ? true : false}
             useWindow={false}
+            threshold={10}
             loader={
               <div className={`${chatsQuery.isFetching? "": "hidden"} flex justify-center items-center h-full`}>
               <div
