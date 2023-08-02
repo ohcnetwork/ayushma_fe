@@ -132,7 +132,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             useWindow={false}
             threshold={10}
             loader={
-              <div className={`${chatsQuery.isFetching? "": "hidden"} flex justify-center items-center h-full`}>
+              <div className={`${chatsQuery.isFetching? "": "hidden"} flex justify-center items-center mt-2 h-full`}>
               <div
                 className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                 role="status"
@@ -150,7 +150,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                   {group.results.map((chat: Chat) => (
                     <div
                       key={chat.external_id}
-                      className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between"
+                      className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex gap-2 justify-between"
                     >
                       <Link
                         href={`project/${project_id}/chat/${chat.external_id}`}
