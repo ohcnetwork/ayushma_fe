@@ -5,7 +5,7 @@ import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { CheckBox, Input } from "../ui/interactive";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,20 +13,22 @@ import Modal from "../modal";
 import Slider from "../ui/slider";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
+import { useDebounce } from "@/utils/hooks/useDebounce";
 
 export default function ChatSideBar(props: { project_id?: string }) {
   const { project_id } = props;
-  const queryInputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const LIMIT = 10;
   const chatsQuery = useInfiQuery(
-    ["chats"],
+    ["search", debouncedSearchQuery],
     ({ pageParam = 1 }) => {
       const offset = (pageParam - 1) * LIMIT;
       return API.chat.list(
         project_id || "",
         LIMIT,
         offset,
-        queryInputRef.current?.value || ""
+        debouncedSearchQuery
       );
     },
     {
@@ -116,9 +118,9 @@ export default function ChatSideBar(props: { project_id?: string }) {
           <input
             type="text"
             placeholder="Search..."
-            ref={queryInputRef}
+            value={searchQuery}
             onChange={(e) => {
-              chatsQuery.refetch();
+              setSearchQuery(e.target.value);
             }}
             className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
           />
