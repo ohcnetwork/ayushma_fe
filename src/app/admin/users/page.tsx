@@ -53,7 +53,7 @@ export default function Page() {
     const pagesList: any[] = userQuery.data?.pages || [];
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => { userQuery.refetch() }, [searchString, isAdmin, isReviewer])
+    useEffect(() => { userQuery.refetch() }, [searchString, isAdmin, isReviewer, isKeyAllowed])
 
     return (
         <div>
