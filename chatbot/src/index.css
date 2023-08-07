@@ -1,0 +1,82 @@
+.ac-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}
+
+.ac-chat-button {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+}
+
+.ac-chatbox {
+    background: white;
+    width: 300px;
+    height: 400px;
+    bottom: 60px;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.4s;
+    position: absolute;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    right: 0px;
+    transform: translateY(10px);
+    overflow: hidden;
+}
+
+.ac-chatbox.ac-show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.ac-chatbox-hero {
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    gap: 10px;
+}
+
+.ac-chatbox-hero-icon {
+    width: 30px
+}
+
+.ac-chat-hero-icon img {
+    width: 100%;
+}
+
+.ac-chatbox-container {
+    padding: 20px;
+    padding-top: 0px;
+    font-size: 13px;
+}
+
+.ac-preset-question {
+    border-radius: 10px;
+    border: 1px solid green;
+    color: green;
+    padding: 10px;
+    display: block;
+    width: 100%;
+}
+
+.ac-preset-question-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ac-preset-question:hover {
+    background: green;
+    color: white;
+}
