@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .ac-container {
     position: fixed;
     bottom: 10px;
