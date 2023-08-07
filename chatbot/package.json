@@ -1,5 +1,5 @@
 {
-  "name": "chatbot",
+  "name": "@coronsafe/react-ayushma",
   "version": "1.0.0",
   "main": "../public/chatbot/index.cjs.js",
   "module": "../public/chatbot/index.esm.js",
