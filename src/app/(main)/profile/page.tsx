@@ -11,6 +11,9 @@ import { User, UserUpdate } from "@/types/user";
 export default function Page() {
   const router = useRouter();
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const userQuery = useQuery<User, Error>(["userDetails"], API.user.me);
   const userData: User | undefined = userQuery.data || undefined;
 
@@ -52,9 +55,9 @@ export default function Page() {
   return (
     <div className="mx-auto">
       <div className="my-24 py-10 px-2">
-        <div className="flex flex-col items-center text-gray-200 justify-center ">
+        <div className="flex flex-col items-center text-gray-600 justify-center ">
           <div className="w-[95%] md:w-[75%] lg:w-[75%]">
-            <h2 className="text-center text-3xl font-extrabold text-gray-900">
+            <h2 className="text-center text-3xl font-extrabold   text-gray-900">
               Edit Profile
             </h2>
             <div className="mt-8 space-y-4">
@@ -76,44 +79,73 @@ export default function Page() {
                 <p className="text text-sm text-gray-500 mb-2">
                   Change Password:
                 </p>
-                <Input
-                  type="password"
-                  placeholder="New Password"
-                  value={formData.password}
-                  onChange={(event) =>
-                    setFormData({
-                      ...formData,
-                      password: event.target.value,
-                    })
-                  }
-                />
+                <div>
+                  <Input
+                    right={
+                      <div
+                        className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md shadow-sm"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      >
+                        <i
+                          className={
+                            showPassword ? "far fa-eye" : "fa fa-eye-slash"
+                          }
+                          style={{ color: "#2d2a2a" }}
+                        />
+                      </div>
+                    }
+                    type={showPassword ? "text" : "password"}
+                    placeholder="New Password"
+                    value={formData.password}
+                    onChange={(event) =>
+                      setFormData({
+                        ...formData,
+                        password: event.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
               <div>
-                <Input
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={formData.confirm_password}
-                  onChange={(event) =>
-                    setFormData({
-                      ...formData,
-                      confirm_password: event.target.value,
-                    })
-                  }
-                />
+                <div className="relative z-0">
+                  <Input
+                    right={
+                      <div
+                        className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md shadow-sm "
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      >
+                        <i
+                          className={
+                            showConfirmPassword
+                              ? "far fa-eye"
+                              : "fa fa-eye-slash"
+                          }
+                        />
+                      </div>
+                    }
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    value={formData.confirm_password}
+                    onChange={(event) =>
+                      setFormData({
+                        ...formData,
+                        confirm_password: event.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
               {formData.password != formData.confirm_password ? (
                 <p className="text text-sm text-red-500 mb-2">
                   Passwords do not match
                 </p>
               ) : (
-                <p className="text-transparent select-none text-sm mb-2">
-                  &nbsp;
-                </p>
+                <p className="text-transparent text-sm mb-2">&nbsp;</p>
               )}
               <div className="flex gap-2 py-4">
                 <Button
                   onClick={() => router.push("/")}
-                  className="w-full bg-gray-100"
+                  className="w-full bg-gray-200"
                   variant="secondary"
                 >
                   Cancel
