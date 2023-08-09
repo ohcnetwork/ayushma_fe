@@ -1,7 +1,6 @@
 "use client";
 
 import Chatbot from "@/chatbot";
-import { useState } from "react";
 
 export default function Page() {
 
@@ -13,6 +12,7 @@ export default function Page() {
                     "What is your name?",
                     "What is your age?",
                 ]}
+                api_url="http://localhost:8000/api/"
             />
         </div>
     )
