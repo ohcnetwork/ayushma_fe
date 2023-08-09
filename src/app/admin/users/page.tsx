@@ -3,9 +3,11 @@
 import { Input } from "@/components/ui/interactive";
 import { User } from "@/types/user";
 import { API } from "@/utils/api";
+import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import { twMerge } from "tailwind-merge";
 
 const RoleButton = (props: {
@@ -43,10 +45,15 @@ export default function Page() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isReviewer, setIsReviewer] = useState(false);
     const [isKeyAllowed, setIsKeyAllowed] = useState(false);
-    const userQuery = useQuery(["users"], () => API.users.list({ search: searchString, ordering: "-created_at", is_staff: isAdmin ? true : null, is_reviewer: isReviewer ? true : null, allow_key: isKeyAllowed ? true : null }));
-    const usersList: User[] = userQuery.data?.results || [];
+    const limit = 10;
+    const userQuery = useInfiQuery(["users"], ({ pageParam = 1 }) => {
+        const offset = (pageParam - 1) * limit;
+        return API.users.list({ search: searchString, limit: limit, offset: offset, ordering: "-created_at", is_staff: isAdmin ? true : null, is_reviewer: isReviewer ? true : null, allow_key: isKeyAllowed ? true : null })
+    }, {})
+    const pagesList: any[] = userQuery.data?.pages || [];
 
-    useEffect(() => { userQuery.refetch() }, [searchString, userQuery, isAdmin, isReviewer])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => { userQuery.refetch() }, [searchString, isAdmin, isReviewer, isKeyAllowed])
 
     return (
         <div>
@@ -58,57 +65,73 @@ export default function Page() {
                 <RoleButton onClick={() => setIsKeyAllowed(s => !s)} color="blue" text="Key Allowed" state={isKeyAllowed} />
             </div>
             <div className="relative overflow-x-auto mt-2 sm:rounded-lg">
-                <table className="w-full text-sm text-left ">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 border border-gray-300 rounded-lg">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                User
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Email
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Role
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                <span className="sr-only">Edit</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {usersList.length > 0 ? usersList.map((user, i) =>
-                            <tr key={i} className="bg-white border-b border-x hover:bg-gray-50">
-                                <td scope="row" className="px-6 py-2 font-medium text-gray-900 ">
-                                    <div className="flex flex-col">
-                                        <div className="flex gap-2 items-center">
-                                            <span>{user.full_name ? user.full_name : "(No name)"}</span>
-                                            {user.allow_key && <i className="fa fa-key text-xs text-gray-400" aria-hidden="true" />}
-                                        </div>
-                                        <span className="text-green-400 text-xs">{user.username}</span>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-2">
-                                    {user.email}
-                                </td>
-                                <td className="px-6 py-2">
-                                    <div className="flex gap-2">
-                                        {!user.is_staff && !user.is_reviewer && <RoleBubble color="gray" text="User" />}
-                                        {user.is_staff && <RoleBubble color="green" text="Admin" />}
-                                        {user.is_reviewer && <RoleBubble color="orange" text="Reviewer" />}
-                                    </div>
-                                </td>
-                                <td className="px-6 py-2 text-right">
-                                    <Link href={`/admin/users/${user.username}`} className="font-medium text-green-600 hover:underline">Edit</Link>
-                                </td>
+                <InfiniteScroll
+                    loadMore={() => {
+                        userQuery.fetchNextPage();
+                    }}
+                    hasMore={userQuery.hasNextPage ? true : false}
+                    useWindow={false}
+                >
+                    <table className="w-full text-sm text-left ">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 border border-gray-300 rounded-lg">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    User
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Email
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Role
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <span className="sr-only">Edit</span>
+                                </th>
                             </tr>
-                        ) :
-                            <tr className="bg-white border-b border-x hover:bg-gray-50 w-full">
-                                <td colSpan={100} className="p-4 text-center text-gray-400">
-                                    No users found
-                                </td>
-                            </tr>}
-                    </tbody>
-                </table>
+                        </thead>
+                        {
+                            pagesList.length > 0 ? pagesList.map((usersList, index) =>
+                                <tbody key={index}>
+                                    {
+                                        usersList.results.map((user: User) => {
+                                            return <tr key={user.external_id} className="bg-white border-b border-x hover:bg-gray-50">
+                                                <td scope="row" className="px-6 py-2 font-medium text-gray-900 ">
+                                                    <div className="flex flex-col">
+                                                        <div className="flex gap-2 items-center">
+                                                            <span>{user.full_name ? user.full_name : "(No name)"}</span>
+                                                            {user.allow_key && <i className="fa fa-key text-xs text-gray-400" aria-hidden="true" />}
+                                                        </div>
+                                                        <span className="text-green-400 text-xs">{user.username}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-2">
+                                                    {user.email}
+                                                </td>
+                                                <td className="px-6 py-2">
+                                                    <div className="flex gap-2">
+                                                        {!user.is_staff && !user.is_reviewer && <RoleBubble color="gray" text="User" />}
+                                                        {user.is_staff && <RoleBubble color="green" text="Admin" />}
+                                                        {user.is_reviewer && <RoleBubble color="orange" text="Reviewer" />}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-2 text-right">
+                                                    <Link href={`/admin/users/${user.username}`} className="font-medium text-green-600 hover:underline">Edit</Link>
+                                                </td>
+                                            </tr>
+                                        })
+                                    }
+                                </tbody>
+                            ) :
+                                <tbody>
+                                    <tr className="bg-white border-b border-x hover:bg-gray-50 w-full">
+                                        <td colSpan={100} className="p-4 text-center text-gray-400">
+                                            No users found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                        }
+                    </table>
+                </InfiniteScroll>
             </div>
         </div>
     );
