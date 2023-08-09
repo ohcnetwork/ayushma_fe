@@ -5,7 +5,7 @@ import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { CheckBox, Input } from "../ui/interactive";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,20 +13,22 @@ import Modal from "../modal";
 import Slider from "../ui/slider";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
+import { useDebounce } from "@/utils/hooks/useDebounce";
 
 export default function ChatSideBar(props: { project_id?: string }) {
   const { project_id } = props;
-  const queryInputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const LIMIT = 10;
   const chatsQuery = useInfiQuery(
-    ["chats"],
+    ["search", debouncedSearchQuery],
     ({ pageParam = 1 }) => {
       const offset = (pageParam - 1) * LIMIT;
       return API.chat.list(
         project_id || "",
         LIMIT,
         offset,
-        queryInputRef.current?.value || ""
+        debouncedSearchQuery
       );
     },
     {
@@ -116,22 +118,23 @@ export default function ChatSideBar(props: { project_id?: string }) {
           <input
             type="text"
             placeholder="Search..."
-            ref={queryInputRef}
+            value={searchQuery}
             onChange={(e) => {
-              chatsQuery.refetch();
+              setSearchQuery(e.target.value);
             }}
             className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
           />
         </div>
-        <div id="scrollableDiv" className="overflow-y-auto h-4/6">
+        <div id="scrollableDiv" className="overflow-y-auto h-4/6 px-2">
           <InfiniteScroll
             loadMore={() => {
               chatsQuery.fetchNextPage();
             }}
             hasMore={chatsQuery.hasNextPage ? true : false}
             useWindow={false}
+            threshold={10}
             loader={
-              <div className="flex justify-center items-center h-full">
+              <div className={`${chatsQuery.isFetching? "": "hidden"} flex justify-center items-center mt-2 h-full`}>
               <div
                 className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                 role="status"
@@ -145,11 +148,11 @@ export default function ChatSideBar(props: { project_id?: string }) {
           >
             {project_id &&
               chatsQuery.data?.pages.map((group, index) => (
-                <div key={index} className="flex flex-col gap-2 mt-2">
+                <div key={index} className="flex flex-col gap-2">
                   {group.results.map((chat: Chat) => (
                     <div
                       key={chat.external_id}
-                      className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between"
+                      className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex gap-2 justify-between"
                     >
                       <Link
                         href={`project/${project_id}/chat/${chat.external_id}`}

@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+#scrollableDiv::-webkit-scrollbar {
+width: 0.5em;
+}
+
+#scrollableDiv::-webkit-scrollbar-track {
+background: #f3f4f6;
+}
+
+#scrollableDiv::-webkit-scrollbar-thumb {
+background: #d1d5db;
+border-radius: 0.5em;
+}
+
+#scrollableDiv::-webkit-scrollbar-thumb:hover {
+background: #bdc0c4;
+}
+
+#scrollableDiv::-webkit-scrollbar-corner {
+background: #f3f4f6;
+}
+  
+
 .markdown-render h1 {
     display: block;
     margin: 0.5em 0px;
