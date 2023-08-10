@@ -6,7 +6,7 @@
     "dev:all": "npm-run-all --parallel dev:next dev:chatbot",
     "dev": "next dev",
     "dev:chatbot": "cd chatbot && npm run build-watch",
-    "build": "build:chatbot && build:next",
+    "build": "yarn build:chatbot && yarn build:next",
     "build:next": "next build",
     "build:chatbot": "cd chatbot && npm run build",
     "start": "next start",

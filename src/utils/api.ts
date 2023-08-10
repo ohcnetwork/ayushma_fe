@@ -245,7 +245,7 @@ export const API = {
     users: {
         get: (username: string) => request(`users/${username}`, "GET"),
         update: (username: string, user: Partial<UserUpdate>) => request(`users/${username}`, "PATCH", user),
-        list: (filters: { ordering: string, search?: string, is_staff?: boolean | null, is_reviewer?: boolean | null, allow_key?: boolean | null } = { ordering: "-created_at" }) => request(`users`, "GET", filters),
+        list: (filters: { ordering: string, search?: string, is_staff?: boolean | null, is_reviewer?: boolean | null, allow_key?: boolean | null, offset?: number, limit?: number } = { ordering: "-created_at" }) => request(`users`, "GET", filters),
         delete: (username: string) => request(`users/${username}`, "DELETE")
     },
     chatbot: {
