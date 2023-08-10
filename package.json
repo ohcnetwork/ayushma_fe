@@ -5,14 +5,14 @@
   "scripts": {
     "dev:all": "npm-run-all --parallel dev:next dev:chatbot",
     "dev": "next dev",
-    "dev:chatbot": "cd chatbot && npm run build-watch",
+    "dev:chatbot": "cd chatbot && yarn build-watch",
     "build": "yarn build:chatbot && yarn build:next",
     "build:next": "next build",
-    "build:chatbot": "cd chatbot && npm run build",
+    "build:chatbot": "cd chatbot && yarn build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
-    "i-all": "npm i && cd chatbot && npm i"
+    "i-all": "yarn && cd chatbot && yarn"
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
