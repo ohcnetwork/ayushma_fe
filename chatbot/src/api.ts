@@ -1,4 +1,4 @@
-import { ChatConverseStream } from "./types";
+import { Chat, ChatConverseStream } from "./types";
 import { EventSourceMessage, FetchEventSourceInit, fetchEventSource } from '@microsoft/fetch-event-source';
 
 export type paginatedResponse<T> = {
@@ -27,13 +27,18 @@ const request = async (
     options: options = {},
     onMessage: ((event: EventSourceMessage) => void) | null = null
 ) => {
-    const { formdata, external, headers, auth, stream } = options;
+    const { formdata, external, headers, auth: isAuth, stream } = options;
 
     const noonce = (new Date().getTime() + Math.random()).toString();
     if (formdata) data.append('noonce', noonce); else data['noonce'] = noonce;
+    const base_url = (localStorage && localStorage.getItem('ayushma-chatbot-api-url')) || "https://ayushma-api.ohc.network/api/";
 
-    let url = external ? endpoint : (options.base_url || "https://ayushma-api.ohc.network/api/") + endpoint;
+    let url = external ? endpoint : base_url + endpoint;
     let payload = formdata ? data : JSON.stringify(data);
+
+
+    const storage = isAuth === false ? null : localStorage.getItem('ayushma-chatbot-token');
+    const localToken = storage;
 
     if (method === 'GET') {
         const requestParams = data
@@ -55,7 +60,7 @@ const request = async (
                 : {
                     'Content-Type': 'application/json',
                 }),
-            Authorization: "Bearer" + auth,
+            Authorization: "Bearer " + localToken,
             ...headers,
         },
         body: payload,
@@ -149,8 +154,9 @@ export const API = {
             chat_id: string,
             formdata: FormData,
             openai_api_key?: string,
-            onMessage: ((event: ChatConverseStream) => void) | null = null,
-            delay: number | null = null
+            chat?: Chat,
+            onMessage: ((event: ChatConverseStream, chat: Chat) => void) | null = null,
+            delay: number | null = null,
         ) =>
             request(`projects/${project_id}/chats/${chat_id}/converse`, "POST", formdata, {
                 stream: true,
@@ -164,7 +170,7 @@ export const API = {
                     if (data.error) {
                         throw Error(data.error);
                     }
-                    handleMessage(data, onMessage, delay);
+                    handleMessage(data, (e) => onMessage(e, chat as any), delay);
                 }
             }),
     }

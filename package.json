@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm-run-all --parallel dev:next dev:chatbot",
-    "dev:next": "next dev",
+    "dev:all": "npm-run-all --parallel dev:next dev:chatbot",
+    "dev": "next dev",
     "dev:chatbot": "cd chatbot && npm run build-watch",
     "build": "build:chatbot && build:next",
     "build:next": "next build",

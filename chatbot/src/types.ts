@@ -1,13 +1,3 @@
-export type ChatbotProps = {
-    containerClass?: string;
-    buttonClass?: string;
-    chatboxClass?: string;
-    projectID: string;
-    presetQuestions?: string[];
-    api_url?: string;
-    authToken?: string;
-}
-
 export type BaseModelType = {
     external_id: string,
     created_at: string,

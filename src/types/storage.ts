@@ -10,4 +10,5 @@ export type Storage = {
     show_english?: boolean,
     temperature?: number,
     top_k?: number,
+    chatbot_token?: string,
 }

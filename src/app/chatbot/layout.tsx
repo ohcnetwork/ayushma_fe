@@ -6,7 +6,6 @@ export default function Layout(props: { children: React.ReactNode }) {
 
     return (
         <>
-            <Script src="/chatbot/index.cjs.js" strategy="beforeInteractive" />
             {children}
         </>
     )

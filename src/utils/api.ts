@@ -56,12 +56,12 @@ const request = async (
         payload = null;
     }
 
-    const storage = JSON.parse(localStorage.getItem('ayushma-storage') || '{}');
-    const localToken = storage.auth_token;
+    const storage = isAuth === false ? null : JSON.parse(localStorage.getItem('ayushma-storage') || '{}');
+    const localToken = storage?.auth_token;
 
     const auth =
         isAuth === false || typeof localToken === 'undefined' || localToken === null
-            ? ''
+            ? ""
             : 'Token ' + localToken;
 
     const requestOptions = {
@@ -73,7 +73,7 @@ const request = async (
                 : {
                     'Content-Type': 'application/json',
                 }),
-            Authorization: auth,
+            ...(auth !== "" ? { Authorization: auth } : {}),
             ...headers,
         },
         body: payload,
@@ -245,7 +245,11 @@ export const API = {
     users: {
         get: (username: string) => request(`users/${username}`, "GET"),
         update: (username: string, user: Partial<UserUpdate>) => request(`users/${username}`, "PATCH", user),
-        list: (filters: { ordering: string, search?: string, is_staff?: boolean | null, is_reviewer?: boolean | null, allow_key?: boolean | null} = { ordering: "-created_at" }) => request(`users`, "GET", filters),
+        list: (filters: { ordering: string, search?: string, is_staff?: boolean | null, is_reviewer?: boolean | null, allow_key?: boolean | null } = { ordering: "-created_at" }) => request(`users`, "GET", filters),
         delete: (username: string) => request(`users/${username}`, "DELETE")
     },
+    chatbot: {
+        temptoken: (api_key: string, user_ip: string) => request(`temptokens`, "POST", { ip: user_ip }, { headers: { "X-API-KEY": api_key }, auth: false }),
+        token: () => request(`/api/chatbot-token`, "GET", {}, { external: true }),
+    }
 }
