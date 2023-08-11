@@ -103,7 +103,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         )}
       </div>
       <h2 className="text-2xl mt-6 font-bold mb-4">Documents</h2>
-      <div className="grid grid-cols-4 gap-4 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
         {documents?.map((document, i) => (
           <Link
             href={document.uploading ? `/admin/projects/${project_id}` : `/admin/projects/${project_id}/documents/${document.external_id}`}

@@ -123,6 +123,7 @@ export default function Chatbot(props: AyushmaProps) {
                         onChange={(value) => setValue(value)}
                         onSubmit={handleSubmit}
                         placeholder='Type your message here...'
+                        loading={loading}
                     />
                 </div>
             </div>
