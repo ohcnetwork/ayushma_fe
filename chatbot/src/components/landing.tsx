@@ -8,7 +8,7 @@ export default function Landing(props: { presetQuestions: string[], createChat: 
         <div>
             <div className={`p-4 flex items-center justify-center font-black text-xl gap-2`}>
                 <div className='w-10'>
-                    <img src="https://ayushma.ohc.network/ayushma.svg" alt="Ayushma" className='w-full' />
+                    <img src="https://ayushma.ohc.network/logo.svg" alt="Ayushma" className='w-full' />
                 </div>
                 Ayushma
             </div>

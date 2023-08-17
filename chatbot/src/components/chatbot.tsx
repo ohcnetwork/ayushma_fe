@@ -86,7 +86,7 @@ export default function Chatbot(props: AyushmaProps) {
     return (
         <div className={twMerge(`fixed bottom-10 right-10`)}>
             <button className={twMerge(`h-12 w-12 rounded-full flex items-center justify-center cursor-pointer text-white`)} onClick={() => setShow(!show)}>
-                <img src="https://ayushma.ohc.network/ayushma.svg" alt="Ayushma" />
+                <img src="https://ayushma.ohc.network/logo.svg" alt="Ayushma" />
             </button>
             <div className={`bg-gray-100 w-[300px] h-[400px] bottom-14 transition-all absolute shadow rounded-lg right-0 overflow-hidden flex items-center flex-col justify-between ${show ? "visible opacity-100 translate-y-0" : "invisible opacity-0 translate-y-5"}`}>
                 {chat ? (

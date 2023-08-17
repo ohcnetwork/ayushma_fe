@@ -62,14 +62,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
     ...(storage?.user?.is_staff
       ? [
-          {
-            icon: "user-shield",
-            text: "Admin",
-            onclick: () => {
-              router.push("/admin");
-            },
+        {
+          icon: "user-shield",
+          text: "Admin",
+          onclick: () => {
+            router.push("/admin");
           },
-        ]
+        },
+      ]
       : []),
     {
       icon: "sign-out-alt",
@@ -104,7 +104,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             className="cursor-pointer"
           >
             <div className="h-6 flex gap-2 items-center my-4 justify-center">
-              <img src="/ayushma_text.svg" alt="Logo" className="h-full" />
+              <img src="/logo_text.svg" alt="Logo" className="h-full" />
               <div className="text-xs">Beta</div>
             </div>
           </Link>
@@ -134,16 +134,16 @@ export default function ChatSideBar(props: { project_id?: string }) {
             useWindow={false}
             threshold={10}
             loader={
-              <div className={`${chatsQuery.isFetching? "": "hidden"} flex justify-center items-center mt-2 h-full`}>
-              <div
-                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                role="status"
-              >
-                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                  Loading...
-                </span>
+              <div className={`${chatsQuery.isFetching ? "" : "hidden"} flex justify-center items-center mt-2 h-full`}>
+                <div
+                  className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  role="status"
+                >
+                  <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                    Loading...
+                  </span>
+                </div>
               </div>
-            </div>
             }
           >
             {project_id &&

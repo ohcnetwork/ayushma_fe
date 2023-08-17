@@ -1,8 +1,8 @@
 <a href="https://ayushma.ohc.network/">
   <p align="center">
     <picture style="">
-      <source media="(prefers-color-scheme: dark)" srcset="public/ayushma_white.svg">
-      <img alt="Ayushma Logo" src="public/ayushma_text.svg" style="max-width:300px;">
+      <source media="(prefers-color-scheme: dark)" srcset="public/logo_white.svg">
+      <img alt="Ayushma Logo" src="public/logo_text.svg" style="max-width:300px;">
     </picture>
   </p>
 </a>
@@ -22,7 +22,7 @@
 #### Install the required dependencies
 
 ```sh
-yarn
+yarn i-all
 ```
 
 #### 🏃 Run the app in development mode
@@ -56,9 +56,7 @@ You can also register as a new user.
 
 ## 💎 Backend
 
-Ayushma's backend is built on Django.
-
-- [Backend Repository](https://github.com/coronasafe/ayushma)
+Ayushma's backend is built on Django. You can find documentation on the [Backend Repository](https://github.com/coronasafe/ayushma)
 
 ## 🚀 Production
 
@@ -80,3 +78,16 @@ Starts a production http-server in local to run the project with Service worker.
 The build is minified and the filenames include the hashes.
 
 **🚀 Your app is ready to be deployed!**
+
+## White Labeling
+
+Ayushma is a white label product. You can customize the app to your needs by changing the following files:
+
+### Images
+
+- `public/logo_text.svg` - Logo with text
+- `public/logo_white.svg` - Logo with white text
+- `public/logo.svg` - Logo without text
+- `public/logo.png` - Logo without text
+- 
+

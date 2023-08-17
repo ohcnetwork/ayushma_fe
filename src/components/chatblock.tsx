@@ -96,7 +96,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                 <div>
                     <div className="w-8 text-2xl shrink-0 text-center">
                         {message?.messageType === ChatMessageType.USER && !loading ? "👤" : <>
-                            <Image src="/ayushma.svg" alt="Logo" width={100} height={100} />
+                            <Image src="/logo.svg" alt="Logo" width={100} height={100} />
                         </>}
                     </div>
                 </div>
