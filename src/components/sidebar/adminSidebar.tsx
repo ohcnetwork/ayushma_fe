@@ -49,7 +49,7 @@ export default function AdminSideBar() {
       <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
         <div className="flex flex-col p-2 gap-2">
           <div className="h-10 flex gap-1 items-center my-4 justify-center">
-            <img src="/ayushma_admin_text.svg" alt="Logo" className="h-full" />
+            <img src="/logo_admin_text.svg" alt="Logo" className="h-full" />
             <div className="text-xs">Beta</div>
           </div>
           <div className="flex flex-col gap-2">
