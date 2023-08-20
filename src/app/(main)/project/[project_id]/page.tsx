@@ -6,6 +6,7 @@ import { ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { API } from "@/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -91,10 +92,10 @@ export default function Chat(params: { params: { project_id: string } }) {
             <div className="flex-1 items-center justify-center w-full overflow-auto">
                 {!chatMessage ? (<div className="text-center text-gray-500 w-full">
                     <h1 className="font-black text-4xl text-gray-600 mt-8">
-                        Ayushma
+                        {process.env.NEXT_PUBLIC_AI_NAME}
                     </h1>
                     <p>
-                        Your personal AI medical assistant
+                        {process.env.NEXT_PUBLIC_AI_DESCRIPTION}
                     </p>
 
                     <h2 className="font-semibold mt-8">
@@ -115,6 +116,11 @@ export default function Chat(params: { params: { project_id: string } }) {
                                 {prompt}
                             </button>
                         ))}
+                    </div>
+                    <div className="mt-6">
+                        <Link href="https://github.com/coronsafe/ayushma_fe">
+                            <i className="fab fa-github" /> Contribute
+                        </Link>
                     </div>
                 </div>) : (
                     <>

@@ -89,5 +89,11 @@ Ayushma is a white label product. You can customize the app to your needs by cha
 - `public/logo_white.svg` - Logo with white text
 - `public/logo.svg` - Logo without text
 - `public/logo.png` - Logo without text
-- 
+
+### Environment Variables
+
+- `NEXT_PUBLIC_API_URL`= Backend API URL
+- `NEXT_PUBLIC_LOCAL_STORAGE`= Local storage key name
+- `NEXT_PUBLIC_AI_NAME`= Name of the AI (default: Ayushma)
+- `NEXT_PUBLIC_AI_DESCRIPTION`= Description of the AI
 
