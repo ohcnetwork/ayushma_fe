@@ -118,7 +118,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                         ))}
                     </div>
                     <div className="mt-6">
-                        <Link href="https://github.com/coronsafe/ayushma_fe">
+                        <Link href="https://github.com/coronasafe/ayushma_fe" target="_blank">
                             <i className="fab fa-github" /> Contribute
                         </Link>
                     </div>
