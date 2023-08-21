@@ -103,8 +103,8 @@ export default function ChatSideBar(props: { project_id?: string }) {
             href={project_id ? `/project/${project_id}` : "/"}
             className="cursor-pointer"
           >
-            <div className="h-6 flex gap-2 items-center my-4 justify-center">
-              <img src="/logo_text.svg" alt="Logo" className="h-full" />
+            <div className="flex gap-2 items-center py-4 justify-center">
+              <img src="/logo_text.svg" alt="Logo" className="w-full object-contain" />
               <div className="text-xs">Beta</div>
             </div>
           </Link>
