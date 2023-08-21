@@ -161,7 +161,7 @@ export const API = {
         reset: (token: string, email: string, password: string) => request("auth/reset", "POST", { token, email, password }),
     },
     projects: {
-        list: (filters: { ordering: string } = { ordering: "-created_at" }) => request("projects", "GET", filters),
+        list: (filters: { ordering?: string, limit?: number } = { ordering: "-created_at", limit: 50 }) => request("projects", "GET", filters),
         get: (id: string) => request(`projects/${id}`),
         update: (id: string, project: Partial<Project>) => request(`projects/${id}`, "PATCH", { ...project }),
         create: (project: Partial<Project>) => request(`projects`, "POST", { ...project }),
