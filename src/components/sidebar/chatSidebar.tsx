@@ -97,7 +97,8 @@ export default function ChatSideBar(props: { project_id?: string }) {
 
   return (
     <>
-      <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col border-r border-gray-300 h-screen justify-between">
+      <div className="bg-white bg-cover bg-top w-72 shrink-0 flex flex-col border-r border-gray-300 h-screen justify-between">
+      <div className="flex flex-col flex-1 overflow-auto">
         <div className="flex flex-col p-3 gap-2">
           <Link
             href={project_id ? `/project/${project_id}` : "/"}
@@ -125,7 +126,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
           />
         </div>
-        <div id="scrollableDiv" className="overflow-y-auto h-4/6 px-2">
+        <div id="scrollableDiv" className="overflow-y-auto px-2">
           <InfiniteScroll
             loadMore={() => {
               chatsQuery.fetchNextPage();
@@ -152,7 +153,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                   {group.results.map((chat: Chat) => (
                     <div
                       key={chat.external_id}
-                      className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex gap-2 justify-between"
+                      className="w-full group hover:bg-gray-100 rounded-lg overflow-hidden flex gap-2 justify-between"
                     >
                       <Link
                         href={`project/${project_id}/chat/${chat.external_id}`}
@@ -173,8 +174,9 @@ export default function ChatSideBar(props: { project_id?: string }) {
               ))}
           </InfiniteScroll>
         </div>
-        <div className="p-2">
-          <div className="flex gap-2">
+        </div>
+        <div className="p-2 flex justify-around">
+          <div className="flex flex-1 gap-2">
             {buttons.map((button, i) => (
               <button
                 key={i}
