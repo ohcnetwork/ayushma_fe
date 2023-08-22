@@ -101,7 +101,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                         </div> : <div className="flex items-center justify-center w-10 h-10 text-2xl shrink-0 text-center bg-[#39245a] rounded-full">
                             <Image className="p-0.5" src="/logo.svg" alt="Logo" width={100} height={100} /></div>}
                 </div>
-                <div className="w-full">
+                <div className="w-full pt-0.5">
                     {loading ? "Loading..." :
                         (
                             <div>

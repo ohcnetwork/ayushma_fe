@@ -73,6 +73,7 @@ export default function ChatBar(props: {
             <form onSubmit={onSubmit}>
                 <Input
                     type="text"
+                    autoFocus={true}
                     placeholder="Chat"
                     value={chat || ""}
                     onChange={onChange}
@@ -81,13 +82,13 @@ export default function ChatBar(props: {
                     right={loading ?
                         <Loading /> :
                         <>
-                            <button type="button" className="px-2" onClick={() => { setLangDialogOpen(true) }}>
+                            <button type="button" className="w-12 h-12 p-1 text-2xl bg-gray-50 rounded-lg hover:bg-gray-100 transition" onClick={() => { setLangDialogOpen(true) }}>
                                 <i className="fa-regular fa-language"></i>
                             </button>
-                            <button type="button" className={`px-4 ${status === "recording" ? "text-green-500" : ""}`} onClick={status === "recording" ? stopRecording : startRecording}>
+                            <button type="button" className={`w-12 h-12 p-1 ml-2 text-2xl bg-gray-50 rounded-lg hover:bg-gray-100 transition ${status === "recording" ? "text-green-500" : ""}`} onClick={status === "recording" ? stopRecording : startRecording}>
                                 <i className="fal fa-microphone" />
                             </button>
-                            <button className="pl-2 pr-4 disabled:text-gray-300" disabled={chat.length < 1}>
+                            <button className="w-12 h-12 p-1 text-2xl ml-2 rounded-lg enabled:hover:bg-green-600 enabled:bg-green-500 enabled:text-white disabled:text-gray-300 transition"  disabled={chat.length < 1}>
                                 <i className="fal fa-paper-plane-top" />
                             </button>
                         </>

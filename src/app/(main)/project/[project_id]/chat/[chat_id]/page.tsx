@@ -101,6 +101,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                     ]}
                     loading={converseMutation.isLoading || isTyping}
                 />
+                <p className="text-xs pl-0,5 text-gray-500">Please be aware that Adhyayana AI may generate inaccurate information; kindly report any concerns to support@pupilfirst.org</p>
             </div>
         </div >
     )

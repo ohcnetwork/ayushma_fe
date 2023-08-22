@@ -137,6 +137,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                     errors={[(newChatMutation.error as any)?.error?.error, (newChatMutation.error as any)?.error?.non_field_errors]}
                     loading={newChatMutation.isLoading || converseMutation.isLoading || isTyping}
                 />
+                <p className="text-xs pl-0,5 text-gray-500">Please be aware that Adhyayana AI may generate inaccurate information; kindly report any concerns to support@pupilfirst.org</p>
             </div>
         </div>
     )
