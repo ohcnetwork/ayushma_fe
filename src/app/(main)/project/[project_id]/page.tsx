@@ -81,10 +81,10 @@ export default function Chat(params: { params: { project_id: string } }) {
     }
 
     const samplePrompts = [
-        "How does one prepare for advanced airway management, even before the patient has arrived?",
-        "How do you assess a ICU patient's need for tracheal intubation?",
-        "What are the checks one needs to perform before intubation?",
-        "How do you do the initial assessment of the patient before oxygenation or ventilation?",
+        "What is Learner-Centered Model?",
+        "What are 21st century Graduate Attributes?",
+        "What is competency based curriculum?",
+        "What is peer learning?",
     ]
 
     return (
