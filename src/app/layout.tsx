@@ -1,17 +1,16 @@
-import './globals.css'
-import Script from 'next/script';
-import Providers from '@/utils/provider';
+import "./globals.css";
+import Script from "next/script";
+import Providers from "@/utils/provider";
 
 export const metadata = {
-  title: 'Ayushma',
+  title: "Adhyayana",
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
       <head>
@@ -21,11 +20,9 @@ export default function RootLayout({
         />
         <Script src="https://www.writeroo.net/fawesome.js" />
       </head>
-      <body className='font-inter'>
-        <Providers>
-          {children}
-        </Providers>
+      <body className="font-inter">
+        <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }
