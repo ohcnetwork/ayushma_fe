@@ -98,14 +98,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
   return (
     <>
       <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col border-r border-gray-300 h-screen justify-between">
-        <div className="flex flex-col p-2 gap-2">
+        <div className="flex flex-col p-3 gap-2">
           <Link
             href={project_id ? `/project/${project_id}` : "/"}
-            className="cursor-pointer"
+            className="cursor-pointer p-3"
           >
-            <div className="flex gap-2 items-center py-4 justify-center">
-              <img src="/logo_text.svg" alt="Logo" className="w-full object-contain" />
-              <div className="text-xs">Beta</div>
+            <div className="flex gap-2 items-center justify-center relative">
+              <img src="/logo_text.svg" alt="Logo" className="w-full h-full object-contain" />
+              <div className="text-xs absolute right-1 text-gray-600 bottom-0">Beta</div>
             </div>
           </Link>
           <Link
