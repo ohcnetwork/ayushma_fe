@@ -90,7 +90,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                 )
                 }
             </div >
-            <div className="w-full shrink-0 p-4">
+            <div className="w-full shrink-0 p-4 md:p-6 max-w-5xl mx-auto">
                 <ChatBar
                     chat={newChat || ""}
                     onChange={(e) => setNewChat(e.target.value)}
@@ -101,7 +101,7 @@ export default function Chat(params: { params: { project_id: string, chat_id: st
                     ]}
                     loading={converseMutation.isLoading || isTyping}
                 />
-                <p className="text-xs pl-0,5 text-gray-500">Please be aware that Adhyayana AI may generate inaccurate information; kindly report any concerns to support@pupilfirst.org</p>
+                <p className="text-xs pl-0.5 text-center text-gray-500">Please be aware that Adhyayana AI may generate inaccurate information; kindly report any concerns to support@pupilfirst.org</p>
             </div>
         </div >
     )

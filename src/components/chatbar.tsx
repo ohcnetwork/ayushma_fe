@@ -81,17 +81,19 @@ export default function ChatBar(props: {
                     errors={errors}
                     right={loading ?
                         <Loading /> :
-                        <>
-                            <button type="button" className="w-12 h-12 p-1 text-2xl bg-gray-50 rounded-lg hover:bg-gray-100 transition" onClick={() => { setLangDialogOpen(true) }}>
+                        <span className="flex justify-between border-t p-1">
+                            <span>
+                            <button title="Select Conversation Language" type="button" className="w-12 h-12 p-1 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition" onClick={() => { setLangDialogOpen(true) }}>
                                 <i className="fa-regular fa-language"></i>
                             </button>
-                            <button type="button" className={`w-12 h-12 p-1 ml-2 text-2xl bg-gray-50 rounded-lg hover:bg-gray-100 transition ${status === "recording" ? "text-green-500" : ""}`} onClick={status === "recording" ? stopRecording : startRecording}>
+                            <button title="Search by Voice" type="button" className={`w-12 h-12 p-1 ml-2 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition ${status === "recording" ? "text-green-500" : ""}`} onClick={status === "recording" ? stopRecording : startRecording}>
                                 <i className="fal fa-microphone" />
                             </button>
-                            <button className="w-12 h-12 p-1 text-2xl ml-2 rounded-lg enabled:hover:bg-green-600 enabled:bg-green-500 enabled:text-white disabled:text-gray-300 transition"  disabled={chat.length < 1}>
+                            </span>
+                            <button className="w-12 h-12 p-1 text-xl ml-2 rounded-lg enabled:hover:bg-green-600 enabled:bg-green-500 enabled:text-white disabled:text-gray-300 transition"  disabled={chat.length < 1}>
                                 <i className="fal fa-paper-plane-top" />
                             </button>
-                        </>
+                        </span>
                     }
                 />
             </form>

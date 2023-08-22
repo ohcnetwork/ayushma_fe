@@ -101,7 +101,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                     <h2 className="font-semibold mt-8">
                         Try asking me -
                     </h2>
-                    <div className="inline-flex mt-4 flex-wrap justify-center gap-4 w-1/2">
+                    <div className="grid md:grid-cols-2 mt-4 gap-4 px-4 lg:max-w-4xl mx-auto">
                         {samplePrompts.map((prompt, i) => (
                             <button
                                 onClick={async () => {
@@ -110,7 +110,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                                     const fd = await getFormData(undefined, prompt);
                                     newChatMutation.mutate({ formdata: fd });
                                 }}
-                                className="bg-white border border-gray-200 rounded-xl p-4 w-64"
+                                className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition"
                                 key={i}
                             >
                                 {prompt}
@@ -128,7 +128,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                         <ChatBlock cursor={true} message={{ messageType: ChatMessageType.AYUSHMA, message: chatMessage, original_message: chatMessage, language: storage.language || "en", created_at: "", external_id: "", modified_at: "" }} />
                     </>)}
             </div>
-            <div className="w-full shrink-0 p-4">
+            <div className="w-full shrink-0 p-4 md:p-6 max-w-5xl mx-auto">
                 <ChatBar
                     chat={chat}
                     onChange={(e) => setChat(e.target.value)}
@@ -137,7 +137,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                     errors={[(newChatMutation.error as any)?.error?.error, (newChatMutation.error as any)?.error?.non_field_errors]}
                     loading={newChatMutation.isLoading || converseMutation.isLoading || isTyping}
                 />
-                <p className="text-xs pl-0,5 text-gray-500">Please be aware that Adhyayana AI may generate inaccurate information; kindly report any concerns to support@pupilfirst.org</p>
+                <p className="text-xs pl-0.5 text-center text-gray-500">Please be aware that Adhyayana AI may generate inaccurate information; kindly report any concerns to support@pupilfirst.org</p>
             </div>
         </div>
     )

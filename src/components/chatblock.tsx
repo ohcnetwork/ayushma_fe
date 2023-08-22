@@ -91,8 +91,8 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
     }, []);
 
     return (
-        <div className={`flex flex-col gap-4 p-6 ${message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""}`}>
-            <div className="flex gap-6">
+        <div className={`flex flex-col gap-4 p-4 md:p-6 ${message?.messageType === ChatMessageType.USER ? "bg-gray-500/5" : ""}`}>
+            <div className="flex gap-6 max-w-4xl mx-auto w-full">
                 <div>
 
                         {message?.messageType === ChatMessageType.USER && !loading ?
@@ -115,15 +115,15 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                                 </ReactMarkdown>
                                 {message?.messageType === ChatMessageType.AYUSHMA && message?.audio && (
                                     <div className="inline-flex gap-1 mt-2">
-                                        <button onClick={togglePlay} className="text-gray-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 px-3 py-2">
+                                        <button onClick={togglePlay} className="flex items-center justify-center text-gray-500 rounded-lg transition bg-gray-100 hover:text-gray-700 hover:bg-gray-300 p-2">
                                             {audioStatus === "playing" ? (
-                                                <i className="fa-regular fa-circle-pause text-2xl"></i>
+                                                <i className="fa-regular fa-circle-pause text-xl"></i>
                                             ) : (
-                                                <i className="fa-regular fa-circle-play text-2xl"></i>
+                                                <i className="fa-regular fa-circle-play text-xl"></i>
                                             )}
                                         </button>
-                                        {(audioStatus === "paused" || audioStatus === "playing") && <button onClick={stopAudio} className="text-red-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 px-3 py-2 ">
-                                            <i className="fa-regular fa-circle-stop text-2xl"></i>
+                                        {(audioStatus === "paused" || audioStatus === "playing") && <button onClick={stopAudio} className="flex items-center justify-center text-red-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 p-2 ">
+                                            <i className="fa-regular fa-circle-stop text-xl"></i>
                                         </button>}
                                     </div>
                                 )}
@@ -147,7 +147,7 @@ export default function ChatBlock(props: { message?: ChatMessage, loading?: bool
                 </div>
             </div>
             {message?.reference_documents && message?.reference_documents.length > 0 && (
-                <div className="flex gap-2 pl-16 items-center pb-4">
+                <div className="flex flex-wrap gap-2 pl-16 items-center pb-4 max-w-4xl mx-auto w-full">
                     <p className="mr-1 text-sm italic">References:</p>
                     {message?.reference_documents.map((doc, i) => {
                         if (doc.document_type === 1 || doc.document_type === 2)
