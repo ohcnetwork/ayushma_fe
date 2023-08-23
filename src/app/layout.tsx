@@ -3,7 +3,7 @@ import Script from "next/script";
 import Providers from "@/utils/provider";
 
 export const metadata = {
-  title: "Adhyayana",
+  title: process.env.NEXT_PUBLIC_AI_WARNING,
 };
 
 export default function RootLayout({
