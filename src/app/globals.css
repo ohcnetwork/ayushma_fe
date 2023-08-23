@@ -22,7 +22,7 @@ background: #bdc0c4;
 #scrollableDiv::-webkit-scrollbar-corner {
 background: #f3f4f6;
 }
-  
+
 
 .markdown-render h1 {
     display: block;
@@ -71,10 +71,6 @@ background: #f3f4f6;
 
 .markdown-render li::marker {
     color: gray;
-}
-
-.markdown-render {
-    text-align: justify;
 }
 
 .markdown-render pre {

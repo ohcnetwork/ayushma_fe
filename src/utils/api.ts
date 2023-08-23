@@ -64,7 +64,11 @@ const request = async (
   const storage =
     isAuth === false
       ? null
-      : JSON.parse(localStorage.getItem("ayushma-storage") || "{}");
+      : JSON.parse(
+          localStorage.getItem(
+            process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage"
+          ) || "{}"
+        );
   const localToken = storage?.auth_token;
 
   const auth =
