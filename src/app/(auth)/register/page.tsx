@@ -71,7 +71,7 @@ export default function Register() {
                         <ReCAPTCHA
                             className="origin-[0_0] scale-[.85]"
                             sitekey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY ?? ""}
-                            onChange={(value: string) => setCreds({ ...creds, recaptcha: value ?? "" })}
+                            onChange={(value) => setCreds({ ...creds, recaptcha: value ?? "" })}
                         />
                         <Errors errors={(registerMutation.error as any)?.error?.recaptcha} className="-mt-3" />
                     </div>
