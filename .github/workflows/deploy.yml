@@ -52,6 +52,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Run yarn i-all
+        run: |
+          yarn i-all
+      
       - name: Build image
         uses: docker/build-push-action@v4
         with:
