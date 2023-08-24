@@ -34,4 +34,5 @@ export type Document = BaseModelType & {
     file: File,
     text_content: string,
     document_type: DocumentType,
+    uploading: boolean
 }

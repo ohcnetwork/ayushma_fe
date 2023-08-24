@@ -1,0 +1,8 @@
+version: '2'
+services:
+    ayushma:
+      container_name: ayushma_fe
+      restart: on-failure
+      build: .
+      ports:
+        - 80:3000

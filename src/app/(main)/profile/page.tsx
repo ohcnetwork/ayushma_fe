@@ -79,11 +79,11 @@ export default function Page() {
                 <p className="text text-sm text-gray-500 mb-2">
                   Change Password:
                 </p>
-                <div>
+                <div className="relative z-0">
                   <Input
                     right={
-                      <div
-                        className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md shadow-sm"
+                      <button
+                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-0 right-0 px-5 py-3.5  rounded-md shadow-sm"
                         onClick={() => setShowPassword((prev) => !prev)}
                       >
                         <i
@@ -92,7 +92,7 @@ export default function Page() {
                           }
                           style={{ color: "#2d2a2a" }}
                         />
-                      </div>
+                      </button>
                     }
                     type={showPassword ? "text" : "password"}
                     placeholder="New Password"
@@ -110,8 +110,8 @@ export default function Page() {
                 <div className="relative z-0">
                   <Input
                     right={
-                      <div
-                        className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md shadow-sm "
+                      <button
+                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-0 right-0 px-5 py-3.5  rounded-md shadow-sm "
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
                       >
                         <i
@@ -121,7 +121,7 @@ export default function Page() {
                               : "fa fa-eye-slash"
                           }
                         />
-                      </div>
+                      </button>
                     }
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm Password"

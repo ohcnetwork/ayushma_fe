@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:all": "npm-run-all --parallel dev:next dev:chatbot",
     "dev": "next dev",
-    "build": "next build",
+    "dev:chatbot": "cd chatbot && yarn build-watch",
+    "build": "yarn build:chatbot && yarn build:next",
+    "build:next": "next build",
+    "build:chatbot": "cd chatbot && yarn build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "i-all": "yarn && cd chatbot && yarn"
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
@@ -23,6 +28,7 @@
     "json2csv": "^6.0.0-alpha.2",
     "jspdf": "^2.5.1",
     "next": "13.3.1",
+    "npm-run-all": "^4.1.5",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -39,6 +45,7 @@
   "devDependencies": {
     "@types/json2csv": "^5.0.3",
     "@types/react-infinite-scroller": "^1.2.3",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "postcss-prefixer": "^3.0.0"
   }
 }

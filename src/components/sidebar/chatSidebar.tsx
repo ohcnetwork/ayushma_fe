@@ -5,7 +5,7 @@ import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { CheckBox, Input } from "../ui/interactive";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,20 +13,22 @@ import Modal from "../modal";
 import Slider from "../ui/slider";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
+import { useDebounce } from "@/utils/hooks/useDebounce";
 
 export default function ChatSideBar(props: { project_id?: string }) {
   const { project_id } = props;
-  const queryInputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const LIMIT = 10;
   const chatsQuery = useInfiQuery(
-    ["chats"],
+    ["search", debouncedSearchQuery],
     ({ pageParam = 1 }) => {
       const offset = (pageParam - 1) * LIMIT;
       return API.chat.list(
         project_id || "",
         LIMIT,
         offset,
-        queryInputRef.current?.value || ""
+        debouncedSearchQuery
       );
     },
     {
@@ -60,14 +62,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
     ...(storage?.user?.is_staff
       ? [
-          {
-            icon: "user-shield",
-            text: "Admin",
-            onclick: () => {
-              router.push("/admin");
-            },
+        {
+          icon: "user-shield",
+          text: "Admin",
+          onclick: () => {
+            router.push("/admin");
           },
-        ]
+        },
+      ]
       : []),
     {
       icon: "sign-out-alt",
@@ -95,83 +97,86 @@ export default function ChatSideBar(props: { project_id?: string }) {
 
   return (
     <>
-      <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col border-r border-gray-300 h-screen justify-between">
-        <div className="flex flex-col p-2 gap-2">
-          <Link
-            href={project_id ? `/project/${project_id}` : "/"}
-            className="cursor-pointer"
-          >
-            <div className="h-6 flex gap-2 items-center my-4 justify-center">
-              <img src="/ayushma_text.svg" alt="Logo" className="h-full" />
-              <div className="text-xs">Beta</div>
-            </div>
-          </Link>
-          <Link
-            href={project_id ? `/project/${project_id}` : "/"}
-            className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center"
-          >
-            <i className="far fa-plus" />
-            &nbsp; New Chat
-          </Link>
-          <input
-            type="text"
-            placeholder="Search..."
-            ref={queryInputRef}
-            onChange={(e) => {
-              chatsQuery.refetch();
-            }}
-            className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
-          />
-        </div>
-        <div id="scrollableDiv" className="overflow-y-auto h-4/6">
-          <InfiniteScroll
-            loadMore={() => {
-              chatsQuery.fetchNextPage();
-            }}
-            hasMore={chatsQuery.hasNextPage ? true : false}
-            useWindow={false}
-            loader={
-              <div className="flex justify-center items-center h-full">
-              <div
-                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                role="status"
-              >
-                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                  Loading...
-                </span>
+      <div className="bg-white bg-cover bg-top w-72 shrink-0 flex flex-col border-r border-gray-300 h-screen justify-between">
+        <div className="flex flex-col flex-1 overflow-auto">
+          <div className="flex flex-col p-3 gap-2">
+            <Link
+              href={project_id ? `/project/${project_id}` : "/"}
+              className="cursor-pointer p-3"
+            >
+              <div className="flex gap-2 items-center justify-center relative">
+                <img src="/logo_text.svg" alt="Logo" className="w-full h-full object-contain" />
+                <div className="text-xs absolute right-1 text-gray-600 bottom-0">Beta</div>
               </div>
-            </div>
-            }
-          >
-            {project_id &&
-              chatsQuery.data?.pages.map((group, index) => (
-                <div key={index} className="flex flex-col gap-2 mt-2">
-                  {group.results.map((chat: Chat) => (
-                    <div
-                      key={chat.external_id}
-                      className="w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex items-stretch justify-between"
-                    >
-                      <Link
-                        href={`project/${project_id}/chat/${chat.external_id}`}
-                        className="w-full py-2 px-4 text-left truncate"
-                        title={chat.title}
-                      >
-                        {chat.title}
-                      </Link>
-                      <button
-                        className="py-2 px-2 hidden group-hover:block"
-                        onClick={() => deleteChat(chat.external_id)}
-                      >
-                        <i className="fal fa-trash-alt" />
-                      </button>
-                    </div>
-                  ))}
+            </Link>
+            <Link
+              href={project_id ? `/project/${project_id}` : "/"}
+              className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center"
+            >
+              <i className="far fa-plus" />
+              &nbsp; New Chat
+            </Link>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
+              className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
+            />
+          </div>
+          <div id="scrollableDiv" className="overflow-y-auto px-2">
+            <InfiniteScroll
+              loadMore={() => {
+                chatsQuery.fetchNextPage();
+              }}
+              hasMore={chatsQuery.hasNextPage ? true : false}
+              useWindow={false}
+              threshold={10}
+              loader={
+                <div className={`${chatsQuery.isFetching ? "" : "hidden"} flex justify-center items-center mt-2 h-full`}>
+                  <div
+                    className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                    role="status"
+                  >
+                    <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                      Loading...
+                    </span>
+                  </div>
                 </div>
-              ))}
-          </InfiniteScroll>
+              }
+            >
+              {project_id &&
+                chatsQuery.data?.pages.map((group, index) => (
+                  <div key={index} className="flex flex-col gap-2">
+                    {group.results.map((chat: Chat) => (
+                      <div
+                        key={chat.external_id}
+                        className="w-full group hover:bg-gray-100 rounded-lg overflow-hidden flex gap-2 justify-between"
+                      >
+                        <Link
+                          href={`project/${project_id}/chat/${chat.external_id}`}
+                          className="w-full py-2 px-4 text-left truncate"
+                          title={chat.title}
+                        >
+                          {chat.title}
+                        </Link>
+                        <button
+                          className="py-2 px-2 hidden group-hover:block"
+                          onClick={() => deleteChat(chat.external_id)}
+                        >
+                          <i className="fal fa-trash-alt" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+            </InfiniteScroll>
+          </div>
         </div>
-        <div className="p-2">
-          <div className="flex gap-2">
+        <div className="p-2 flex justify-around">
+          <div className="flex flex-1 gap-2">
             {buttons.map((button, i) => (
               <button
                 key={i}
