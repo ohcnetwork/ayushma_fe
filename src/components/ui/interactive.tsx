@@ -97,11 +97,11 @@ export function Button(
   );
 }
 
-export function Errors(props: { errors?: string[] }) {
+export function Errors(props: { errors?: string[], className?: string }) {
   const { errors } = props;
 
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${props.className}`}>
       {errors?.map((error, i) => (
         <div key={i} className="text-red-500 text-sm mt-2">
           {error}
