@@ -66,14 +66,16 @@ export default function Register() {
                     value={creds.password}
                     onChange={(e) => setCreds({ ...creds, password: e.target.value })}
                 />
-                <div>
-                    <ReCAPTCHA
-                        className="origin-[0_0] scale-[.85]"
-                        sitekey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY ?? ""}
-                        onChange={(value) => setCreds({ ...creds, recaptcha: value ?? "" })}
-                    />
-                    <Errors errors={(registerMutation.error as any)?.error?.recaptcha} className="-mt-3" />
-                </div>
+                {process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY && (
+                    <div>
+                        <ReCAPTCHA
+                            className="origin-[0_0] scale-[.85]"
+                            sitekey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY ?? ""}
+                            onChange={(value: string) => setCreds({ ...creds, recaptcha: value ?? "" })}
+                        />
+                        <Errors errors={(registerMutation.error as any)?.error?.recaptcha} className="-mt-3" />
+                    </div>
+                )}
                 <Errors errors={(registerMutation.error as any)?.error?.non_field_errors} />
                 <Button
                     loading={registerMutation.isLoading}
