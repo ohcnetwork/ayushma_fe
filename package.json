@@ -32,6 +32,7 @@
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-google-recaptcha": "^3.1.0",
     "react-hot-toast": "^2.4.1",
     "react-infinite-scroller": "^1.2.6",
     "react-markdown": "^8.0.7",
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@types/json2csv": "^5.0.3",
+    "@types/react-google-recaptcha": "^2.1.5",
     "@types/react-infinite-scroller": "^1.2.3",
     "husky": "^8.0.3",
     "postcss-prefixer": "^3.0.0"
