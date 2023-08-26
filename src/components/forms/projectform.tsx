@@ -23,18 +23,14 @@ export default function ProjectForm(props: {
         className="flex flex-col gap-2"
         encType="multipart/form-data"
       >
-        <p className="text-sm text-gray-500">
-          Title
-        </p>
+        <p className="text-sm text-gray-500">Title</p>
         <Input
           placeholder="Title"
           value={project.title}
           onChange={(e) => setProject({ ...project, title: e.target.value })}
           errors={errors?.title}
         />
-        <p className="text-sm text-gray-500">
-          Description
-        </p>
+        <p className="text-sm text-gray-500">Description</p>
         <TextArea
           placeholder="Description"
           value={project.description}
@@ -43,9 +39,7 @@ export default function ProjectForm(props: {
           }
           errors={errors?.description}
         />
-        <p className="text-sm text-gray-500">
-          Prompt
-        </p>
+        <p className="text-sm text-gray-500">Prompt</p>
         <TextArea
           placeholder="Prompt"
           className="h-56"
@@ -53,9 +47,7 @@ export default function ProjectForm(props: {
           onChange={(e) => setProject({ ...project, prompt: e.target.value })}
           errors={errors?.prompt}
         />
-        <p className="text-sm text-gray-500">
-          Speech to text engine
-        </p>
+        <p className="text-sm text-gray-500">Speech to text engine</p>
         <select
           className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.stt_engine ?? 1}
@@ -69,9 +61,7 @@ export default function ProjectForm(props: {
             </option>
           ))}
         </select>
-        <p className="text-sm text-gray-500">
-          Model
-        </p>
+        <p className="text-sm text-gray-500">Model</p>
         <select
           className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.model ?? 1}
@@ -85,8 +75,51 @@ export default function ProjectForm(props: {
             </option>
           ))}
         </select>
+        <p className="text-sm text-gray-500">Preset Questions</p>
+        {project.preset_questions?.length === 0 && (
+          <p className="text-sm text-gray-500">
+            No preset questions. Add some below.
+          </p>
+        )}
+        {project.preset_questions?.map((question, i) => (
+          <div className="flex gap-2 items-center" key={i}>
+            <Input
+              parentDivClassName="flex-1"
+              placeholder="Question"
+              value={question}
+              onChange={(e) => {
+                const questions = [...(project.preset_questions as string[])];
+                questions[i] = e.target.value;
+                setProject({ ...project, preset_questions: questions });
+              }}
+            />
+            <Button
+              variant="danger"
+              onClick={() => {
+                const questions = [...(project.preset_questions as string[])];
+                questions.splice(i, 1);
+                setProject({ ...project, preset_questions: questions });
+              }}
+            >
+              <i className="fa-regular fa-trash h-full p-2.5"></i>
+            </Button>
+          </div>
+        ))}
+        <Button
+          className="bg-indigo-500 enabled:hover:bg-indigo-600"
+          onClick={() =>
+            setProject({
+              ...project,
+              preset_questions: [...(project.preset_questions as string[]), ''],
+            })
+          }
+        >
+          <i className="fa-regular fa-plus mr-2"></i>
+          Add Question
+        </Button>
         <Button loading={loading} type="submit" className="mt-4">
-        <i className="fa-regular fa-floppy-disk mr-2"></i>{pro.external_id ? "Save" : "Create"}
+          <i className="fa-regular fa-floppy-disk mr-2"></i>
+          {pro.external_id ? 'Save' : 'Create'}
         </Button>
       </form>
     </div>

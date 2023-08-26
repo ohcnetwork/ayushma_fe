@@ -1,24 +1,25 @@
-"use client";
-import ChatBar from "@/components/chatbar";
-import ChatBlock from "@/components/chatblock";
-import { storageAtom } from "@/store";
-import { ChatConverseStream, ChatMessageType } from "@/types/chat";
-import { API } from "@/utils/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAtom } from "jotai";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+'use client';
+import ChatBar from '@/components/chatbar';
+import ChatBlock from '@/components/chatblock';
+import { storageAtom } from '@/store';
+import { ChatConverseStream, ChatMessageType } from '@/types/chat';
+import { Project } from '@/types/project';
+import { API } from '@/utils/api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Chat(params: { params: { project_id: string } }) {
   const { project_id } = params.params;
-  const [chat, setChat] = useState("");
+  const [chat, setChat] = useState('');
   const router = useRouter();
   const [storage] = useAtom(storageAtom);
   const queryClient = useQueryClient();
-  const [chatMessage, setChatMessage] = useState<string>("");
+  const [chatMessage, setChatMessage] = useState<string>('');
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [chatID, setChatID] = useState<string>("");
+  const [chatID, setChatID] = useState<string>('');
 
   const openai_key =
     !storage?.user?.allow_key || storage?.override_api_key
@@ -30,8 +31,17 @@ export default function Chat(params: { params: { project_id: string } }) {
       router.push(`/project/${project_id}/chat/${chatID}?autoplay`);
   }, [chatID, isTyping, project_id, router]);
 
+  const projectQuery = useQuery(
+    ['chat', project_id],
+    () => API.projects.get(project_id),
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  const project: Project | undefined = projectQuery.data;
+
   const streamChatMessage = async (message: ChatConverseStream) => {
-    if (chat === "") setChat(message.input);
+    if (chat === '') setChat(message.input);
     setChatMessage((prevChatMessage) => {
       const updatedChatMessage = prevChatMessage + message.delta;
       return updatedChatMessage;
@@ -43,7 +53,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     (params: { formdata: FormData }) =>
       API.chat.create(
         project_id,
-        chat !== "" ? chat.slice(0, 50) : "new chat",
+        chat !== '' ? chat.slice(0, 50) : 'new chat',
         storage.openai_api_key
       ),
     {
@@ -71,7 +81,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     {
       retry: false,
       onSuccess: async (data, vars) => {
-        await queryClient.invalidateQueries(["chats"]);
+        await queryClient.invalidateQueries(['chats']);
       },
     }
   );
@@ -81,14 +91,14 @@ export default function Chat(params: { params: { project_id: string } }) {
     if (blobUrl) {
       const f = await fetch(blobUrl);
       const blob = await f.blob();
-      const file = new File([blob], "audio.wav", { type: "audio/wav" });
-      fd.append("audio", file);
+      const file = new File([blob], 'audio.wav', { type: 'audio/wav' });
+      fd.append('audio', file);
     } else if (text) {
-      fd.append("text", text);
+      fd.append('text', text);
     }
-    fd.append("language", storage.language || "en");
-    fd.append("temperature", (storage.temperature || 0.1).toString());
-    fd.append("top_k", (storage.top_k || 100).toString());
+    fd.append('language', storage.language || 'en');
+    fd.append('temperature', (storage.temperature || 0.1).toString());
+    fd.append('top_k', (storage.top_k || 100).toString());
     return fd;
   };
 
@@ -105,12 +115,15 @@ export default function Chat(params: { params: { project_id: string } }) {
     newChatMutation.mutate({ formdata: fd });
   };
 
-  const samplePrompts = [
-    "How does one prepare for advanced airway management, even before the patient has arrived?",
-    "How do you assess a ICU patient's need for tracheal intubation?",
-    "What are the checks one needs to perform before intubation?",
-    "How do you do the initial assessment of the patient before oxygenation or ventilation?",
-  ];
+  const samplePrompts =
+    project?.preset_questions && project?.preset_questions?.length > 0
+      ? project?.preset_questions
+      : [
+          'How does one prepare for advanced airway management, even before the patient has arrived?',
+          "How do you assess a ICU patient's need for tracheal intubation?",
+          'What are the checks one needs to perform before intubation?',
+          'How do you do the initial assessment of the patient before oxygenation or ventilation?',
+        ];
 
   return (
     <div className="flex flex-col h-screen flex-1">
