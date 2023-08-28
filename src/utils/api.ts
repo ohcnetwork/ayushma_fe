@@ -183,6 +183,7 @@ export const API = {
       password: string;
       username: string;
       full_name: string;
+      recaptcha: string;
     }) => request("auth/register", "POST", { ...creds }),
     forgot: (email: string) => request("auth/forgot", "POST", { email }),
     verify: (token: string, email: string) =>

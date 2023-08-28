@@ -7,6 +7,7 @@ import { useAtom } from "jotai"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Register() {
 
@@ -15,7 +16,8 @@ export default function Register() {
         username: "",
         full_name: "",
         email: "",
-        password: ""
+        password: "",
+        recaptcha: ""
     });
     const router = useRouter();
 
@@ -64,6 +66,16 @@ export default function Register() {
                     value={creds.password}
                     onChange={(e) => setCreds({ ...creds, password: e.target.value })}
                 />
+                {process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY && (
+                    <div>
+                        <ReCAPTCHA
+                            className="origin-[0_0] scale-[.85]"
+                            sitekey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY ?? ""}
+                            onChange={(value) => setCreds({ ...creds, recaptcha: value ?? "" })}
+                        />
+                        <Errors errors={(registerMutation.error as any)?.error?.recaptcha} className="-mt-3" />
+                    </div>
+                )}
                 <Errors errors={(registerMutation.error as any)?.error?.non_field_errors} />
                 <Button
                     loading={registerMutation.isLoading}
