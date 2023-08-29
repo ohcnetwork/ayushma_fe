@@ -98,9 +98,8 @@ const request = async (
           if (onMessage) onMessage(e);
         },
         onerror: (error: any) => {
-          if (onMessage)
-            onMessage({ id: "", event: "", data: JSON.stringify({ error }) });
           reject({ error });
+          onMessage?.({ id: "", event: "", data: JSON.stringify({ error }) });
         },
         onclose() {
           resolve();
@@ -124,7 +123,9 @@ const request = async (
         },
       };
 
-      await fetchEventSource(url, streamOptions);
+      await fetchEventSource(url, streamOptions).catch((error) => {
+        reject({ error });
+      });
     });
   } else {
     const response = await fetch(url, requestOptions);
