@@ -46,6 +46,16 @@ export default function Chat(params: {
       );
   }, []);
 
+  useEffect(() => {
+    const prevTitle = document.title;
+    API.projects
+      .get(params.params.project_id)
+      .then((data) => (document.title = data.title));
+    return () => {
+      document.title = prevTitle;
+    };
+  }, []);
+
   const streamChatMessage = async (message: ChatConverseStream) => {
     if (newChat === "") setNewChat(message.input);
     setChatMessage((prevChatMessage) => {
