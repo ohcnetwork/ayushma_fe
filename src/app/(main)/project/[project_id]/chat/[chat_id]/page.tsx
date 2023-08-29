@@ -75,6 +75,9 @@ export default function Chat(params: {
       // onSuccess: async (data, vars) => {
       //     await chatQuery.refetch();
       // }
+      onError: async (error, vars) => {
+        setIsTyping(false);
+      },
     }
   );
 
