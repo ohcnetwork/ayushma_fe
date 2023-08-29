@@ -4,12 +4,14 @@ import ChatBar from "@/components/chatbar";
 import ChatBlock from "@/components/chatblock";
 import { storageAtom } from "@/store";
 import { Chat, ChatConverseStream, ChatMessageType } from "@/types/chat";
+import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { getFormData } from "@/utils/converse";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet";
 
 export default function Chat(params: {
   params: { project_id: string; chat_id: string };
@@ -30,6 +32,7 @@ export default function Chat(params: {
     }
   );
   const chat: Chat | undefined = chatQuery.data;
+  const [projectData, setProjectData] = useState<Project>();
 
   const openai_key =
     !storage?.user?.allow_key || storage?.override_api_key
@@ -50,7 +53,7 @@ export default function Chat(params: {
     const prevTitle = document.title;
     API.projects
       .get(params.params.project_id)
-      .then((data) => (document.title = data.title));
+      .then((data) => setProjectData(data));
     return () => {
       document.title = prevTitle;
     };
@@ -111,6 +114,11 @@ export default function Chat(params: {
 
   return (
     <div className="h-screen flex flex-col flex-1">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{projectData?.title}</title>
+        <meta name="description" content={projectData?.description} />
+      </Helmet>
       <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
         {chat?.chats?.map((message, i) => (
           <ChatBlock
