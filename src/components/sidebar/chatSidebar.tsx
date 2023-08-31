@@ -191,7 +191,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
       </div>
       <Modal onClose={onSettingsClose} show={settingsModal}>
         <div>
-          Your Open AI API key
+          Your OpenAI API key
           <Input
             type="text"
             placeholder="OpenAI key"
