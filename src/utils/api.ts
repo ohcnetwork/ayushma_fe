@@ -99,7 +99,7 @@ const request = async (
         },
         onerror: (error: any) => {
           reject({ error });
-          onMessage?.({ id: "", event: "", data: JSON.stringify({ error }) });
+          onMessage?.({ id: "", event: "", data: JSON.stringify({ error: true, message: error.message }) });
         },
         onclose() {
           resolve();
@@ -280,9 +280,6 @@ export const API = {
         (e) => {
           if (onMessage) {
             const data = JSON.parse(e.data);
-            if (data.error) {
-              throw Error(data.error);
-            }
             handleMessage(data, onMessage, delay);
           }
         }
