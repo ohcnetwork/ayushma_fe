@@ -107,10 +107,14 @@ export default function ProjectForm(props: {
         ))}
         <Button
           className="bg-indigo-500 enabled:hover:bg-indigo-600"
+          type="button"
           onClick={() =>
             setProject({
               ...project,
-              preset_questions: [...(project.preset_questions as string[]), ''],
+              preset_questions: [
+                ...(project?.preset_questions ? project.preset_questions : []),
+                '',
+              ],
             })
           }
         >
