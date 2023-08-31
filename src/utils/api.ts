@@ -98,9 +98,8 @@ const request = async (
           if (onMessage) onMessage(e);
         },
         onerror: (error: any) => {
-          if (onMessage)
-            onMessage({ id: "", event: "", data: JSON.stringify({ error }) });
           reject({ error });
+          onMessage?.({ id: "", event: "", data: JSON.stringify({ error: true, message: error.message }) });
         },
         onclose() {
           resolve();
@@ -124,7 +123,9 @@ const request = async (
         },
       };
 
-      await fetchEventSource(url, streamOptions);
+      await fetchEventSource(url, streamOptions).catch((error) => {
+        reject({ error });
+      });
     });
   } else {
     const response = await fetch(url, requestOptions);
@@ -183,6 +184,7 @@ export const API = {
       password: string;
       username: string;
       full_name: string;
+      recaptcha: string;
     }) => request("auth/register", "POST", { ...creds }),
     forgot: (email: string) => request("auth/forgot", "POST", { email }),
     verify: (token: string, email: string) =>
@@ -278,9 +280,6 @@ export const API = {
         (e) => {
           if (onMessage) {
             const data = JSON.parse(e.data);
-            if (data.error) {
-              throw Error(data.error);
-            }
             handleMessage(data, onMessage, delay);
           }
         }

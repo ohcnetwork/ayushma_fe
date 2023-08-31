@@ -96,4 +96,4 @@ Ayushma is a white label product. You can customize the app to your needs by cha
 - `NEXT_PUBLIC_LOCAL_STORAGE`= Local storage key name
 - `NEXT_PUBLIC_AI_NAME`= Name of the AI (default: Ayushma)
 - `NEXT_PUBLIC_AI_DESCRIPTION`= Description of the AI
-
+- `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` = Google Recaptcha Site Key

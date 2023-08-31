@@ -19,7 +19,8 @@ export default function Chat(params: { params: { project_id: string } }) {
   const queryClient = useQueryClient();
   const [chatMessage, setChatMessage] = useState<string>('');
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [chatID, setChatID] = useState<string>('');
+  const [chatID, setChatID] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const openai_key =
     !storage?.user?.allow_key || storage?.override_api_key
@@ -47,6 +48,10 @@ export default function Chat(params: { params: { project_id: string } }) {
       return updatedChatMessage;
     });
     if (message.stop) setIsTyping(false);
+    if (message.error) {
+      setIsTyping(false);
+      setError(message.message);
+    }
   };
 
   const newChatMutation = useMutation(
@@ -104,6 +109,7 @@ export default function Chat(params: { params: { project_id: string } }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsTyping(true);
+    setError("");
     e.preventDefault();
     const fd = await getFormData(undefined, chat);
     newChatMutation.mutate({ formdata: fd });
@@ -198,6 +204,7 @@ export default function Chat(params: { params: { project_id: string } }) {
           errors={[
             (newChatMutation.error as any)?.error?.error,
             (newChatMutation.error as any)?.error?.non_field_errors,
+            error,
           ]}
           loading={
             newChatMutation.isLoading || converseMutation.isLoading || isTyping

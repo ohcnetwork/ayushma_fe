@@ -147,7 +147,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                 </div>
               }
             >
-              {project_id &&
+              {project_id ? (
                 chatsQuery.data?.pages.map((group, index) => (
                   <div key={index} className="flex flex-col gap-2">
                     {group.results.map((chat: Chat) => (
@@ -171,7 +171,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                       </div>
                     ))}
                   </div>
-                ))}
+                ))):(<></>)}
             </InfiniteScroll>
           </div>
         </div>
