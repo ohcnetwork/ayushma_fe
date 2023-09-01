@@ -53,6 +53,15 @@ export default function ProjectForm(props: {
           onChange={(e) => setProject({ ...project, prompt: e.target.value })}
           errors={errors?.prompt}
         />
+         <p className="text-sm text-gray-500">
+          OpenAI Key
+        </p>
+        <Input
+          placeholder="OpenAI Key"
+          value={project.open_ai_key}
+          onChange={(e) => setProject({ ...project, open_ai_key: e.target.value })}
+          errors={errors?.open_ai_key}
+        />
         <p className="text-sm text-gray-500">
           Speech to text engine
         </p>
