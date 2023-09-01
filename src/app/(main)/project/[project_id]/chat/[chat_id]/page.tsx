@@ -11,7 +11,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Helmet } from "react-helmet";
 
 export default function Chat(params: {
   params: { project_id: string; chat_id: string };
@@ -53,7 +52,7 @@ export default function Chat(params: {
     const prevTitle = document.title;
     API.projects
       .get(params.params.project_id)
-      .then((data) => setProjectData(data));
+      .then((data) => (document.title = data.title));
     return () => {
       document.title = prevTitle;
     };
@@ -122,11 +121,6 @@ export default function Chat(params: {
 
   return (
     <div className="h-screen flex flex-col flex-1">
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>{projectData?.title}</title>
-        <meta name="description" content={projectData?.description} />
-      </Helmet>
       <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
         {chat?.chats?.map((message, i) => (
           <ChatBlock
