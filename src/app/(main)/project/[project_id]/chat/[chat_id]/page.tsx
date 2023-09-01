@@ -71,6 +71,11 @@ export default function Chat(params: {
       setIsTyping(false);
       setChatMessage("");
     }
+    if (message.error) {
+      setIsTyping(false);
+      setNewChat("");
+      setChatMessage("");
+    }
   };
 
   const converseMutation = useMutation(
@@ -88,6 +93,9 @@ export default function Chat(params: {
       // onSuccess: async (data, vars) => {
       //     await chatQuery.refetch();
       // }
+      onError: async (error, vars) => {
+        setIsTyping(false);
+      },
     }
   );
 

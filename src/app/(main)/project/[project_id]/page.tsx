@@ -37,6 +37,9 @@ export default function Chat(params: { params: { project_id: string } }) {
       return updatedChatMessage;
     });
     if (message.stop) setIsTyping(false);
+    if (message.error) {
+      setIsTyping(false);
+    }
   };
 
   const newChatMutation = useMutation(
