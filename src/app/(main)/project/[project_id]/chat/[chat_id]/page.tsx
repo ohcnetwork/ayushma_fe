@@ -21,7 +21,6 @@ export default function Chat(params: {
   const [chatMessage, setChatMessage] = useState<string>("");
   const [storage] = useAtom(storageAtom);
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
   const chatQuery = useQuery(
     ["chat", chat_id],
@@ -63,7 +62,6 @@ export default function Chat(params: {
       setIsTyping(false);
       setNewChat("");
       setChatMessage("");
-      setError(message.message);
     }
   };
 
@@ -89,7 +87,6 @@ export default function Chat(params: {
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setError("");
     setIsTyping(true);
     e.preventDefault();
     const fd = await getFormData(storage, undefined, newChat);
@@ -158,7 +155,7 @@ export default function Chat(params: {
           onChange={(e) => setNewChat(e.target.value)}
           onSubmit={handleSubmit}
           onAudio={handleAudio}
-          errors={[(converseMutation.error as any)?.error?.error, error]}
+          errors={[(converseMutation.error as any)?.error?.error]}
           loading={converseMutation.isLoading || isTyping}
         />
         <p className="text-xs pl-0.5 text-center text-gray-500">
