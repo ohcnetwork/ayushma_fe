@@ -7,12 +7,13 @@ export function Input(
     loading?: boolean;
     right?: React.ReactNode;
     left?: React.ReactNode;
+    parentDivClassName?: string;
   } & React.InputHTMLAttributes<HTMLInputElement>
 ) {
-  const { className, loading, errors, right, left, ...rest } = props;
+  const { className, loading, errors, right, left, parentDivClassName, ...rest } = props;
 
   return (
-    <div>
+    <div className={parentDivClassName}>
       <div className="border border-gray-200 w-full p-0.5 bg-white rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         {left}

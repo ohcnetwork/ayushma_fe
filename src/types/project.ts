@@ -8,6 +8,7 @@ export type Project = BaseModelType & {
     stt_engine: number,
     model: number,
     archived: boolean,
+    preset_questions?: string[],
     open_ai_key?: string,
 }
 
