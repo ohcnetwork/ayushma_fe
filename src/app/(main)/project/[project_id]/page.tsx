@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function Chat(params: { params: { project_id: string } }) {
   const { project_id } = params.params;
@@ -118,15 +118,18 @@ export default function Chat(params: { params: { project_id: string } }) {
     newChatMutation.mutate({ formdata: fd });
   };
 
-  const samplePrompts =
-    project?.preset_questions && project?.preset_questions?.length > 0
-      ? project?.preset_questions?.sort(() => Math.random() - 0.5).slice(0, 4)
-      : [
-          'How does one prepare for advanced airway management, even before the patient has arrived?',
-          "How do you assess a ICU patient's need for tracheal intubation?",
-          'What are the checks one needs to perform before intubation?',
-          'How do you do the initial assessment of the patient before oxygenation or ventilation?',
-        ];
+  const samplePrompts = useMemo(
+    () =>
+      project?.preset_questions && project?.preset_questions?.length > 0
+        ? project?.preset_questions?.sort(() => Math.random() - 0.5).slice(0, 4)
+        : [
+            "How does one prepare for advanced airway management, even before the patient has arrived?",
+            "How do you assess a ICU patient's need for tracheal intubation?",
+            "What are the checks one needs to perform before intubation?",
+            "How do you do the initial assessment of the patient before oxygenation or ventilation?",
+          ],
+    [project?.preset_questions]
+  );
 
   return (
     <div className="flex flex-col h-screen flex-1">
