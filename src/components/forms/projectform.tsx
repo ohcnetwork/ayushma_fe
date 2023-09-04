@@ -1,5 +1,7 @@
+"use client";
+
 import { MODELS, Project, STT_ENGINES } from "@/types/project";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Input, TextArea } from "../ui/interactive";
 
 export default function ProjectForm(props: {
@@ -11,9 +13,18 @@ export default function ProjectForm(props: {
   const { project: pro, onSubmit, errors, loading } = props;
   const [project, setProject] = useState<Partial<Project>>(pro);
 
+  useEffect(() => {
+    setProject(pro);
+  }, [pro]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(project);
+  };
+
+  const handleRemoveKey = () => {
+    if (window.confirm("Are you sure you want to remove this project's OpenAI key?"))
+      onSubmit({ open_ai_key: null })
   };
 
   return (
@@ -47,15 +58,25 @@ export default function ProjectForm(props: {
           onChange={(e) => setProject({ ...project, prompt: e.target.value })}
           errors={errors?.prompt}
         />
-        <p className="text-sm text-gray-500">
-          OpenAI Key
-        </p>
-        <Input
-          placeholder="OpenAI Key"
-          value={project.open_ai_key}
-          onChange={(e) => setProject({ ...project, open_ai_key: e.target.value })}
-          errors={errors?.open_ai_key}
-        />
+        {!project.key_set ? (
+          <>
+            <p className="text-sm text-gray-500">
+              OpenAI Key
+            </p>
+            <Input
+              placeholder="OpenAI Key"
+              value={project.open_ai_key ?? ''}
+              onChange={(e) => setProject({ ...project, open_ai_key: e.target.value })}
+              errors={errors?.open_ai_key}
+            />
+          </>
+        ) : (
+          <>
+            <div className="flex">
+              Open AI Key : ***** <button className="text-red-500 text-sm ml-4" type="button" onClick={handleRemoveKey}>Remove</button>
+            </div>
+          </>
+        )}
         <p className="text-sm text-gray-500">
           Speech to text engine
         </p>
