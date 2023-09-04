@@ -62,14 +62,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
     ...(storage?.user?.is_staff
       ? [
-        {
-          icon: "user-shield",
-          text: "Admin",
-          onclick: () => {
-            router.push("/admin");
+          {
+            icon: "user-shield",
+            text: "Admin",
+            onclick: () => {
+              router.push("/admin");
+            },
           },
-        },
-      ]
+        ]
       : []),
     {
       icon: "sign-out-alt",
@@ -105,8 +105,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
               className="cursor-pointer p-3"
             >
               <div className="flex gap-2 items-center justify-center relative">
-                <img src="/logo_text.svg" alt="Logo" className="w-full h-full object-contain" />
-                <div className="text-xs absolute right-1 text-gray-600 bottom-0">Beta</div>
+                <img
+                  src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg"}
+                  alt="Logo"
+                  className="w-full h-full object-contain"
+                />
+                <div className="text-xs absolute right-1 text-gray-600 bottom-0">
+                  Beta
+                </div>
               </div>
             </Link>
             <Link
@@ -135,7 +141,11 @@ export default function ChatSideBar(props: { project_id?: string }) {
               useWindow={false}
               threshold={10}
               loader={
-                <div className={`${chatsQuery.isFetching ? "" : "hidden"} flex justify-center items-center mt-2 h-full`}>
+                <div
+                  className={`${
+                    chatsQuery.isFetching ? "" : "hidden"
+                  } flex justify-center items-center mt-2 h-full`}
+                >
                   <div
                     className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                     role="status"
@@ -171,7 +181,10 @@ export default function ChatSideBar(props: { project_id?: string }) {
                       </div>
                     ))}
                   </div>
-                ))):(<></>)}
+                ))
+              ) : (
+                <></>
+              )}
             </InfiniteScroll>
           </div>
         </div>
