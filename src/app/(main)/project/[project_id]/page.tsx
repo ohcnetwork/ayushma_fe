@@ -151,7 +151,8 @@ export default function Chat(params: { params: { project_id: string } }) {
                     const fd = await getFormData(undefined, prompt);
                     newChatMutation.mutate({ formdata: fd });
                   }}
-                  className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition"
+                  disabled={newChatMutation.isLoading}
+                  className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
                   key={i}
                 >
                   {prompt}
