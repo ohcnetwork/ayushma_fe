@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Chat(params: { params: { project_id: string } }) {
   const { project_id } = params.params;
@@ -118,19 +118,6 @@ export default function Chat(params: { params: { project_id: string } }) {
     newChatMutation.mutate({ formdata: fd });
   };
 
-  const samplePrompts = useMemo(
-    () =>
-      project?.preset_questions && project?.preset_questions?.length > 0
-        ? project?.preset_questions?.sort(() => Math.random() - 0.5).slice(0, 4)
-        : [
-            "How does one prepare for advanced airway management, even before the patient has arrived?",
-            "How do you assess a ICU patient's need for tracheal intubation?",
-            "What are the checks one needs to perform before intubation?",
-            "How do you do the initial assessment of the patient before oxygenation or ventilation?",
-          ],
-    [project?.preset_questions]
-  );
-
   return (
     <div className="flex flex-col h-screen flex-1">
       <div className="flex-1 items-center justify-center w-full overflow-auto">
@@ -141,24 +128,28 @@ export default function Chat(params: { params: { project_id: string } }) {
             </h1>
             <p>{process.env.NEXT_PUBLIC_AI_DESCRIPTION}</p>
 
-            <h2 className="font-semibold mt-8">Try asking me -</h2>
-            <div className="grid md:grid-cols-2 mt-4 gap-4 px-4 lg:max-w-4xl mx-auto">
-              {samplePrompts.map((prompt, i) => (
-                <button
-                  onClick={async () => {
-                    setChat(prompt);
-                    setIsTyping(true);
-                    const fd = await getFormData(undefined, prompt);
-                    newChatMutation.mutate({ formdata: fd });
-                  }}
-                  disabled={newChatMutation.isLoading}
-                  className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
-                  key={i}
-                >
-                  {prompt}
-                </button>
-              ))}
-            </div>
+            {(project?.display_preset_questions ?? [])?.length > 0 && (
+              <>
+                <h2 className="font-semibold mt-8">Try asking me -</h2>
+                <div className="grid md:grid-cols-2 mt-4 gap-4 px-4 lg:max-w-4xl mx-auto">
+                  {(project?.display_preset_questions ?? []).map((prompt, i) => (
+                    <button
+                      onClick={async () => {
+                        setChat(prompt);
+                        setIsTyping(true);
+                        const fd = await getFormData(undefined, prompt);
+                        newChatMutation.mutate({ formdata: fd });
+                      }}
+                      disabled={newChatMutation.isLoading}
+                      className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
+                      key={i}
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
             <div className="mt-6">
               <Link
                 href="https://github.com/coronasafe/ayushma_fe"
