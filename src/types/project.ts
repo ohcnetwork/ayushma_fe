@@ -10,7 +10,8 @@ export type Project = BaseModelType & {
     archived: boolean,
     preset_questions?: string[],
     display_preset_questions: string[],
-    open_ai_key?: string,
+    open_ai_key?: string | null,
+    key_set?: boolean
 }
 
 export enum DocumentType {
