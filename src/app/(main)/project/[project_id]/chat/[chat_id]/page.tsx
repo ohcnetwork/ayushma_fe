@@ -93,6 +93,7 @@ export default function Chat(params: {
       //     await chatQuery.refetch();
       // }
       onError: async (error, vars) => {
+        converseMutation.error = error
         setIsTyping(false);
       },
     }
