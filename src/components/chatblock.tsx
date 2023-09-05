@@ -256,7 +256,7 @@ export default function ChatBlock(props: {
         )}
       {message?.messageType === ChatMessageType.AYUSHMA && (
         <ChatFeedback
-          message_id={message.id!}
+          message_id={message.external_id}
           feedback={message?.feedback ?? null}
         />
       )}
@@ -269,7 +269,7 @@ const ChatFeedback = ({
   message_id,
   onSuccess,
 }: {
-  message_id: number;
+  message_id: string;
   feedback: ChatFeedback;
   onSuccess?: (data: ChatFeedback) => void;
 }) => {

@@ -102,8 +102,9 @@ const request = async (
           onMessage?.({
             id: "",
             event: "",
-            data: JSON.stringify({ error: true, message: error.message }),
+            data: JSON.stringify({ error }),
           });
+          throw new Error(error)
         },
         onclose() {
           resolve();
@@ -120,9 +121,9 @@ const request = async (
             response.status !== 429
           ) {
             // client-side errors are usually non-retriable:
-            throw { error: response.statusText };
+            throw await response.json();
           } else {
-            throw { error: response.statusText };
+            throw await response.json();
           }
         },
       };
