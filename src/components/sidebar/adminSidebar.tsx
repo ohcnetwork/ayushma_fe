@@ -50,7 +50,7 @@ export default function AdminSideBar() {
         <div className="flex flex-col p-2 gap-2">
           <div className="h-10 flex gap-1 items-center my-4 justify-center">
             <img
-              src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg.svg"}
+              src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg"}
               alt="Logo"
               className="h-full"
             />
