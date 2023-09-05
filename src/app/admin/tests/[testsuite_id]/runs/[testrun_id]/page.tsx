@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import jsPDF from "jspdf";
+import json2csv from 'json2csv';
 
 export default function Page({ params }: { params: { testsuite_id: string, testrun_id: string } }) {
     const router = useRouter();
@@ -46,23 +47,55 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
 
     const reportTemplateRef = useRef<HTMLDivElement>(null);
 
+    const handleGenerateCsv = () => {
+        const testResults = testRun?.test_results || [];
+
+        const fields = ['question', 'human_answer', 'answer', 'cosine_sim', 'bleu_score', 'feedback'];
+     
+        const total_cosine = testResults.reduce((acc: number, test: TestResult) => acc + (test.cosine_sim || 0), 0);
+        const total_bleu = testResults.reduce((acc: number, test: TestResult) => acc + (test.bleu_score || 0), 0);
+
+        const data = testResults.map((test) => ({
+            question: test.question,
+            human_answer: test.human_answer,
+            answer: test.answer,
+            cosine_sim: test.cosine_sim,
+            bleu_score: test.bleu_score,
+            feedback: test.feedback?.map((feedback) => `(${feedback.created_at}) ${feedback.user_object.username}: [${feedback.rating}] ${feedback.notes}`).join(' , '),
+        }));
+
+        let csv = json2csv.parse(data, { fields });
+
+        const avgCosineSim =total_cosine / (testRun?.test_results?.length ?? 1);
+        const avgBleu = total_bleu / (testRun?.test_results?.length ?? 1);
+        csv = csv.concat(`\nAverage Cosine Similarity: ${avgCosineSim.toFixed(3)}`);
+        csv = csv.concat(`\nAverage BLEU Score: ${avgBleu.toFixed(3)}`);
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Test Run - ${testRun?.project_object.title} - ${testRun?.created_at}.csv`);
+        link.click();
+    };
     const handleGeneratePdf = () => {
-		const doc = new jsPDF({
-			format: 'a4',
-			unit: 'pt',
-		});
+        const doc = new jsPDF({
+            format: 'a4',
+            unit: 'pt',
+        });
         const pdfWidth = doc.internal.pageSize.getWidth();
         const clone = reportTemplateRef.current?.cloneNode(true) as HTMLElement;
-        clone.style.setProperty("width", `${pdfWidth - 40}px`);
-    	doc.html(clone, {
-			async callback(doc) {
-				await doc.save(`Test Run - ${testRun?.project_object.title} - ${testRun?.created_at.toString().slice(0,10)}`);
-			},
+        clone.style.setProperty("width", `${pdfWidth * 1.25}px`);
+        doc.html(clone, {
+            async callback(doc) {
+                await doc.save(`Test Run - ${testRun?.project_object.title} - ${testRun?.created_at.toString().slice(0, 10)}`);
+            },
             margin: 20,
-            html2canvas: { scale: 1 },
+            html2canvas: { scale: 0.75 },
             autoPaging: 'slice',
-		});
-	};
+        });
+    };
 
 
     useEffect(() => {
@@ -184,8 +217,11 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-black">Test Run Results</h1>
                 <div data-html2canvas-ignore="true" className="flex gap-4">
+                    <Button variant="primary" onClick={handleGenerateCsv}>
+                        <i className="fal fa-file-pdf mr-2"></i>Download CSV
+                    </Button>
                     <Button variant="primary" onClick={handleGeneratePdf}>
-                        <i className="fa-duotone fa-file-pdf mr-2"></i>Download PDF
+                        <i className="fal fa-file-pdf mr-2"></i>Download PDF
                     </Button>
                     <Button variant="secondary" className="bg-gray-100" onClick={() => { router.push(`/admin/tests/${testsuite_id}/`) }}>Back</Button>
                 </div>

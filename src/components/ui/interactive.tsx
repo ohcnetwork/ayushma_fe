@@ -7,19 +7,20 @@ export function Input(
     loading?: boolean;
     right?: React.ReactNode;
     left?: React.ReactNode;
+    parentDivClassName?: string;
   } & React.InputHTMLAttributes<HTMLInputElement>
 ) {
-  const { className, loading, errors, right, left, ...rest } = props;
+  const { className, loading, errors, right, left, parentDivClassName, ...rest } = props;
 
   return (
-    <div>
-      <div className="border border-gray-200 w-full bg-white rounded-lg overflow-hidden relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1">
+    <div className={parentDivClassName}>
+      <div className="border border-gray-200 w-full p-0.5 bg-white rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         {left}
         <input
           {...rest}
           className={twMerge(
-            "border-none bg-transparent flex-1 p-2 px-4 outline-none",
+            "border-none bg-transparent w-full p-3 py-3 outline-none",
             className
           )}
           disabled={loading}
@@ -43,13 +44,13 @@ export function TextArea(
 
   return (
     <>
-      <div className="border border-gray-200 w-full bg-white rounded-lg overflow-hidden relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1">
+      <div className="border border-gray-200 w-full p-0.5 bg-white rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         {left}
         <textarea
           {...rest}
           className={twMerge(
-            "border-none bg-transparent flex-1 p-2 px-4 outline-none",
+            "border-none bg-transparent w-full p-3 outline-none",
             className
           )}
           disabled={loading}
@@ -97,11 +98,11 @@ export function Button(
   );
 }
 
-export function Errors(props: { errors?: string[] }) {
+export function Errors(props: { errors?: string[], className?: string }) {
   const { errors } = props;
 
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${props.className}`}>
       {errors?.map((error, i) => (
         <div key={i} className="text-red-500 text-sm mt-2">
           {error}
@@ -140,12 +141,12 @@ export function Dropdown(
 
   return (
     <div>
-      <div className="border border-gray-200 w-full bg-white rounded-lg overflow-hidden relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1">
+      <div className="border border-gray-200 w-full p-0.5 bg-white rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         <select
           {...rest}
           className={twMerge(
-            "border-none bg-transparent flex-1 p-2 px-4 outline-none",
+            "border-none bg-transparent w-full p-3 outline-none",
             className
           )}
           disabled={loading}

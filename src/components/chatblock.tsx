@@ -1,13 +1,12 @@
-import { ChatFeedback, ChatMessage, ChatMessageType } from "@/types/chat";
 import React, { useEffect, useState } from "react";
-
-import Image from "next/image";
+import { ChatFeedback, ChatMessage, ChatMessageType } from "@/types/chat";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import Stats from "./stats";
-import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import Image from "next/image";
+import rehypeRaw from "rehype-raw";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
+import Stats from "./stats";
 import Modal from "./modal";
 import { Button } from "./ui/interactive";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -122,57 +121,84 @@ export default function ChatBlock(props: {
 
   return (
     <div
-      className={`flex flex-col gap-4 p-6 ${
-        message?.messageType === ChatMessageType.USER ? "bg-black/5" : ""
+      className={`flex flex-col gap-4 p-4 md:p-6 ${
+        message?.messageType === ChatMessageType.USER ? "bg-gray-500/5" : ""
       }`}
     >
-      <div className="flex gap-6">
+      <div className="flex gap-6 max-w-4xl mx-auto w-full">
         <div>
-          <div className="w-8 text-2xl shrink-0 text-center">
-            {message?.messageType === ChatMessageType.USER && !loading ? (
-              "👤"
-            ) : (
-              <>
-                <Image src="/ayushma.svg" alt="Logo" width={100} height={100} />
-              </>
-            )}
-          </div>
+          {message?.messageType === ChatMessageType.USER && !loading ? (
+            <div className="flex items-center justify-center w-10 h-10 text-2xl shrink-0 text-center bg-[#ffc688] rounded-full">
+              <Image
+                className="p-1.5"
+                src="/person.svg"
+                alt="User icon"
+                width={100}
+                height={100}
+              />
+            </div>
+          ) : message?.messageType === ChatMessageType.AYUSHMA && !loading ? (
+            <div className="flex items-center justify-center w-10 h-10 text-2xl shrink-0 text-center rounded-full">
+              <Image
+                className="p-0.5"
+                src="/logo.svg"
+                alt="Logo"
+                width={100}
+                height={100}
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center w-10 h-10 text-2xl shrink-0 text-center bg-gray-300 rounded-full">
+              <i className="fa-solid fa-circle-exclamation"></i>
+            </div>
+          )}
         </div>
-        <div className="w-full">
+        <div className="w-full pt-0.5">
           {loading ? (
             "Loading..."
           ) : (
-            <div className="flex flex-col justify-center">
-              <ReactMarkdown
-                rehypePlugins={[rehypeRaw]}
-                remarkPlugins={[remarkGfm]}
-                className="markdown-render"
-              >
-                {audioStatus === "unloaded"
-                  ? (message?.message || message?.original_message) +
-                      cursorText || ""
-                  : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
-              </ReactMarkdown>
+            <div>
+              {message?.messageType === ChatMessageType.SYSTEM && (
+                <div className="relative flex flex-col gap-1">
+                  <div className="min-h-[20px] flex flex-col items-start text-red-500">
+                    <div className="py-2 px-3 border text-gray-700 rounded-md text-sm border-red-500 bg-red-500/10">
+                      {message?.message}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {message?.messageType != ChatMessageType.SYSTEM && (
+                <ReactMarkdown
+                  rehypePlugins={[rehypeRaw]}
+                  remarkPlugins={[remarkGfm]}
+                  className="markdown-render"
+                >
+                  {audioStatus === "unloaded"
+                    ? (message?.message || message?.original_message) +
+                        cursorText || ""
+                    : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
+                </ReactMarkdown>
+              )}
               {message?.messageType === ChatMessageType.AYUSHMA &&
                 message?.audio && (
-                  <div className="flex gap-1 justify-left">
+                  <div className="inline-flex gap-1 mt-2">
                     <button
                       onClick={togglePlay}
-                      className="text-gray-500 hover:text-gray-700"
+                      className="flex items-center justify-center text-gray-500 rounded-lg transition bg-gray-100 hover:text-gray-700 hover:bg-gray-300 p-2"
                     >
                       {audioStatus === "playing" ? (
-                        <i className="fa-regular fa-circle-pause text-gray-700"></i>
+                        <i className="fa-regular fa-circle-pause text-xl"></i>
                       ) : (
-                        <i className="fa-regular fa-circle-play text-black"></i>
+                        <i className="fa-regular fa-circle-play text-xl"></i>
                       )}
                     </button>
                     {(audioStatus === "paused" ||
                       audioStatus === "playing") && (
                       <button
                         onClick={stopAudio}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="flex items-center justify-center text-red-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 p-2 "
                       >
-                        <i className="fa-regular fa-circle-stop text-red-500"></i>
+                        <i className="fa-regular fa-circle-stop text-xl"></i>
                       </button>
                     )}
                   </div>
@@ -203,7 +229,7 @@ export default function ChatBlock(props: {
       </div>
       {message?.reference_documents &&
         message?.reference_documents.length > 0 && (
-          <div className="flex gap-2 pl-14 items-center pb-4">
+          <div className="flex flex-wrap gap-2 pl-16 items-center pb-4 max-w-4xl mx-auto w-full">
             <p className="mr-1 text-sm italic">References:</p>
             {message?.reference_documents.map((doc, i) => {
               if (doc.document_type === 1 || doc.document_type === 2)

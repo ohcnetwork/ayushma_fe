@@ -5,7 +5,6 @@ import {
   fetchEventSource,
 } from "@microsoft/fetch-event-source";
 import { Feedback, TestQuestion, TestRun, TestSuite } from "@/types/test";
-
 import { Project } from "@/types/project";
 import { UserUpdate } from "@/types/user";
 
@@ -62,8 +61,15 @@ const request = async (
     payload = null;
   }
 
-  const storage = JSON.parse(localStorage.getItem("ayushma-storage") || "{}");
-  const localToken = storage.auth_token;
+  const storage =
+    isAuth === false
+      ? null
+      : JSON.parse(
+          localStorage.getItem(
+            process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage"
+          ) || "{}"
+        );
+  const localToken = storage?.auth_token;
 
   const auth =
     isAuth === false || typeof localToken === "undefined" || localToken === null
@@ -79,7 +85,7 @@ const request = async (
         : {
             "Content-Type": "application/json",
           }),
-      Authorization: auth,
+      ...(auth !== "" ? { Authorization: auth } : {}),
       ...headers,
     },
     body: payload,
@@ -92,9 +98,12 @@ const request = async (
           if (onMessage) onMessage(e);
         },
         onerror: (error: any) => {
-          if (onMessage)
-            onMessage({ id: "", event: "", data: JSON.stringify({ error }) });
           reject({ error });
+          onMessage?.({
+            id: "",
+            event: "",
+            data: JSON.stringify({ error: true, message: error.message }),
+          });
         },
         onclose() {
           resolve();
@@ -118,7 +127,9 @@ const request = async (
         },
       };
 
-      await fetchEventSource(url, streamOptions);
+      await fetchEventSource(url, streamOptions).catch((error) => {
+        reject({ error });
+      });
     });
   } else {
     const response = await fetch(url, requestOptions);
@@ -177,6 +188,7 @@ export const API = {
       password: string;
       username: string;
       full_name: string;
+      recaptcha: string;
     }) => request("auth/register", "POST", { ...creds }),
     forgot: (email: string) => request("auth/forgot", "POST", { email }),
     verify: (token: string, email: string) =>
@@ -185,7 +197,12 @@ export const API = {
       request("auth/reset", "POST", { token, email, password }),
   },
   projects: {
-    list: () => request("projects"),
+    list: (
+      filters: { ordering?: string; limit?: number } = {
+        ordering: "-created_at",
+        limit: 50,
+      }
+    ) => request("projects", "GET", filters),
     get: (id: string) => request(`projects/${id}`),
     update: (id: string, project: Partial<Project>) =>
       request(`projects/${id}`, "PATCH", { ...project }),
@@ -214,7 +231,15 @@ export const API = {
   chat: {
     list: (
       project_id: string,
-      filters: { ordering: string } = { ordering: "-created_at" }
+      limit: number,
+      offset: number,
+      search: string,
+      filters: {
+        ordering: string;
+        limit: number;
+        offset: number;
+        search: string;
+      } = { ordering: "-created_at", limit, offset, search }
     ) => request(`projects/${project_id}/chats`, "GET", filters),
     create: (project_id: string, title: string, openai_api_key?: string) =>
       request(
@@ -259,9 +284,6 @@ export const API = {
         (e) => {
           if (onMessage) {
             const data = JSON.parse(e.data);
-            if (data.error) {
-              throw Error(data.error);
-            }
             handleMessage(data, onMessage, delay);
           }
         }
@@ -292,26 +314,20 @@ export const API = {
       delete: (suite_id: string, id: string) =>
         request(`tests/suites/${suite_id}/questions/${id}`, "DELETE"),
     },
-    projects: {
-      list: (filters: { ordering: string } = { ordering: "-created_at" }) =>
-        request("projects", "GET", filters),
-      get: (id: string) => request(`projects/${id}`),
-      update: (id: string, project: Partial<Project>) =>
-        request(`projects/${id}`, "PATCH", { ...project }),
-      create: (project: Partial<Project>) =>
-        request(`projects`, "POST", { ...project }),
-      delete: (id: string) => request(`projects/${id}`, "DELETE"),
-    },
     runs: {
       list: (
         suite_id: string,
-        filters: { ordering: string } = { ordering: "-created_at" }
+        filters: { ordering: string; limit: number; offset: number } = {
+          ordering: "-created_at",
+          limit: 10,
+          offset: 0,
+        }
       ) => request(`tests/suites/${suite_id}/runs`, "GET", filters),
       create: (suite_id: string, run: Partial<TestRun>) =>
         request(`tests/suites/${suite_id}/runs`, "POST", { ...run }),
       get: (suite_id: string, id: string) =>
         request(`tests/suites/${suite_id}/runs/${id}`),
-      update: (suite_id: string, id: string, fields: TestRun) =>
+      update: (suite_id: string, id: string, fields: Partial<TestRun>) =>
         request(`tests/suites/${suite_id}/runs/${id}`, "PATCH", fields),
       delete: (suite_id: string, id: string) =>
         request(`tests/suites/${suite_id}/runs/${id}`, "DELETE"),
@@ -354,5 +370,32 @@ export const API = {
   feedback: {
     create: (feedback: Partial<ChatFeedback>) =>
       request(`feedback`, "POST", { ...feedback }),
+  },
+  users: {
+    get: (username: string) => request(`users/${username}`, "GET"),
+    update: (username: string, user: Partial<UserUpdate>) =>
+      request(`users/${username}`, "PATCH", user),
+    list: (
+      filters: {
+        ordering: string;
+        search?: string;
+        is_staff?: boolean | null;
+        is_reviewer?: boolean | null;
+        allow_key?: boolean | null;
+        offset?: number;
+        limit?: number;
+      } = { ordering: "-created_at" }
+    ) => request(`users`, "GET", filters),
+    delete: (username: string) => request(`users/${username}`, "DELETE"),
+  },
+  chatbot: {
+    temptoken: (api_key: string, user_ip: string) =>
+      request(
+        `temptokens`,
+        "POST",
+        { ip: user_ip },
+        { headers: { "X-API-KEY": api_key }, auth: false }
+      ),
+    token: () => request(`/api/chatbot-token`, "GET", {}, { external: true }),
   },
 };

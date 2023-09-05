@@ -51,6 +51,7 @@ export type ChatConverseStream = {
     delta: string,
     message: string,
     stop: boolean,
+    error: boolean,
     ayushma_voice?: string
 }
 

@@ -7,6 +7,10 @@ export type Project = BaseModelType & {
     prompt?: string,
     stt_engine: number,
     model: number,
+    archived: boolean,
+    preset_questions?: string[],
+    open_ai_key?: string | null,
+    key_set?: boolean
 }
 
 export enum DocumentType {
@@ -33,4 +37,5 @@ export type Document = BaseModelType & {
     file: File,
     text_content: string,
     document_type: DocumentType,
+    uploading: boolean
 }
