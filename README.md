@@ -88,7 +88,6 @@ Ayushma is a white label product. You can customize the app to your needs by cha
 - `public/logo_text.svg` - Logo with text
 - `public/logo_white.svg` - Logo with white text
 - `public/logo.svg` - Logo without text
-- `public/logo.png` - Logo without text
 
 ### Environment Variables
 
