@@ -1,12 +1,12 @@
-import { User, UserUpdate } from "@/types/user";
-import { Project } from "@/types/project";
+import { ChatConverseStream, ChatFeedback } from "@/types/chat";
 import {
   EventSourceMessage,
   FetchEventSourceInit,
   fetchEventSource,
 } from "@microsoft/fetch-event-source";
-import { ChatConverseStream } from "@/types/chat";
-import { TestSuite, TestQuestion, TestRun, Feedback } from "@/types/test";
+import { Feedback, TestQuestion, TestRun, TestSuite } from "@/types/test";
+import { Project } from "@/types/project";
+import { UserUpdate } from "@/types/user";
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -99,7 +99,11 @@ const request = async (
         },
         onerror: (error: any) => {
           reject({ error });
-          onMessage?.({ id: "", event: "", data: JSON.stringify({ error: true, message: error.message }) });
+          onMessage?.({
+            id: "",
+            event: "",
+            data: JSON.stringify({ error: true, message: error.message }),
+          });
         },
         onclose() {
           resolve();
@@ -362,6 +366,10 @@ export const API = {
           "DELETE"
         ),
     },
+  },
+  feedback: {
+    create: (feedback: Partial<ChatFeedback>) =>
+      request(`feedback`, "POST", { ...feedback }),
   },
   users: {
     get: (username: string) => request(`users/${username}`, "GET"),
