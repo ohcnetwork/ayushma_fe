@@ -4,6 +4,7 @@ import ChatBar from "@/components/chatbar";
 import ChatBlock from "@/components/chatblock";
 import { storageAtom } from "@/store";
 import { Chat, ChatConverseStream, ChatMessageType } from "@/types/chat";
+import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { getFormData } from "@/utils/converse";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -30,6 +31,7 @@ export default function Chat(params: {
     }
   );
   const chat: Chat | undefined = chatQuery.data;
+  const [projectData, setProjectData] = useState<Project>();
 
   const openai_key =
     !storage?.user?.allow_key || storage?.override_api_key
@@ -44,6 +46,16 @@ export default function Chat(params: {
         document.title,
         uri.substring(0, uri.indexOf("?"))
       );
+  }, []);
+
+  useEffect(() => {
+    const prevTitle = document.title;
+    API.projects
+      .get(params.params.project_id)
+      .then((data) => (document.title = data.title));
+    return () => {
+      document.title = prevTitle;
+    };
   }, []);
 
   const streamChatMessage = async (message: ChatConverseStream) => {
