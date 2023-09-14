@@ -94,6 +94,7 @@ const request = async (
     return new Promise<void>(async (resolve, reject) => {
       const streamOptions: FetchEventSourceInit = {
         ...requestOptions,
+        openWhenHidden: true,
         onmessage: (e: EventSourceMessage) => {
           if (onMessage) onMessage(e);
         },
