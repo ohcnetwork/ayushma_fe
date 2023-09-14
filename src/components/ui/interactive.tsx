@@ -25,8 +25,8 @@ export function Input(
           )}
           disabled={loading}
         />
-      </div>
       {right}
+      </div>
       <Errors errors={errors} />
     </div>
   );
