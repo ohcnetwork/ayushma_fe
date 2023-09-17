@@ -23,6 +23,7 @@ export enum DocumentType {
 export const STT_ENGINES = [
     { id: 1, label: 'OpenAI Whisper' },
     { id: 2, label: 'Google Speech to Text' },
+    { id: 3, label: 'Self Hosted Whisper' },
 ]
 
 export const MODELS = [
