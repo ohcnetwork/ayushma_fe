@@ -99,7 +99,6 @@ export default function ChatSideBar(props: { project_id?: string }) {
   );
 
   const deleteChat = (external_id: string) => {
-    // if (!confirm("Are you sure you want to delete this chat?")) return;
     deleteChatMutation.mutate(external_id);
   };
 
