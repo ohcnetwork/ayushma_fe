@@ -40,9 +40,17 @@ export default function ChatSideBar(props: { project_id?: string }) {
   const router = useRouter();
   const path = usePathname();
   const [settingsModal, setSettingsModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    external_id: "",
+  });
 
   const onSettingsClose = () => {
     setSettingsModal(false);
+  };
+
+  const onDeleteClose = () => {
+    setDeleteModal({ ...deleteModal, open: false });
   };
 
   const buttons = [
@@ -91,7 +99,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
   );
 
   const deleteChat = (external_id: string) => {
-    if (!confirm("Are you sure you want to delete this chat?")) return;
+    // if (!confirm("Are you sure you want to delete this chat?")) return;
     deleteChatMutation.mutate(external_id);
   };
 
@@ -174,7 +182,12 @@ export default function ChatSideBar(props: { project_id?: string }) {
                         </Link>
                         <button
                           className="py-2 px-2 hidden group-hover:block"
-                          onClick={() => deleteChat(chat.external_id)}
+                          onClick={() =>
+                            setDeleteModal({
+                              open: true,
+                              external_id: chat.external_id,
+                            })
+                          }
                         >
                           <i className="fal fa-trash-alt" />
                         </button>
@@ -202,7 +215,37 @@ export default function ChatSideBar(props: { project_id?: string }) {
           </div>
         </div>
       </div>
-      <Modal onClose={onSettingsClose} show={settingsModal}>
+      <Modal
+        onClose={onDeleteClose}
+        show={deleteModal.open}
+        className="w-[500px]"
+      >
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this chat</p>
+          <div className="flex flex-col md:flex-row gap-2 justify-end">
+            <button
+              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              onClick={onDeleteClose}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              onClick={() => {
+                deleteChat(deleteModal.external_id);
+                onDeleteClose();
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        onClose={onSettingsClose}
+        show={settingsModal}
+        className="w-full md:w-[800px] h-full md:h-[500px]"
+      >
         <div>
           Your OpenAI API key
           <Input
