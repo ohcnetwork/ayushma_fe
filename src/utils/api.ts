@@ -200,7 +200,7 @@ export const API = {
   },
   projects: {
     list: (
-      filters: { ordering?: string; limit?: number } = {
+      filters: { ordering?: string; limit?: number; offset?: number, archived?: boolean | null } = {
         ordering: "-created_at",
         limit: 50,
       }
