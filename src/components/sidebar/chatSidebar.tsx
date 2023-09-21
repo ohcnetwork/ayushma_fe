@@ -104,13 +104,13 @@ export default function ChatSideBar(props: { project_id?: string }) {
               href={project_id ? `/project/${project_id}` : "/"}
               className="cursor-pointer p-3"
             >
-              <div className="flex gap-2 items-center justify-center relative">
+              <div className="flex flex-col items-end justify-center">
                 <img
                   src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg"}
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />
-                <div className="text-xs absolute right-1 text-gray-600 bottom-0">
+                <div className="text-xs text-gray-600">
                   Beta
                 </div>
               </div>
