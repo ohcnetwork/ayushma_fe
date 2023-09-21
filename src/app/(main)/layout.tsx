@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         type="button"
         className={`${
           isSidebarExpanded ? "hidden" : "block"
-        } absolute h-12 md:hidden items-center ml-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-200 dark:focus:ring-gray-200`}
+        } absolute h-12 md:hidden items-center p-1 px-3 z-10 ml-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-200 dark:focus:ring-gray-200`}
       >
         <span className="sr-only">Open sidebar</span>
         <div className="space-y-1">
