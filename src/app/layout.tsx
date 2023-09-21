@@ -3,7 +3,7 @@ import Script from "next/script";
 import Providers from "@/utils/provider";
 
 export const metadata = {
-  title: process.env.NEXT_PUBLIC_AI_WARNING,
+  title: process.env.NEXT_PUBLIC_AI_NAME,
 };
 
 export default function RootLayout({
