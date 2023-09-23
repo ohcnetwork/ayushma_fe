@@ -57,7 +57,6 @@ export default function Page({ params }: { params: { project_id: string } }) {
     }
   );
 
-
   const archiveProjectMutation = useMutation(
     () =>
       API.projects.update(project_id, {
@@ -81,7 +80,13 @@ export default function Page({ params }: { params: { project_id: string } }) {
   };
 
   const handleArchive = async () => {
-    if (confirm(`Are you sure you want to ${project?.archived ? "unarchive" : "archive"} this project?`)) {
+    if (
+      confirm(
+        `Are you sure you want to ${
+          project?.archived ? "unarchive" : "archive"
+        } this project?`
+      )
+    ) {
       await archiveProjectMutation.mutateAsync();
     }
   };
@@ -102,18 +107,43 @@ export default function Page({ params }: { params: { project_id: string } }) {
           </span>
         )}
       </div>
+        {/* <div className="grid items-center mt-4">
+          <Link
+            href={`/admin/projects/${project_id}/chats`}
+            className="bg-slate-200 flex justify-center hover:bg-slate-300 m-2 p-2 rounded-xl"
+          >
+            Chats
+          </Link>
+        </div> */}
+      <h2 className="text-2xl mt-6 font-bold mb-4">Chats</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <Link
+          href={`/admin/projects/${project_id}/chats`}
+          className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4 flex items-center gap-2 justify-between"
+        >
+          <div className="flex items-center gap-2">
+            <i className={`text-gray-800 fa fa-ccomment-alt`} />
+            Chat
+          </div>
+        </Link>
+      </div>
       <h2 className="text-2xl mt-6 font-bold mb-4">Documents</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
         {documents?.map((document, i) => (
           <Link
-            href={document.uploading ? `/admin/projects/${project_id}` : `/admin/projects/${project_id}/documents/${document.external_id}`}
+            href={
+              document.uploading
+                ? `/admin/projects/${project_id}`
+                : `/admin/projects/${project_id}/documents/${document.external_id}`
+            }
             key={i}
             className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4 flex items-center gap-2 justify-between"
           >
             <div className="flex items-center gap-2">
               <i
-                className={`text-gray-800 fa fa-${docIconsClassNames[document.document_type]
-                  }`}
+                className={`text-gray-800 fa fa-${
+                  docIconsClassNames[document.document_type]
+                }`}
               />
               {document.title}
             </div>
@@ -133,7 +163,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
             <i className="far fa-plus" /> New Document
           </Link>
         )}
-        {project?.archived && documents?.length === 0 && ("No documents")}
+        {project?.archived && documents?.length === 0 && "No documents"}
       </div>
       <h2 className="text-2xl mt-6 font-bold mb-4">Details</h2>
       {project && (
@@ -149,8 +179,12 @@ export default function Page({ params }: { params: { project_id: string } }) {
           <i className="fa-regular fa-trash mr-2"></i>
           Delete Project
         </Button>
-        <Button className="w-full bg-blue-500 enabled:hover:bg-blue-600" onClick={handleArchive}>
-          <i className="fa-regular fa-box-archive mr-2"></i> {project?.archived ? "Unarchive" : "Archive"} Project
+        <Button
+          className="w-full bg-blue-500 enabled:hover:bg-blue-600"
+          onClick={handleArchive}
+        >
+          <i className="fa-regular fa-box-archive mr-2"></i>{" "}
+          {project?.archived ? "Unarchive" : "Archive"} Project
         </Button>
         <Button
           variant="secondary"

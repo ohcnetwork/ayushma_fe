@@ -105,7 +105,7 @@ const request = async (
             event: "",
             data: JSON.stringify({ error }),
           });
-          throw new Error(error)
+          throw new Error(error);
         },
         onclose() {
           resolve();
@@ -200,7 +200,12 @@ export const API = {
   },
   projects: {
     list: (
-      filters: { ordering?: string; limit?: number; offset?: number, archived?: boolean | null } = {
+      filters: {
+        ordering?: string;
+        limit?: number;
+        offset?: number;
+        archived?: boolean | null;
+      } = {
         ordering: "-created_at",
         limit: 50,
       }
@@ -256,6 +261,7 @@ export const API = {
             }
           : {}
       ),
+    chats: (project_id: string) => request(`projects/${project_id}/chats`),
     get: (project_id: string, id: string) =>
       request(`projects/${project_id}/chats/${id}`),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
