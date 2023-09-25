@@ -144,7 +144,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
           errors={updateProjectMutation.error}
         />
       )}
-      <div className="flex gap-2 mt-4 items-center justify-stretch">
+      <div className="flex flex-col-reverse md:flex-row gap-2 mt-4 items-center justify-stretch">
         <Button className="w-full" variant="danger" onClick={handleDelete}>
           <i className="fa-regular fa-trash mr-2"></i>
           Delete Project
