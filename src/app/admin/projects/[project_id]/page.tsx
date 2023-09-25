@@ -99,33 +99,24 @@ export default function Page({ params }: { params: { project_id: string } }) {
 
   return (
     <div>
-      <div className="flex gap-2 items-center">
-        <h1 className="text-3xl font-black">{project?.title}</h1>
-        {project?.is_default && (
-          <span className="text-xs ml-2 bg-gray-200 text-gray-500 px-2 py-1 rounded-full">
-            Default
-          </span>
-        )}
-      </div>
-        {/* <div className="grid items-center mt-4">
+      <div className="flex flex-col md:flex-row gap-4 justify-between">
+        <div className="flex gap-2 items-center">
+          <h1 className="text-3xl font-black">{project?.title}</h1>
+          {project?.is_default && (
+            <span className="text-xs ml-2 bg-gray-200 text-gray-500 px-2 py-1 rounded-full">
+              Default
+            </span>
+          )}
+        </div>
+        <div className="flex justify-center items-center">
           <Link
             href={`/admin/projects/${project_id}/chats`}
-            className="bg-slate-200 flex justify-center hover:bg-slate-300 m-2 p-2 rounded-xl"
+            className="bg-slate-200 flex items-center gap-2 justify-center hover:bg-slate-300 m-2 p-2 rounded-xl px-6"
           >
+            <i className="fa fa-comments"></i>
             Chats
           </Link>
-        </div> */}
-      <h2 className="text-2xl mt-6 font-bold mb-4">Chats</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <Link
-          href={`/admin/projects/${project_id}/chats`}
-          className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4 flex items-center gap-2 justify-between"
-        >
-          <div className="flex items-center gap-2">
-            <i className={`text-gray-800 fa fa-ccomment-alt`} />
-            Chat
-          </div>
-        </Link>
+        </div>
       </div>
       <h2 className="text-2xl mt-6 font-bold mb-4">Documents</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
