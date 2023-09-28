@@ -14,15 +14,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   if (!storage?.user?.is_staff)
-    return <div>You are not authorized to view this page.</div>;
+    return (
+      <div className="flex justify-center items-center w-full font-bold text-3xl p-4">
+        You are not authorized to view this page.
+      </div>
+    );
 
   return (
     <div className="inset-0 bg-gray-100">
       <button
         onClick={toggleSidebar}
         type="button"
-        className={`${isSidebarExpanded ? "hidden" : "block"
-          } absolute h-12 md:hidden items-center ml-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-200 dark:focus:ring-gray-200`}
+        className={`${
+          isSidebarExpanded ? "hidden" : "block"
+        } absolute h-12 md:hidden items-center ml-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-200 dark:focus:ring-gray-200`}
       >
         <span className="sr-only">Open sidebar</span>
         <div className="space-y-1">
@@ -33,10 +38,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </button>
       <div className="inset-0 flex">
         <div
-          className={`${isSidebarExpanded
+          className={`${
+            isSidebarExpanded
               ? "translate-x-0 absolute"
               : "-translate-x-full absolute"
-            } md:translate-x-0 md:contents items-stretch z-40 md:z-0 duration-200 ease-in-out h-screen`}
+          } md:translate-x-0 md:contents items-stretch z-40 md:z-0 duration-200 ease-in-out h-screen`}
         >
           <AdminSideBar />
         </div>
