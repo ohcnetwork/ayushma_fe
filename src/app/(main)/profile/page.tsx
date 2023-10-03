@@ -83,7 +83,7 @@ export default function Page() {
                   <Input
                     right={
                       <button
-                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-0 right-0 px-5 py-3.5  rounded-md shadow-sm"
+                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-1.5 right-1 px-3 py-2  rounded-md shadow-sm"
                         onClick={() => setShowPassword((prev) => !prev)}
                       >
                         <i
@@ -108,10 +108,11 @@ export default function Page() {
               </div>
               <div>
                 <div className="relative z-0">
+                  {/* pranshu, I enhanced the edit profile page */}
                   <Input
                     right={
                       <button
-                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-0 right-0 px-5 py-3.5  rounded-md shadow-sm "
+                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-1.5 right-1 px-3 py-2  rounded-md shadow-sm "
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
                       >
                         <i
@@ -142,7 +143,7 @@ export default function Page() {
               ) : (
                 <p className="text-transparent text-sm mb-2">&nbsp;</p>
               )}
-              <div className="flex gap-2 py-4">
+              <div className="flex flex-col md:flex-row gap-2 py-4">
                 <Button
                   onClick={() => router.push("/")}
                   className="w-full bg-gray-200"

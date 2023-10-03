@@ -1,12 +1,14 @@
 "use client";
 
 import ProjectForm from "@/components/forms/projectform";
+import Modal from "@/components/modal";
 import { Button } from "@/components/ui/interactive";
 import { Document, Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Page({ params }: { params: { project_id: string } }) {
   const { project_id } = params;
@@ -18,6 +20,9 @@ export default function Page({ params }: { params: { project_id: string } }) {
     API.documents.list(project_id)
   );
   const documents: Document[] | undefined = documentsQuery.data?.results;
+  const [showDeleteModal, setShowDeleteModel] = useState(false);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [showSetDefaultModal, setShowSetDefaultModal] = useState(false);
 
   const router = useRouter();
 
@@ -74,27 +79,15 @@ export default function Page({ params }: { params: { project_id: string } }) {
   };
 
   const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this project?")) {
-      await deleteProjectMutation.mutateAsync();
-    }
+    await deleteProjectMutation.mutateAsync();
   };
 
   const handleArchive = async () => {
-    if (
-      confirm(
-        `Are you sure you want to ${
-          project?.archived ? "unarchive" : "archive"
-        } this project?`
-      )
-    ) {
-      await archiveProjectMutation.mutateAsync();
-    }
+    await archiveProjectMutation.mutateAsync();
   };
 
   const handleSetAsDefault = async () => {
-    if (confirm("Are you sure you want to set this project as default?")) {
-      await setAsDefautMutation.mutateAsync();
-    }
+    await setAsDefautMutation.mutateAsync();
   };
 
   return (
@@ -166,13 +159,17 @@ export default function Page({ params }: { params: { project_id: string } }) {
         />
       )}
       <div className="flex gap-2 mt-4 items-center justify-stretch">
-        <Button className="w-full" variant="danger" onClick={handleDelete}>
+        <Button
+          className="w-full"
+          variant="danger"
+          onClick={() => setShowDeleteModel(true)}
+        >
           <i className="fa-regular fa-trash mr-2"></i>
           Delete Project
         </Button>
         <Button
           className="w-full bg-blue-500 enabled:hover:bg-blue-600"
-          onClick={handleArchive}
+          onClick={() => setShowArchiveModal(true)}
         >
           <i className="fa-regular fa-box-archive mr-2"></i>{" "}
           {project?.archived ? "Unarchive" : "Archive"} Project
@@ -180,12 +177,93 @@ export default function Page({ params }: { params: { project_id: string } }) {
         <Button
           variant="secondary"
           className="w-full bg-slate-200 enabled:hover:bg-slate-300"
-          onClick={handleSetAsDefault}
+          onClick={() => setShowSetDefaultModal(true)}
           disabled={project?.is_default}
         >
           Set as default project
         </Button>
       </div>
+      <Modal
+        onClose={() => setShowDeleteModel(false)}
+        show={showDeleteModal}
+        className="w-[500px]"
+      >
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this project?</p>
+          <div className="flex flex-col md:flex-row gap-2 justify-end">
+            <button
+              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              onClick={() => setShowDeleteModel(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              onClick={() => {
+                handleDelete();
+                setShowDeleteModel(false);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        onClose={() => setShowArchiveModal(false)}
+        show={showArchiveModal}
+        className="w-[500px]"
+      >
+        <div className="flex flex-col gap-2">
+          <p>
+            Are you sure you want to{" "}
+            {project?.archived ? "unarchive" : "archive"} this project?
+          </p>
+          <div className="flex flex-col md:flex-row gap-2 justify-end">
+            <button
+              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              onClick={() => setShowArchiveModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 px-4 text-white p-2 rounded-lg"
+              onClick={() => {
+                handleArchive();
+                setShowArchiveModal(false);
+              }}
+            >
+              {project?.archived ? "Unarchive" : "Archive"}
+            </button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        onClose={() => setShowSetDefaultModal(false)}
+        show={showSetDefaultModal}
+        className="w-[500px]"
+      >
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to set this project as default?</p>
+          <div className="flex flex-col md:flex-row gap-2 justify-end">
+            <button
+              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              onClick={() => setShowSetDefaultModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 px-4 text-white p-2 rounded-lg"
+              onClick={() => {
+                handleSetAsDefault();
+                setShowSetDefaultModal(false);
+              }}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

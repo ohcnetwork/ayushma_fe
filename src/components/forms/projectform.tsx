@@ -153,7 +153,7 @@ export default function ProjectForm(props: {
           <i className="fa-regular fa-plus mr-2"></i>
           Add Question
         </Button>
-        <Button loading={loading} type="submit" className="mt-4">
+        <Button loading={loading} type="submit" className="md:mt-2">
           <i className="fa-regular fa-floppy-disk mr-2"></i>
           {pro.external_id ? 'Save' : 'Create'}
         </Button>
