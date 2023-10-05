@@ -261,7 +261,17 @@ export const API = {
             }
           : {}
       ),
-    chats: (project_id: string) => request(`projects/${project_id}/chats`),
+    chats: (
+      project_id: string,
+      search: string,
+      limit: number,
+      offset: number,
+      filters: {
+        search: string;
+        offset: number;
+        limit: number;
+      } = { limit, offset, search }
+    ) => request(`projects/${project_id}/chats`, "GET", filters),
     get: (project_id: string, id: string) =>
       request(`projects/${project_id}/chats/${id}`),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
