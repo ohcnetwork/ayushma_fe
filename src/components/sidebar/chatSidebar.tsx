@@ -98,8 +98,6 @@ export default function ChatSideBar(props: { project_id?: string }) {
     }
   );
 
-  console.log(chatsQuery.data?.pages);
-
   const deleteChat = (external_id: string) => {
     deleteChatMutation.mutate(external_id);
   };
