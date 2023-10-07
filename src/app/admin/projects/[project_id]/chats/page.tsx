@@ -25,7 +25,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
   const chatsList: any[] = chatsListQuery.data?.pages || [];
   const columns: string[] = ["Title", "User", ""];
 
-  useEffect(() => {chatsListQuery.refetch()}, [setSearch, chatsListQuery])
+  useEffect(() => {chatsListQuery.refetch()}, [search])
 
   const chatTableBody = () => {
     if (chatsList.length > 0 && chatsList[0].count !== 0) {
