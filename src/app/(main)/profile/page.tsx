@@ -108,7 +108,6 @@ export default function Page() {
               </div>
               <div>
                 <div className="relative z-0">
-                  {/* pranshu, I enhanced the edit profile page */}
                   <Input
                     right={
                       <button
