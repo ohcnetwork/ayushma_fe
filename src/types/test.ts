@@ -32,6 +32,7 @@ export type TestRun = BaseModelType & {
     project_object: Project;
     test_results?: TestResult[];
     status?: TestRunStatus;
+    references?: boolean;
 }
 
 export type TestResult = BaseModelType & {
