@@ -1,15 +1,14 @@
 "use client";
 
 import ProjectForm from "@/components/forms/projectform";
-import { Button } from "@/components/ui/interactive";
-import { Document, Project } from "@/types/project";
+import { Project } from "@/types/project";
 import { API } from "@/utils/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Page() {
+    const [errors, setErrors] = useState({});
     const router = useRouter();
 
     const createProjectMutation = useMutation((project) => API.projects.create(project as any), {
@@ -19,8 +18,16 @@ export default function Page() {
     });
 
     const onSubmit = async (project: Partial<Project>) => {
-        await createProjectMutation.mutateAsync(project as any);
+        try {
+            await createProjectMutation.mutateAsync(project as any);
+            setErrors((createProjectMutation.error as any)?.errors)
+        } catch (error: any) {
+            if (error) {
+                setErrors(error?.error);
+            }
+        }
     }
+    
 
     return (
         <div>
@@ -32,7 +39,7 @@ export default function Page() {
                     project={{}}
                     onSubmit={onSubmit}
                     loading={createProjectMutation.isLoading}
-                    errors={(createProjectMutation.error as any)?.errors}
+                    errors={errors}
                 />
             </div>
         </div>
