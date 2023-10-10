@@ -4,7 +4,7 @@ import { supportedLanguages } from "@/utils/constants";
 import ProjectForm from "@/components/forms/projectform";
 import TestSuiteForm from "@/components/forms/testsuiteform";
 import Modal from "@/components/modal";
-import { Button, Input, TextArea } from "@/components/ui/interactive";
+import { Button, CheckBox, Input, TextArea } from "@/components/ui/interactive";
 import { Document, Project } from "@/types/project";
 import { API } from "@/utils/api";
 import {
@@ -146,6 +146,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     string | undefined
   >();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [fetchReferences, setFetchReferences] = useState(true);
 
   useEffect(() => {
     if (testQuestions && testQuestions.length > 0) {
@@ -256,7 +257,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   };
 
   const startTestSuite = () => {
-    TestRunCreateMutation.mutate({ project: testSuiteProject as any });
+    TestRunCreateMutation.mutate({ project: testSuiteProject as any, references: fetchReferences });
     setShowRunTestSuite(false);
   };
 
@@ -277,9 +278,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -473,18 +474,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.bleu_score || 0),
-                    0
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.bleu_score || 0),
+                  0
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.cosine_sim || 0),
-                    0
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.cosine_sim || 0),
+                  0
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -526,11 +527,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgCosineSim < 0.5
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgCosineSim < 0.5
+                            ? "text-red-500"
+                            : "text-green-500"
+                            }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -544,9 +544,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                            }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -558,10 +557,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED
-                      )} ${
-                        testRun.status === TestRunStatus.RUNNING &&
-                        "animate-pulse"
-                      }`}
+                      )} ${testRun.status === TestRunStatus.RUNNING &&
+                      "animate-pulse"
+                        }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED
@@ -714,7 +712,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
               </option>
             ))}
           </select>
-          <div className="flex space-x-4 mt-5 justify-end">
+          <div className="flex space-x-4 mt-5 justify-end items-center">
+            <CheckBox
+              checked={fetchReferences}
+              onChange={() => setFetchReferences(!fetchReferences)}
+              label="References"
+            />
             <Button
               variant="secondary"
               onClick={() => {
