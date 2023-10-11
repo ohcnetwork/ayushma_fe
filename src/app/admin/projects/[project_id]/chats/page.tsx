@@ -39,7 +39,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
                   <td className="px-6 py-2 ">{chat?.username}</td>
                   <td className="px-6 py-2 text-right">
                     <Link
-                      href={`/admin/projects/${project_id}/chatsList/${chat.external_id}`}
+                      href={`/admin/projects/${project_id}/chats/${chat.external_id}`}
                       className="font-medium text-green-600 hover:underline"
                     >
                       View
