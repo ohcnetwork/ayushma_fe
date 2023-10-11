@@ -5,10 +5,8 @@ import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function Page() {
-    const [errors, setErrors] = useState({});
     const router = useRouter();
 
     const createProjectMutation = useMutation((project) => API.projects.create(project as any), {
@@ -18,14 +16,7 @@ export default function Page() {
     });
 
     const onSubmit = async (project: Partial<Project>) => {
-        try {
-            await createProjectMutation.mutateAsync(project as any);
-            setErrors((createProjectMutation.error as any)?.errors)
-        } catch (error: any) {
-            if (error) {
-                setErrors(error?.error);
-            }
-        }
+        await createProjectMutation.mutateAsync(project as any);
     }
     
 
@@ -39,7 +30,7 @@ export default function Page() {
                     project={{}}
                     onSubmit={onSubmit}
                     loading={createProjectMutation.isLoading}
-                    errors={errors}
+                    errors={(createProjectMutation.error as any)?.error}
                 />
             </div>
         </div>
