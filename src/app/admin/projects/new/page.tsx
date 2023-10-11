@@ -18,7 +18,6 @@ export default function Page() {
     const onSubmit = async (project: Partial<Project>) => {
         await createProjectMutation.mutateAsync(project as any);
     }
-    
 
     return (
         <div>
