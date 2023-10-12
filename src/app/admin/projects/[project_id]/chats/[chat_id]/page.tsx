@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/components/ui/loading";
 import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +25,11 @@ export default function Page({
   return (
     <div>
       <h1 className="text-3xl font-bold">{project?.title}</h1>
-      {chats ? (
+      {chatQuery.isLoading ? (
+        <div className="w-full flex justify-center items-center">
+          <Loading />
+        </div>
+      ) : chats ? (
         <div>
           <div className="flex flex-col mt-6 md:flex-row justify-between items-center gap-2 mb-4">
             <h2 className="text-2xl font-bold">Chat: {chats?.title}</h2>
@@ -65,7 +70,9 @@ export default function Page({
           </div>
         </div>
       ) : (
-        <div className="flex justify-center text-gray-500 text-2xl font-medium mt-6">Chat not found</div>
+        <div className="flex justify-center text-gray-500 text-2xl font-medium mt-6">
+          Chat not found
+        </div>
       )}
     </div>
   );

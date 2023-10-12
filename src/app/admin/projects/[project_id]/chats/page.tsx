@@ -56,7 +56,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         <tbody className="bg-white divide-y divide-gray-200 text-sm text-gray-700">
           <tr className="bg-white border-b border-x hover:bg-gray-50 w-full">
             <td colSpan={100} className="p-4 text-center text-gray-400">
-              No chatsList found
+              No chats found
             </td>
           </tr>
         </tbody>
@@ -67,7 +67,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
   return (
     <div>
       <h1 className="text-3xl font-bold">{project?.title}</h1>
-      <h2 className="text-2xl mt-6 font-bold mb-4">chatsList</h2>
+      <h2 className="text-2xl mt-6 font-bold mb-4">Chats</h2>
       <div className="w-fit">
         <Input
           type="text"
