@@ -272,9 +272,7 @@ export const API = {
         limit: number;
         fetch: string;
       } = { limit, offset, search, fetch: "all" }
-    ) => {
-      return request(`projects/${project_id}/chats`, "GET", filters);
-    },
+    ) => request(`projects/${project_id}/chats`, "GET", filters),
     get: (project_id: string, id: string) =>
       request(`projects/${project_id}/chats/${id}`),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
