@@ -48,13 +48,13 @@ export default function AdminSideBar() {
     <>
       <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
         <div className="flex flex-col p-2 gap-2">
-          <div className="h-10 flex gap-1 items-center my-4 justify-center">
+          <div className="cursor-pointer p-3 flex flex-col items-end justify-center">
             <img
               src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg"}
               alt="Logo"
-              className="h-full"
+              className="w-full h-full object-contain"
             />
-            <div className="text-xs">Beta</div>
+            <div className="text-xs text-gray-600">Beta</div>
           </div>
           <div className="flex flex-col gap-2">
             {links.map((link, idx) => (
