@@ -270,7 +270,8 @@ export const API = {
         search: string;
         offset: number;
         limit: number;
-      } = { limit, offset, search }
+        fetch: string;
+      } = { limit, offset, search, fetch: "all" }
     ) => request(`projects/${project_id}/chats`, "GET", filters),
     get: (project_id: string, id: string) =>
       request(`projects/${project_id}/chats/${id}`),
