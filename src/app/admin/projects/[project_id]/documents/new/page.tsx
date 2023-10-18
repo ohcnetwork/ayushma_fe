@@ -16,7 +16,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
 
     const router = useRouter();
 
-    const createDocumentMutation = useMutation((formData) => API.documents.create(project_id, formData as any), {
+    const createDocumentMutation = useMutation((formData) => API.projects.documents.create(project_id, formData as any), {
         onSuccess: () => {
             router.push(`/admin/projects/${project_id}`);
         }
@@ -24,10 +24,10 @@ export default function Page({ params }: { params: { project_id: string } }) {
 
     const onSubmit = async (doc: Partial<Document>) => {
         const formData = new FormData();
-        doc.title && formData.append("title", doc.title as string);
-        doc.file && formData.append("file", doc.file as File);
-        doc.description && formData.append("description", doc.description as string);
-        doc.text_content && formData.append("text_content", doc.text_content as string);
+        doc.title && formData.append("title", doc.title);
+        doc.raw_file && formData.append("file", doc.raw_file as File);
+        doc.description && formData.append("description", doc.description);
+        doc.text_content && formData.append("text_content", doc.text_content);
         doc.document_type && formData.append("document_type", `${doc.document_type}`);
         await createDocumentMutation.mutateAsync(formData as any);
     }

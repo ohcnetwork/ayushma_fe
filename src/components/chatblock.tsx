@@ -12,6 +12,7 @@ import { Button } from "./ui/interactive";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { API } from "@/utils/api";
 import { useParams } from "next/navigation";
+import { DocumentType } from "@/types/project";
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
@@ -232,11 +233,11 @@ export default function ChatBlock(props: {
           <div className="flex flex-wrap gap-2 pl-16 items-center pb-4 max-w-4xl mx-auto w-full">
             <p className="mr-1 text-sm italic">References:</p>
             {message?.reference_documents.map((doc, i) => {
-              if (doc.document_type === 1 || doc.document_type === 2)
+              if (doc.document_type === DocumentType.FILE || doc.document_type === DocumentType.URL)
                 return (
                   <a
                     key={i}
-                    href={doc.document_type === 1 ? doc.file : doc.text_content}
+                    href={doc.document_type === DocumentType.FILE ? doc.file : doc.text_content}
                     target="_blank"
                     rel="noreferrer"
                     className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
@@ -244,7 +245,7 @@ export default function ChatBlock(props: {
                     {doc.title}
                   </a>
                 );
-              else if (doc.document_type === 3)
+              else if (doc.document_type === DocumentType.TEXT)
                 return (
                   <div className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
                     {doc.title}

@@ -23,8 +23,12 @@ export default function ProjectForm(props: {
   };
 
   const handleRemoveKey = () => {
-    if (window.confirm("Are you sure you want to remove this project's OpenAI key?"))
-      onSubmit({ open_ai_key: null })
+    if (
+      window.confirm(
+        "Are you sure you want to remove this project's OpenAI key?"
+      )
+    )
+      onSubmit({ open_ai_key: null });
   };
 
   return (
@@ -58,28 +62,36 @@ export default function ProjectForm(props: {
           onChange={(e) => setProject({ ...project, prompt: e.target.value })}
           errors={errors?.prompt}
         />
+        <p className="text-sm text-gray-500">OpenAI Key</p>
         {!project.key_set ? (
-          <>
-            <p className="text-sm text-gray-500">
-              OpenAI Key
-            </p>
-            <Input
-              placeholder="OpenAI Key"
-              value={project.open_ai_key ?? ''}
-              onChange={(e) => setProject({ ...project, open_ai_key: e.target.value })}
-              errors={errors?.open_ai_key}
-            />
-          </>
+          <Input
+            placeholder="OpenAI Key"
+            value={project.open_ai_key ?? ""}
+            onChange={(e) =>
+              setProject({ ...project, open_ai_key: e.target.value })
+            }
+            errors={errors?.open_ai_key}
+          />
         ) : (
           <>
-            <div className="flex">
-              Open AI Key : ***** <button className="text-red-500 text-sm ml-4" type="button" onClick={handleRemoveKey}>Remove</button>
+            <div className="flex w-full items-center">
+              <Input
+                disabled={true}
+                placeholder="*********"
+                parentDivClassName="w-full"
+              />
+              <Button
+                type="button"
+                className="ml-2 h-8 w-8 text-red-600 flex justify-center items-center"
+                variant="secondary"
+                onClick={handleRemoveKey}
+              >
+                <i className="fas fa-trash"></i>
+              </Button>
             </div>
           </>
         )}
-        <p className="text-sm text-gray-500">
-          Speech to text engine
-        </p>
+        <p className="text-sm text-gray-500">Speech to text engine</p>
         <select
           className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.stt_engine ?? 1}
@@ -145,7 +157,7 @@ export default function ProjectForm(props: {
               ...project,
               preset_questions: [
                 ...(project?.preset_questions ? project.preset_questions : []),
-                '',
+                "",
               ],
             })
           }
@@ -155,7 +167,7 @@ export default function ProjectForm(props: {
         </Button>
         <Button loading={loading} type="submit" className="md:mt-2">
           <i className="fa-regular fa-floppy-disk mr-2"></i>
-          {pro.external_id ? 'Save' : 'Create'}
+          {pro.external_id ? "Save" : "Create"}
         </Button>
       </form>
     </div>

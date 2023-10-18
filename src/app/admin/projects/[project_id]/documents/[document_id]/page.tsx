@@ -16,11 +16,11 @@ export default function Page({ params }: { params: { project_id: string, documen
 
     const router = useRouter();
 
-    const documentQuery = useQuery(["document", document_id], () => API.documents.get(project_id, document_id));
+    const documentQuery = useQuery(["document", document_id], () => API.projects.documents.get(project_id, document_id));
 
     const doc: Document | undefined = documentQuery.data;
 
-    const editDocumentMutation = useMutation((formData) => API.documents.edit(project_id, document_id, formData as any), {
+    const editDocumentMutation = useMutation((formData) => API.projects.documents.edit(project_id, document_id, formData as any), {
         onSuccess: () => {
             documentQuery.refetch();
         }
@@ -29,7 +29,7 @@ export default function Page({ params }: { params: { project_id: string, documen
     const onSubmit = async (document: Partial<Document>) => {
         const formData = new FormData();
         formData.append("title", document.title as string);
-        formData.append("file", document.file as File);
+        formData.append("file", document.raw_file as File);
         formData.append("description", document.description as string);
         await editDocumentMutation.mutateAsync(formData as any);
     }

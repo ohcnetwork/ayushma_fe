@@ -1,3 +1,5 @@
+import { Document } from "./project";
+
 export type BaseModelType = {
     external_id: string,
     created_at: string,
@@ -15,14 +17,6 @@ export enum ChatMessageType {
     USER = 1,
     SYSTEM = 2,
     AYUSHMA = 3
-}
-
-export type Document = BaseModelType & {
-    title: string,
-    description?: string,
-    document_type: number,
-    text_content?: string,
-    file?: string,
 }
 
 export type ChatFeedback = {

@@ -31,7 +31,7 @@ export default function DocumentForm(props: {
   };
 
   const deleteDocumentMutation = useMutation(
-    () => API.documents.delete(project_id, doc.external_id ?? ""),
+    () => API.projects.documents.delete(project_id, doc.external_id ?? ""),
     {
       onSuccess: () => {
         router.push(`/admin/projects/${project_id}`);
@@ -55,7 +55,7 @@ export default function DocumentForm(props: {
         className="flex flex-col-reverse sm:flex-row gap-2"
         encType="multipart/form-data"
       >
-        <div className="flex flex-col gap-2 sm:w-96 ">
+        <div className="flex flex-col gap-2 sm:w-96">
           {!doc.external_id && (
             <Dropdown
               value={document.document_type || 0}
@@ -142,9 +142,9 @@ export default function DocumentForm(props: {
                       htmlFor="file-picker"
                       className="text-green-600 text-center flex gap-2 items-center justify-center h-full cursor-pointer outline-none"
                     >
-                      {document.file ? (
+                      {document.raw_file ? (
                         <p className="text-2xl font-semibold">
-                          {document.file?.name}
+                          {document.raw_file?.name}
                         </p>
                       ) : (
                         <div className="flex gap-2 items-center">
@@ -163,7 +163,7 @@ export default function DocumentForm(props: {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          setDocument({ ...document, file });
+                          setDocument({ ...document, raw_file: file });
                         }
                       }}
                     />
