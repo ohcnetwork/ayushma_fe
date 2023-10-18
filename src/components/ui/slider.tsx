@@ -1,3 +1,5 @@
+import { Errors } from "./interactive";
+
 export default function Slider(props: {
     max: number,
     min?: number,
@@ -7,6 +9,7 @@ export default function Slider(props: {
     disabled?: boolean,
     left?: React.ReactNode,
     right?: React.ReactNode,
+    errors?: string[],
 }) {
 
     const { max, min = 0, value, onChange, step = 1, disabled } = props;
@@ -34,6 +37,7 @@ export default function Slider(props: {
                 disabled={disabled}
                 className="w-full slider"
             />
+            <Errors errors={props.errors} />
         </div>
     )
 }

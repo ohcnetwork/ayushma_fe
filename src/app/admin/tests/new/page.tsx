@@ -34,7 +34,7 @@ export default function Page() {
                     testSuite={{}}
                     onSubmit={onSubmit}
                     loading={createTestSuiteMutation.isLoading}
-                    errors={(createTestSuiteMutation.error as any)?.errors}
+                    errors={(createTestSuiteMutation.error as any)?.error}
                 />
             </div>
         </div>

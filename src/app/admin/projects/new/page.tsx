@@ -1,13 +1,10 @@
 "use client";
 
 import ProjectForm from "@/components/forms/projectform";
-import { Button } from "@/components/ui/interactive";
-import { Document, Project } from "@/types/project";
+import { Project } from "@/types/project";
 import { API } from "@/utils/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function Page() {
     const router = useRouter();
@@ -32,7 +29,7 @@ export default function Page() {
                     project={{}}
                     onSubmit={onSubmit}
                     loading={createProjectMutation.isLoading}
-                    errors={(createProjectMutation.error as any)?.errors}
+                    errors={(createProjectMutation.error as any)?.error}
                 />
             </div>
         </div>

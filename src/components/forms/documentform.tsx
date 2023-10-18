@@ -1,11 +1,10 @@
-import { Document, DocumentType, Project } from "@/types/project";
+import { Document, DocumentType } from "@/types/project";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { API } from "@/utils/api";
 import { Button, Dropdown, Errors, Input, TextArea } from "../ui/interactive";
-import { API_BASE_URL } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import Modal from "../modal";
 
 export default function DocumentForm(props: {
   document: Partial<Document>;
@@ -16,6 +15,7 @@ export default function DocumentForm(props: {
 }) {
   const { document: doc, onSubmit, errors, loading, project_id } = props;
   const [document, setDocument] = useState<Partial<Document>>(doc);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const router = useRouter();
 
@@ -40,9 +40,7 @@ export default function DocumentForm(props: {
   );
 
   const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this document?")) {
-      await deleteDocumentMutation.mutateAsync();
-    }
+    await deleteDocumentMutation.mutateAsync();
   };
 
   useEffect(() => {
@@ -99,7 +97,8 @@ export default function DocumentForm(props: {
           {doc.external_id && (
             <Button
               className="bg-red-500 hover:bg-red-600 "
-              onClick={handleDelete}
+              onClick={() => setShowDeleteModal(true)}
+              variant="danger"
               type="button"
             >
               Delete Document
@@ -221,6 +220,32 @@ export default function DocumentForm(props: {
           )}
         </div>
       </form>
+      <Modal
+        onClose={() => setShowDeleteModal(false)}
+        show={showDeleteModal}
+        className="w-[500px]"
+      >
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this document?</p>
+          <div className="flex flex-col md:flex-row gap-2 justify-end">
+            <button
+              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              onClick={() => setShowDeleteModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              onClick={() => {
+                handleDelete();
+                setShowDeleteModal(false);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

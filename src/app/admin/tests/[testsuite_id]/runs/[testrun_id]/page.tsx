@@ -75,11 +75,11 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
 
         let csv = json2csv.parse(data, { fields });
 
-        const avgCosineSim =total_cosine / (testRun?.test_results?.length ?? 1);
+        const avgCosineSim = total_cosine / (testRun?.test_results?.length ?? 1);
         const avgBleu = total_bleu / (testRun?.test_results?.length ?? 1);
         csv = csv.concat(`\nAverage Cosine Similarity: ${avgCosineSim.toFixed(3)}`);
         csv = csv.concat(`\nAverage BLEU Score: ${avgBleu.toFixed(3)}`);
-        
+
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
         const url = URL.createObjectURL(blob);
@@ -239,6 +239,7 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                 <div>
                     <div className="flex flex-col justify-end">
                         <div>Project: <span className="font-bold">{testRun?.project_object.title}</span></div>
+                        <div>References: <span className={`font-bold ${testRun?.references ? "text-green-500" : "text-red-500"}`}>{testRun?.references ? "ENABLED" : "DISABLED"}</span></div>
                         <div>Total Questions: <span className="font-bold">{testRun?.test_results?.length}</span></div>
                         <div>Failed Questions: <span className="font-bold">{testRun?.test_results?.filter((test: TestResult) => test.answer.length === 0).length}</span></div>
                         <div>Average Cosine Similarity: <span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgCosineSim.toFixed(3)}</span></div>

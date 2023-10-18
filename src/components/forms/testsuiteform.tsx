@@ -26,6 +26,7 @@ export default function TestSuiteForm(props: {
                     placeholder="Name"
                     value={testSuite.name}
                     onChange={(e) => setTestSuite({ ...testSuite, name: e.target.value })}
+                    errors={errors?.name}
                 />
                 Temperature< br />
                 <Slider
@@ -35,6 +36,7 @@ export default function TestSuiteForm(props: {
                     step={0.1}
                     max={1}
                     onChange={(val) => setTestSuite({ ...testSuite, temperature: val })}
+                    errors={errors?.temperature}
                 />
                 TopK<br />
                 <Slider
@@ -44,6 +46,7 @@ export default function TestSuiteForm(props: {
                     step={1}
                     max={100}
                     onChange={(val) => setTestSuite({ ...testSuite, topk: val })}
+                    errors={errors?.topk}
                 />
                 <div className="grid grid-cols-2 gap-4 mt-4">
                     <Button

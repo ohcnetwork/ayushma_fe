@@ -9,7 +9,8 @@ export type BaseModelType = {
 export type Chat = BaseModelType & {
     title: string,
     namespace: string,
-    chats?: ChatMessage[]
+    chats?: ChatMessage[],
+    username?: string
 }
 
 export enum ChatMessageType {
