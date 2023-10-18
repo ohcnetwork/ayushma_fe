@@ -29,7 +29,7 @@ export default function Page({ params }: { params: { project_id: string, documen
     const onSubmit = async (document: Partial<Document>) => {
         const formData = new FormData();
         formData.append("title", document.title as string);
-        formData.append("file", document.file as File);
+        formData.append("file", document.raw_file as File);
         formData.append("description", document.description as string);
         await editDocumentMutation.mutateAsync(formData as any);
     }

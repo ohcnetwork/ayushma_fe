@@ -37,7 +37,8 @@ export const MODELS = [
 export type Document = BaseModelType & {
     title: string,
     description: string,
-    file: File,
+    file: string,
+    raw_file?: File,
     text_content: string,
     document_type: DocumentType,
     uploading: boolean

@@ -376,8 +376,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   const onSubmit = async (question_id: string, doc: Partial<Document>) => {
     const formData = new FormData();
-    doc.title && formData.append("title", doc.title as string);
-    doc.file && formData.append("file", doc.file as File);
+    doc.title && formData.append("title", doc.title);
+    doc.raw_file && formData.append("file", doc.raw_file as File);
     doc.document_type &&
       formData.append("document_type", `${doc.document_type}`);
     await createDocumentMutation.mutateAsync({
@@ -591,7 +591,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                             });
                             await onSubmit(question.external_id, {
                               title: document?.file.name,
-                              file: document?.file,
+                              raw_file: document?.file,
                               document_type: DocumentType.FILE,
                             });
                           }}
