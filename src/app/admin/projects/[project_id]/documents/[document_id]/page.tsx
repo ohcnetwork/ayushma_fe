@@ -16,11 +16,11 @@ export default function Page({ params }: { params: { project_id: string, documen
 
     const router = useRouter();
 
-    const documentQuery = useQuery(["document", document_id], () => API.documents.get(project_id, document_id));
+    const documentQuery = useQuery(["document", document_id], () => API.projects.documents.get(project_id, document_id));
 
     const doc: Document | undefined = documentQuery.data;
 
-    const editDocumentMutation = useMutation((formData) => API.documents.edit(project_id, document_id, formData as any), {
+    const editDocumentMutation = useMutation((formData) => API.projects.documents.edit(project_id, document_id, formData as any), {
         onSuccess: () => {
             documentQuery.refetch();
         }

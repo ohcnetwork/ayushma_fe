@@ -8,9 +8,19 @@ export function Input(
     right?: React.ReactNode;
     left?: React.ReactNode;
     parentDivClassName?: string;
+    disabled?: boolean;
   } & React.InputHTMLAttributes<HTMLInputElement>
 ) {
-  const { className, loading, errors, right, left, parentDivClassName, ...rest } = props;
+  const {
+    className,
+    loading,
+    errors,
+    right,
+    left,
+    parentDivClassName,
+    disabled,
+    ...rest
+  } = props;
 
   return (
     <div className={parentDivClassName}>
@@ -23,9 +33,9 @@ export function Input(
             "border-none bg-transparent w-full p-3 py-3 outline-none",
             className
           )}
-          disabled={loading}
+          disabled={props.disabled || loading}
         />
-      {right}
+        {right}
       </div>
       <Errors errors={errors} />
     </div>
@@ -98,7 +108,7 @@ export function Button(
   );
 }
 
-export function Errors(props: { errors?: string[], className?: string }) {
+export function Errors(props: { errors?: string[]; className?: string }) {
   const { errors } = props;
 
   return (

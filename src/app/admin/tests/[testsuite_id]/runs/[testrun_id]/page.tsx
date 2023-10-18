@@ -13,6 +13,7 @@ import { useEffect, useState, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import jsPDF from "jspdf";
 import json2csv from 'json2csv';
+import { DocumentType } from "@/types/project";
 
 export default function Page({ params }: { params: { testsuite_id: string, testrun_id: string } }) {
     const router = useRouter();
@@ -50,18 +51,26 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
     const handleGenerateCsv = () => {
         const testResults = testRun?.test_results || [];
 
-        const fields = ['question', 'human_answer', 'answer', 'cosine_sim', 'bleu_score', 'feedback'];
+        const fields = ['question', 'human_answer', 'answer', 'cosine_sim', 'bleu_score', 'feedback', 'documents']
      
         const total_cosine = testResults.reduce((acc: number, test: TestResult) => acc + (test.cosine_sim || 0), 0);
         const total_bleu = testResults.reduce((acc: number, test: TestResult) => acc + (test.bleu_score || 0), 0);
 
         const data = testResults.map((test) => ({
-            question: test.question,
-            human_answer: test.human_answer,
-            answer: test.answer,
-            cosine_sim: test.cosine_sim,
-            bleu_score: test.bleu_score,
-            feedback: test.feedback?.map((feedback) => `(${feedback.created_at}) ${feedback.user_object.username}: [${feedback.rating}] ${feedback.notes}`).join(' , '),
+          question: test.question,
+          human_answer: test.human_answer,
+          answer: test.answer,
+          documents: test.test_question?.documents
+            ?.map((document) => document.title + " : " + document.file)
+            .join(" ; "),
+          cosine_sim: test.cosine_sim,
+          bleu_score: test.bleu_score,
+          feedback: test.feedback
+            ?.map(
+              (feedback) =>
+                `(${feedback.created_at}) ${feedback.user_object.username}: [${feedback.rating}] ${feedback.notes}`
+            )
+            .join(" , "),
         }));
 
         let csv = json2csv.parse(data, { fields });
@@ -304,11 +313,11 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                                 <div className="flex gap-2 mt-3 items-center pb-4">
                                     <p className="mr-1 text-sm italic">References:</p>
                                     {test?.references.map((doc, i) => {
-                                        if (doc.document_type === 1 || doc.document_type === 2)
+                                        if (doc.document_type === DocumentType.FILE || doc.document_type === DocumentType.URL)
                                             return (
                                                 <a
                                                     key={i}
-                                                    href={doc.document_type === 1 ? doc.file : doc.text_content}
+                                                    href={doc.document_type === DocumentType.FILE ? doc.file : doc.text_content}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
@@ -316,7 +325,7 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                                                     {doc.title}
                                                 </a>
                                             );
-                                        else if (doc.document_type === 3)
+                                        else if (doc.document_type === DocumentType.TEXT)
                                             return (
                                                 <div className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
                                                     {doc.title}
@@ -328,6 +337,25 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                             )}
                         </div>
                     </div>
+                    <div className="border-b border-gray-200 my-4"></div>
+                    {test.test_question?.documents?.map((document) => (
+                      <div
+                        className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
+                        key={document.external_id}
+                      >
+                        <a
+                          href={document.file}
+                          target="_blank"
+                          key={document.external_id}
+                          className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md"
+                        >
+                          <i className="fas fa-paperclip mr-2 text-gray-600" data-html2canvas-ignore="true"></i>
+                          <span className="text-gray-700">
+                            {document.title}
+                          </span>
+                        </a>
+                      </div>
+                    ))}
                     <div className="border-b border-gray-200 my-4"></div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                         <div>

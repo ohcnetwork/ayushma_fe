@@ -31,7 +31,7 @@ export default function DocumentForm(props: {
   };
 
   const deleteDocumentMutation = useMutation(
-    () => API.documents.delete(project_id, doc.external_id ?? ""),
+    () => API.projects.documents.delete(project_id, doc.external_id ?? ""),
     {
       onSuccess: () => {
         router.push(`/admin/projects/${project_id}`);
@@ -57,7 +57,7 @@ export default function DocumentForm(props: {
         className="flex flex-col-reverse sm:flex-row gap-2"
         encType="multipart/form-data"
       >
-        <div className="flex flex-col gap-2 sm:w-96 ">
+        <div className="flex flex-col gap-2 sm:w-96">
           {!doc.external_id && (
             <Dropdown
               value={document.document_type || 0}

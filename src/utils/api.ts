@@ -211,24 +211,24 @@ export const API = {
     create: (project: Partial<Project>) =>
       request(`projects`, "POST", { ...project }),
     delete: (id: string) => request(`projects/${id}`, "DELETE"),
-  },
-  documents: {
-    list: (
-      project_id: string,
-      filters: { ordering: string } = { ordering: "-created_at" }
-    ) => request(`projects/${project_id}/documents`, "GET", filters),
-    create: (project_id: string, document: FormData) =>
-      request(`projects/${project_id}/documents`, "POST", document, {
-        formdata: true,
-      }),
-    get: (project_id: string, id: string) =>
-      request(`projects/${project_id}/documents/${id}`),
-    edit: (project_id: string, id: string, document: FormData) =>
-      request(`projects/${project_id}/documents/${id}`, "PATCH", document, {
-        formdata: true,
-      }),
-    delete: (project_id: string, id: string) =>
-      request(`projects/${project_id}/documents/${id}`, "DELETE"),
+    documents: {
+      list: (
+        project_id: string,
+        filters: { ordering: string } = { ordering: "-created_at" }
+      ) => request(`projects/${project_id}/documents`, "GET", filters),
+      create: (project_id: string, document: FormData) =>
+        request(`projects/${project_id}/documents`, "POST", document, {
+          formdata: true,
+        }),
+      get: (project_id: string, id: string) =>
+        request(`projects/${project_id}/documents/${id}`),
+      edit: (project_id: string, id: string, document: FormData) =>
+        request(`projects/${project_id}/documents/${id}`, "PATCH", document, {
+          formdata: true,
+        }),
+      delete: (project_id: string, id: string) =>
+        request(`projects/${project_id}/documents/${id}`, "DELETE"),
+    }
   },
   chat: {
     list: (
@@ -315,6 +315,19 @@ export const API = {
         request(`tests/suites/${suite_id}/questions/${id}`, "PATCH", fields),
       delete: (suite_id: string, id: string) =>
         request(`tests/suites/${suite_id}/questions/${id}`, "DELETE"),
+      documents: {
+          list: (
+            suite_id: string, question_id: string
+          ) => request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "GET"),
+          create: (suite_id: string, question_id: string, document: any) =>
+            request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "POST", document, {
+              formdata: true,
+            }),
+          get: (suite_id: string, question_id: string, id: string) =>
+            request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`),
+          delete: (suite_id: string, question_id: string, id: string) =>
+            request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`, "DELETE"),
+      }
     },
     runs: {
       list: (

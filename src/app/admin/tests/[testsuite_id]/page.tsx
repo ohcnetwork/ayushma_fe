@@ -5,7 +5,7 @@ import ProjectForm from "@/components/forms/projectform";
 import TestSuiteForm from "@/components/forms/testsuiteform";
 import Modal from "@/components/modal";
 import { Button, Input, TextArea } from "@/components/ui/interactive";
-import { Document, Project } from "@/types/project";
+import { Document, DocumentType, Project } from "@/types/project";
 import { API } from "@/utils/api";
 import {
   QueryFunction,
@@ -42,6 +42,53 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   const ProjectListQuery = useQuery(["projects"], () => API.projects.list());
   const projects: Project[] = ProjectListQuery.data?.results || [];
+
+  const createDocumentMutation = useMutation(
+    async (args: { question_id: string; formData: any }) => {
+      const { question_id, formData } = args;
+      await API.tests.questions.documents.create(
+        testsuite_id,
+        question_id,
+        formData
+      );
+    },
+    {
+      onSuccess: () => {
+        toast.success("Document Attached!");
+        TestQuestionsQuery.refetch();
+        setDocument(undefined);
+      },
+      onError: (error) => {
+        toast.error("Error attaching document");
+        console.log(error);
+      },
+    }
+  );
+
+  const deleteDocumentMutation = useMutation(
+    async (args: { question_id: string; document_id: string }) => {
+      const { question_id, document_id } = args;
+      await API.tests.questions.documents.delete(
+        testsuite_id,
+        question_id,
+        document_id
+      );
+    },
+    {
+      onSuccess: () => {
+        toast.success("Document Deleted");
+        TestQuestionsQuery.refetch();
+      },
+      onError: (error) => {
+        toast.error("Error deleting document");
+        console.log(error);
+      },
+    }
+  );
+
+  const [document, setDocument] = useState<
+    { question_id: string; file: File; state: string } | undefined
+  >();
 
   type APIResponse = {
     results: TestRun[];
@@ -317,6 +364,27 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     });
   };
 
+  const handleDelete = async (question_id: string, document_id: string) => {
+    if (confirm("Are you sure you want to delete this document?")) {
+      await deleteDocumentMutation.mutateAsync({
+        question_id: question_id,
+        document_id: document_id,
+      });
+    }
+  };
+
+  const onSubmit = async (question_id: string, doc: Partial<Document>) => {
+    const formData = new FormData();
+    doc.title && formData.append("title", doc.title as string);
+    doc.file && formData.append("file", doc.file as File);
+    doc.document_type &&
+      formData.append("document_type", `${doc.document_type}`);
+    await createDocumentMutation.mutateAsync({
+      question_id: question_id,
+      formData: formData,
+    });
+  };
+
   return (
     <div className="mx-4 md:mx-0">
       <div className="flex">
@@ -358,82 +426,204 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           ))}
         {currentQuestions && currentQuestions.length > 0 && (
           <div className="grid">
-            {currentQuestions.map((question, index) => (
-              <div
-                key={question.external_id}
-                className="mb-4 flex flex-col border border-gray-400 rounded-lg p-3"
-              >
-                <div className="flex flex-col md:flex-row mb-2">
-                  <label className="block text-gray-700 w-1/2 font-semibold">
-                    Question {index + 1}
-                  </label>
-                  <label className="hidden md:block font-medium text-gray-700 mr-3 w-1/2">
-                    Human Answer
-                  </label>
-                </div>
-                <div className="flex flex-col md:flex-row gap-2">
-                  <TextArea
-                    rows={2}
-                    className="border-gray-300 rounded-md shadow-sm w-full p-2"
-                    value={question.question}
-                    onChange={(e) =>
-                      handleQuestionChange(question.external_id, e.target.value)
-                    }
-                  />
-                  <label className="block font-medium text-gray-700 mr-3 w-1/2 md:hidden">
-                    Human Answer
-                  </label>
-                  <TextArea
-                    rows={2}
-                    className="border-gray-300 rounded-md shadow-sm w-full p-2 col-span-2"
-                    value={question.human_answer}
-                    onChange={(e) =>
-                      handleAnswerChange(question.external_id, e.target.value)
-                    }
-                  />
-                  <div className="flex flex-col col-span-1 w-full md:w-4 h-auto md:h-full justify-center items-center">
-                    <Button
-                      className="rounded-full h-8 w-8 text-red-600"
-                      variant="secondary"
-                      onClick={() => {
-                        handleQuestionDelete(index);
-                      }}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </Button>
+            {currentQuestions.map((question, index) => {
+              const has_new_document =
+                document?.question_id === question.external_id;
+              return (
+                <div
+                  key={question.external_id}
+                  className="mb-4 flex flex-col border border-gray-400 rounded-lg p-3"
+                >
+                  <div className="flex flex-col md:flex-row mb-2">
+                    <label className="block text-gray-700 w-1/2 font-semibold">
+                      Question {index + 1}
+                    </label>
+                    <label className="hidden md:block font-medium text-gray-700 mr-3 w-1/2">
+                      Human Answer
+                    </label>
                   </div>
-                </div>
-                <div className="flex gap-2 mt-2">
-                  <label className="flex items-center font-medium text-gray-700 mr-3">
-                    Language
-                  </label>
-                  <div className="flex gap-2 w-full mr-8">
-                    <select
-                      value={question.language || "en"}
+                  <div className="flex flex-col md:flex-row gap-2">
+                    <TextArea
+                      rows={2}
+                      className="border-gray-300 rounded-md shadow-sm w-full p-2 h-full"
+                      value={question.question}
                       onChange={(e) =>
-                        handleLanguageChange(
+                        handleQuestionChange(
                           question.external_id,
                           e.target.value
                         )
                       }
-                      className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    />
+                    <label className="block font-medium text-gray-700 mr-3 w-1/2 md:hidden">
+                      Human Answer
+                    </label>
+                    <TextArea
+                      rows={2}
+                      className="border-gray-300 rounded-md shadow-sm w-full p-2 col-span-2 h-full"
+                      value={question.human_answer}
+                      onChange={(e) =>
+                        handleAnswerChange(question.external_id, e.target.value)
+                      }
+                    />
+                    <div className="flex flex-col col-span-1 w-full md:w-4 h-auto md:h-full justify-center items-center">
+                      <Button
+                        className="rounded-full h-8 w-8 text-red-600"
+                        variant="secondary"
+                        onClick={() => {
+                          handleQuestionDelete(index);
+                        }}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <label className="flex items-center font-medium text-gray-700 mr-3">
+                      Language
+                    </label>
+                    <div className="flex gap-2 w-full mr-8">
+                      <select
+                        value={question.language || "en"}
+                        onChange={(e) =>
+                          handleLanguageChange(
+                            question.external_id,
+                            e.target.value
+                          )
+                        }
+                        className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      >
+                        {supportedLanguages.map((language) => (
+                          <option key={language.value} value={language.value}>
+                            {language.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block font-medium text-gray-700 mb-2">
+                      Attachments
+                    </label>
+                    {question?.documents?.map((document) => (
+                      <div
+                        className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
+                        key={document.external_id}
+                      >
+                        <a
+                          href={document.file}
+                          target="_blank"
+                          key={document.external_id}
+                          className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md"
+                        >
+                          <i className="fas fa-paperclip mr-2 text-gray-600"></i>
+                          <span className="text-gray-700">
+                            {document.title}
+                          </span>
+                        </a>
+
+                        <Button
+                          className="h-8 w-8 text-red-600 hover:bg-slate-200"
+                          variant="secondary"
+                          onClick={async () =>
+                            await handleDelete(
+                              question.external_id,
+                              document.external_id
+                            )
+                          }
+                        >
+                          <i className="fas fa-trash"></i>
+                        </Button>
+                      </div>
+                    ))}
+
+                    {has_new_document && (
+                      <div className="flex items-center mb-2 border border-gray-300 rounded-lg bg-slate-200">
+                        <i className="fas fa-paperclip mx-2 text-gray-600"></i>{" "}
+                        <span className="flex-grow text-gray-700">
+                          {document.file.name}
+                        </span>{" "}
+                        <Button
+                          className="rounded-full h-8 w-8 text-red-600 bg-slate-200"
+                          variant="secondary"
+                          onClick={() => setDocument(undefined)}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </Button>
+                      </div>
+                    )}
+                    <input
+                      id={`file-upload-${question.external_id}`}
+                      type="file"
+                      className="hidden"
+                      onChange={(e) => {
+                        const selected_file = e.target.files?.[0];
+                        if (selected_file) {
+                          setDocument({
+                            question_id: question.external_id || "",
+                            file: selected_file,
+                            state: "selected",
+                          });
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor={
+                        !has_new_document
+                          ? `file-upload-${question.external_id}`
+                          : ""
+                      }
+                      className="cursor-pointer rounded-md px-4 py-2 border border-gray-300 w-full block bg-white hover:bg-slate-200"
                     >
-                      {supportedLanguages.map((language) => (
-                        <option key={language.value} value={language.value}>
-                          {language.label}
-                        </option>
-                      ))}
-                    </select>
+                      {has_new_document ? (
+                        <div
+                          className={`text-sm text-gray-700 flex justify-center items-center ${
+                            document.state === "selected"
+                              ? "cursor-pointer"
+                              : "cursor-not-allowed"
+                          }`}
+                          onClick={async () => {
+                            if (document.state === "uploading") return;
+                            setDocument({
+                              ...document,
+                              state: "uploading",
+                            });
+                            await onSubmit(question.external_id, {
+                              title: document?.file.name,
+                              file: document?.file,
+                              document_type: DocumentType.FILE,
+                            });
+                          }}
+                        >
+                          {document.state === "selected" ? (
+                            <>
+                              <i className="fas fa-upload mr-2 flex items-center"></i>{" "}
+                              <>Upload File</>
+                            </>
+                          ) : (
+                            <>
+                              <i className="fas fa-spinner mr-2 flex items-center animate-spin"></i>{" "}
+                              Uploading...
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-700 flex justify-center items-center">
+                          <i className="fas fa-plus mr-2 flex items-center"></i>{" "}
+                          Add Attachment
+                        </div>
+                      )}
+                    </label>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-between mb-6 mx-4 md:mx-0">
           <Button
             variant="secondary"
-            className="bg-gray-100 text-gray-700"
+            className="text-gray-700"
             onClick={() => {
               router.push(`/admin/tests`);
             }}

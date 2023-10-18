@@ -16,7 +16,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
 
     const router = useRouter();
 
-    const createDocumentMutation = useMutation((formData) => API.documents.create(project_id, formData as any), {
+    const createDocumentMutation = useMutation((formData) => API.projects.documents.create(project_id, formData as any), {
         onSuccess: () => {
             router.push(`/admin/projects/${project_id}`);
         }

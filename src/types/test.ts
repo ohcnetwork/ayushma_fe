@@ -10,12 +10,19 @@ export type TestSuite = BaseModelType & {
     topk: number;
 }
 
+export type TestQuestionAttachment = BaseModelType & {
+    external_id?: string;
+    title: string;
+    file: string;
+}
+
 export type TestQuestion = BaseModelType & {
     external_id?: string;
     test_suite: TestSuite;
     question: string;
     human_answer: string;
     language: string;
+    documents?: TestQuestionAttachment[];
 }
 
 export enum TestRunStatus {

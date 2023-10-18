@@ -17,7 +17,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
   );
   const project: Project | undefined = projectsQuery.data || undefined;
   const documentsQuery = useQuery(["project", project_id, "documents"], () =>
-    API.documents.list(project_id)
+    API.projects.documents.list(project_id)
   );
   const documents: Document[] | undefined = documentsQuery.data?.results;
   const [showDeleteModal, setShowDeleteModel] = useState(false);

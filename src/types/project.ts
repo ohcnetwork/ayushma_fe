@@ -31,6 +31,7 @@ export const MODELS = [
     { id: 2, label: 'GPT-3.5-16k' },
     { id: 3, label: 'GPT-4' },
     { id: 4, label: 'GPT-4-32k' },
+    { id: 5, label: 'GPT-4-VISUAL' },
 ]
 
 export type Document = BaseModelType & {
