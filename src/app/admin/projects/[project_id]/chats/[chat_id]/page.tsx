@@ -12,7 +12,7 @@ export default function Page({
   params: { project_id: string; chat_id: string };
 }) {
   const { project_id, chat_id } = params;
-  const chatQuery = useQuery(["chat", project_id], () =>
+  const chatQuery = useQuery(["chat", project_id, chat_id], () =>
     API.chat.get(project_id, chat_id)
   );
 
@@ -26,7 +26,7 @@ export default function Page({
     <div>
       <h1 className="text-3xl font-bold">{project?.title}</h1>
       {chatQuery.isLoading ? (
-        <div className="w-full flex justify-center items-center">
+        <div className="mt-5 w-full flex justify-center items-center">
           <Loading />
         </div>
       ) : chats ? (
