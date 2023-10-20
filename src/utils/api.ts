@@ -53,9 +53,9 @@ const request = async (
   if (method === "GET") {
     const requestParams = data
       ? `?${Object.keys(data)
-          .filter((key) => data[key] !== null && data[key] !== undefined)
-          .map((key) => `${key}=${data[key]}`)
-          .join("&")}`
+        .filter((key) => data[key] !== null && data[key] !== undefined)
+        .map((key) => `${key}=${data[key]}`)
+        .join("&")}`
       : "";
     url += requestParams;
     payload = null;
@@ -65,10 +65,10 @@ const request = async (
     isAuth === false
       ? null
       : JSON.parse(
-          localStorage.getItem(
-            process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage"
-          ) || "{}"
-        );
+        localStorage.getItem(
+          process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage"
+        ) || "{}"
+      );
   const localToken = storage?.auth_token;
 
   const auth =
@@ -83,8 +83,8 @@ const request = async (
       ...(formdata === true
         ? {}
         : {
-            "Content-Type": "application/json",
-          }),
+          "Content-Type": "application/json",
+        }),
       ...(auth !== "" ? { Authorization: auth } : {}),
       ...headers,
     },
@@ -206,9 +206,9 @@ export const API = {
         offset?: number;
         archived?: boolean | null;
       } = {
-        ordering: "-created_at",
-        limit: 50,
-      }
+          ordering: "-created_at",
+          limit: 50,
+        }
     ) => request("projects", "GET", filters),
     get: (id: string) => request(`projects/${id}`),
     update: (id: string, project: Partial<Project>) =>
@@ -255,10 +255,10 @@ export const API = {
         { title },
         openai_api_key
           ? {
-              headers: {
-                "OpenAI-Key": openai_api_key,
-              },
-            }
+            headers: {
+              "OpenAI-Key": openai_api_key,
+            },
+          }
           : {}
       ),
     chats: (
@@ -296,8 +296,8 @@ export const API = {
           formdata: true,
           headers: openai_api_key
             ? {
-                "OpenAI-Key": openai_api_key,
-              }
+              "OpenAI-Key": openai_api_key,
+            }
             : {},
         },
         (e) => {
@@ -333,17 +333,17 @@ export const API = {
       delete: (suite_id: string, id: string) =>
         request(`tests/suites/${suite_id}/questions/${id}`, "DELETE"),
       documents: {
-          list: (
-            suite_id: string, question_id: string
-          ) => request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "GET"),
-          create: (suite_id: string, question_id: string, document: any) =>
-            request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "POST", document, {
-              formdata: true,
-            }),
-          get: (suite_id: string, question_id: string, id: string) =>
-            request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`),
-          delete: (suite_id: string, question_id: string, id: string) =>
-            request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`, "DELETE"),
+        list: (
+          suite_id: string, question_id: string
+        ) => request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "GET"),
+        create: (suite_id: string, question_id: string, document: any) =>
+          request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "POST", document, {
+            formdata: true,
+          }),
+        get: (suite_id: string, question_id: string, id: string) =>
+          request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`),
+        delete: (suite_id: string, question_id: string, id: string) =>
+          request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`, "DELETE"),
       }
     },
     runs: {
@@ -368,7 +368,7 @@ export const API = {
       list: (
         suite_id: string,
         run_id: string,
-        filters: { ordering: string; test_result_id: string }
+        filters: { ordering?: string; test_result_id?: string }
       ) =>
         request(
           `tests/suites/${suite_id}/runs/${run_id}/feedback`,

@@ -1,7 +1,7 @@
 "use client"
 
 import Modal from "@/components/modal";
-import Rating, { ratingOptions } from "@/components/rating";
+import Rating, { RatingLabel, ratingOptions } from "@/components/rating";
 import ScrollToTop from "@/components/scrolltotop";
 import { Button, TextArea } from "@/components/ui/interactive";
 import Loading from "@/components/ui/loading";
@@ -14,6 +14,7 @@ import { Toaster, toast } from "react-hot-toast";
 import jsPDF from "jspdf";
 import json2csv from 'json2csv';
 import { DocumentType } from "@/types/project";
+import Link from "next/link";
 
 export default function Page({ params }: { params: { testsuite_id: string, testrun_id: string } }) {
     const router = useRouter();
@@ -52,25 +53,25 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
         const testResults = testRun?.test_results || [];
 
         const fields = ['question', 'human_answer', 'answer', 'cosine_sim', 'bleu_score', 'feedback', 'documents']
-     
+
         const total_cosine = testResults.reduce((acc: number, test: TestResult) => acc + (test.cosine_sim || 0), 0);
         const total_bleu = testResults.reduce((acc: number, test: TestResult) => acc + (test.bleu_score || 0), 0);
 
         const data = testResults.map((test) => ({
-          question: test.question,
-          human_answer: test.human_answer,
-          answer: test.answer,
-          documents: test.test_question?.documents
-            ?.map((document) => document.title + " : " + document.file)
-            .join(" ; "),
-          cosine_sim: test.cosine_sim,
-          bleu_score: test.bleu_score,
-          feedback: test.feedback
-            ?.map(
-              (feedback) =>
-                `(${feedback.created_at}) ${feedback.user_object.username}: [${feedback.rating}] ${feedback.notes}`
-            )
-            .join(" , "),
+            question: test.question,
+            human_answer: test.human_answer,
+            answer: test.answer,
+            documents: test.test_question?.documents
+                ?.map((document) => document.title + " : " + document.file)
+                .join(" ; "),
+            cosine_sim: test.cosine_sim,
+            bleu_score: test.bleu_score,
+            feedback: test.feedback
+                ?.map(
+                    (feedback) =>
+                        `(${feedback.created_at}) ${feedback.user_object.username}: [${feedback.rating}] ${feedback.notes}`
+                )
+                .join(" , "),
         }));
 
         let csv = json2csv.parse(data, { fields });
@@ -235,22 +236,33 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                     <Button variant="secondary" className="bg-gray-100" onClick={() => { router.push(`/admin/tests/${testsuite_id}/`) }}>Back</Button>
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border border-gray-300 bg-white p-4 rounded-lg my-4">
-                <div>
-                    <div className="flex flex-col justify-end">
-                        <div>Project: <span className="font-bold">{testRun?.project_object.title}</span></div>
-                        <div>References: <span className={`font-bold ${testRun?.references ? "text-green-500" : "text-red-500"}`}>{testRun?.references ? "ENABLED" : "DISABLED"}</span></div>
-                        <div>Total Questions: <span className="font-bold">{testRun?.test_results?.length}</span></div>
-                        <div>Failed Questions: <span className="font-bold">{testRun?.test_results?.filter((test: TestResult) => test.answer.length === 0).length}</span></div>
-                        <div>Average Cosine Similarity: <span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgCosineSim.toFixed(3)}</span></div>
+            <div className="border border-gray-300 bg-white p-4 rounded-lg my-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <div className="flex flex-col justify-end">
+                            <div>Project: <span className="font-bold">{testRun?.project_object.title}</span></div>
+                            <div>References: <span className={`font-bold ${testRun?.references ? "text-green-500" : "text-red-500"}`}>{testRun?.references ? "ENABLED" : "DISABLED"}</span></div>
+                            <div>Total Questions: <span className="font-bold">{testRun?.test_results?.length}</span></div>
+                            <div>Failed Questions: <span className="font-bold">{testRun?.test_results?.filter((test: TestResult) => test.answer.length === 0).length}</span></div>
+                            <div>Average Cosine Similarity: <span className={`font-bold ${avgCosineSim < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgCosineSim.toFixed(3)}</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex flex-col justify-end">
+                            <div>Start Time: <span className="font-bold">{formatDate(testRun?.created_at)}</span></div>
+                            <div>End Time: <span className="font-bold">{formatDate(testRun?.modified_at)}</span></div>
+                            <div>Total Time: <span className="font-bold">{dateDifferenceInHHMMSS(testRun?.created_at, testRun?.modified_at)}</span></div>
+                            <div>Average BLEU Score: <span className={`font-bold ${avgBleu < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span></div>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <div className="flex flex-col justify-end">
-                        <div>Start Time: <span className="font-bold">{formatDate(testRun?.created_at)}</span></div>
-                        <div>End Time: <span className="font-bold">{formatDate(testRun?.modified_at)}</span></div>
-                        <div>Total Time: <span className="font-bold">{dateDifferenceInHHMMSS(testRun?.created_at, testRun?.modified_at)}</span></div>
-                        <div>Average BLEU Score: <span className={`font-bold ${avgBleu < 0.5 ? 'text-red-500' : 'text-green-500'}`}>{avgBleu.toFixed(3)}</span></div>
+                <div className="mt-4">
+                    <b className="text-xs text-gray-500">
+                        Prompt:
+                    </b>
+                    <br />
+                    <div className="whitespace-pre-line">
+                        {testRun?.project_object.prompt}
                     </div>
                 </div>
             </div>
@@ -298,9 +310,9 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                         </div>
                     </div></>) : (<div className="sm:col-span-5 justify-center items-center flex"><Loading /></div>)}
             </div>
-            {testRun?.test_results?.map((test: TestResult) => (
+            {testRun?.test_results?.map((test: TestResult, index) => (
                 <div key={test.external_id} className="bg-white rounded-lg border-gray-200 border p-6 my-4">
-                    <h3 className="text-lg font-bold text-center mb-2">{test.question}</h3>
+                    <h3 className="text-lg font-bold text-center mb-2">Q{index + 1}. {test.question}</h3>
                     <div className="border-b border-gray-200 my-4"></div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -340,22 +352,27 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                     </div>
                     <div className="border-b border-gray-200 my-4"></div>
                     {test.test_question?.documents?.map((document) => (
-                      <div
-                        className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
-                        key={document.external_id}
-                      >
-                        <a
-                          href={document.file}
-                          target="_blank"
-                          key={document.external_id}
-                          className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md"
+                        <div
+                            className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
+                            key={document.external_id}
                         >
-                          <i className="fas fa-paperclip mr-2 text-gray-600" data-html2canvas-ignore="true"></i>
-                          <span className="text-gray-700">
-                            {document.title}
-                          </span>
-                        </a>
-                      </div>
+                            <Link
+                                href={document.file}
+                                target="_blank"
+                                key={document.external_id}
+                                className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md justify-between"
+                            >
+                                <div className="flex items-center justify-center">
+                                    <i className="fas fa-paperclip mr-2 text-gray-600"></i>
+                                    <div className="text-gray-700">
+                                        {document.title}
+                                    </div>
+                                </div>
+                                <div className="w-1/2">
+                                    <img src={document.file.split("?")[0] + '?r=' + Math.floor(Math.random() * 100000)} alt="File" className="w-full" crossOrigin="anonymous" />
+                                </div>
+                            </Link>
+                        </div>
                     ))}
                     <div className="border-b border-gray-200 my-4"></div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
@@ -405,6 +422,15 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                                 ><i className="fa-duotone fa-comments mr-2"></i>Feedback</Button>
                             </div>
                         </div>
+                    </div>
+                    <div className="mt-4">
+                        {test.feedback && test.feedback.map((feedback, i) => (
+                            <div key={i} className="p-4 border border-gray-200 rounded-lg">
+                                <b>{feedback.user_object.username}</b> <RatingLabel rating={feedback.rating} className="py-1 px-2 text-xs" />
+                                <br />
+                                {feedback.notes}
+                            </div>
+                        ))}
                     </div>
                 </div>
             ))}

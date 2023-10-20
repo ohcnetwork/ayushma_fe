@@ -30,13 +30,16 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const { testsuite_id } = params;
 
   const testSuiteQuery = useQuery(["testsuite", testsuite_id], () =>
-    API.tests.suites.get(testsuite_id)
+    API.tests.suites.get(testsuite_id),
+    {
+      refetchOnWindowFocus: false,
+    }
   );
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
 
   const TestQuestionsQuery = useQuery(["testsuitequestion", testsuite_id], () =>
     API.tests.questions.list(testsuite_id, { ordering: "created_at" })
-  );
+    , { refetchOnWindowFocus: false });
   const testQuestions: TestQuestion[] | undefined =
     TestQuestionsQuery.data?.results || undefined;
 
@@ -511,17 +514,22 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
                         key={document.external_id}
                       >
-                        <a
+                        <Link
                           href={document.file}
                           target="_blank"
                           key={document.external_id}
-                          className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md"
+                          className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md justify-between"
                         >
-                          <i className="fas fa-paperclip mr-2 text-gray-600"></i>
-                          <span className="text-gray-700">
-                            {document.title}
-                          </span>
-                        </a>
+                          <div className="flex items-center justify-center">
+                            <i className="fas fa-paperclip mr-2 text-gray-600"></i>
+                            <div className="text-gray-700">
+                              {document.title}
+                            </div>
+                          </div>
+                          <div className="w-1/2">
+                            <img src={document.file} alt="File" className="w-full" />
+                          </div>
+                        </Link>
 
                         <Button
                           className="h-8 w-8 text-red-600 hover:bg-slate-200"
@@ -578,11 +586,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${
-                            document.state === "selected"
-                              ? "cursor-pointer"
-                              : "cursor-not-allowed"
-                          }`}
+                          className={`text-sm text-gray-700 flex justify-center items-center ${document.state === "selected"
+                            ? "cursor-pointer"
+                            : "cursor-not-allowed"
+                            }`}
                           onClick={async () => {
                             if (document.state === "uploading") return;
                             setDocument({

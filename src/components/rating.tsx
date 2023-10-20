@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface RatingOption {
     id: number;
@@ -26,18 +27,30 @@ const Rating = (props: { setRating: (rating: number) => void }) => {
 
     return (
         <div className="flex flex-col sm:flex-row items-center my-2 ml-2 justify-center">
-            {ratingOptions.map((option) => (
-                <span
+            {ratingOptions.map((option) =>
+                <RatingLabel
                     key={option.id}
-                    className={`mt-2 sm:mt-0 inline-block rounded-full px-3 py-1 mr-2 font-semibold ${option.hovercolor} hover:text-white cursor-pointer ${selectedRating === option.id ? `${option.bgcolor} border border-2 border-black text-white` : 'bg-slate-200 text-gray-700'
-                        }`}
+                    rating={option.id}
                     onClick={() => handleSelectRating(option.id)}
-                >
-                    {option.label}
-                </span>
-            ))}
+                    deselected={selectedRating !== option.id}
+                />)}
         </div>
     );
 };
 
 export default Rating;
+
+export function RatingLabel(props: { rating: number, onClick?: () => void, deselected?: boolean, className?: string }) {
+
+    const { rating, onClick, deselected, className } = props;
+    const option = ratingOptions.find((option) => option.id === rating);
+
+    return (
+        <button
+            className={twMerge(`mt-2 sm:mt-0 inline-block rounded-full px-3 py-1 mr-2 font-semibold ${option?.hovercolor} hover:text-white cursor-pointer ${option?.bgcolor} text-white ${deselected ? "opacity-20" : ""}`, className)}
+            onClick={onClick}
+        >
+            {option?.label}
+        </button>
+    )
+}
