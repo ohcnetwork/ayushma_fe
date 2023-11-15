@@ -368,8 +368,8 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
                                         {document.title}
                                     </div>
                                 </div>
-                                <div className="w-1/2">
-                                    <img src={document.file.split("?")[0] + '?r=' + Math.floor(Math.random() * 100000)} alt="File" className="w-full" crossOrigin="anonymous" />
+                                <div className="w-1/2 h-1/2">
+                                    <img src={document.file.split("?")[0] + '?r=' + Math.floor(Math.random() * 100000)} alt="File" crossOrigin="anonymous" />
                                 </div>
                             </Link>
                         </div>

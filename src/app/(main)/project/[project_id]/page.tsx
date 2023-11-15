@@ -79,12 +79,15 @@ export default function Chat(params: { params: { project_id: string } }) {
         params.formdata,
         openai_key,
         streamChatMessage,
-        20
+        20,
+        !project?.assistant_id
       ),
     {
       retry: false,
       onSuccess: async (data, vars) => {
+        setChatID(data.external_id);
         await queryClient.invalidateQueries(["chats"]);
+        setIsTyping(false);
       },
     }
   );
@@ -132,21 +135,23 @@ export default function Chat(params: { params: { project_id: string } }) {
               <>
                 <h2 className="font-semibold mt-8">Try asking me -</h2>
                 <div className="grid md:grid-cols-2 mt-4 gap-4 px-4 lg:max-w-4xl mx-auto">
-                  {(project?.display_preset_questions ?? []).map((prompt, i) => (
-                    <button
-                      onClick={async () => {
-                        setChat(prompt);
-                        setIsTyping(true);
-                        const fd = await getFormData(undefined, prompt);
-                        newChatMutation.mutate({ formdata: fd });
-                      }}
-                      disabled={newChatMutation.isLoading}
-                      className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
-                      key={i}
-                    >
-                      {prompt}
-                    </button>
-                  ))}
+                  {(project?.display_preset_questions ?? []).map(
+                    (prompt, i) => (
+                      <button
+                        onClick={async () => {
+                          setChat(prompt);
+                          setIsTyping(true);
+                          const fd = await getFormData(undefined, prompt);
+                          newChatMutation.mutate({ formdata: fd });
+                        }}
+                        disabled={newChatMutation.isLoading}
+                        className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
+                        key={i}
+                      >
+                        {prompt}
+                      </button>
+                    )
+                  )}
                 </div>
               </>
             )}

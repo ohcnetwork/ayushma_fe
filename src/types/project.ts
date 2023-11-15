@@ -12,6 +12,7 @@ export type Project = BaseModelType & {
     display_preset_questions: string[],
     open_ai_key?: string | null,
     key_set?: boolean
+    assistant_id?: string | null,
 }
 
 export enum DocumentType {

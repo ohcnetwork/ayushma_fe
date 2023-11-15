@@ -30,6 +30,16 @@ export default function Chat(params: {
       refetchOnWindowFocus: false,
     }
   );
+  
+  const projectQuery = useQuery(
+    ["chat", project_id],
+    () => API.projects.get(project_id),
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  const project: Project | undefined = projectQuery.data;
+
   const chat: Chat | undefined = chatQuery.data;
   const [projectData, setProjectData] = useState<Project>();
 
@@ -85,13 +95,15 @@ export default function Chat(params: {
         params.formdata,
         openai_key,
         streamChatMessage,
-        20
+        20,
+        !project?.assistant_id
       ),
     {
       retry: false,
-      // onSuccess: async (data, vars) => {
-      //     await chatQuery.refetch();
-      // }
+      onSuccess: async (data, vars) => {
+        if(!project?.assistant_id)
+          await chatQuery.refetch();
+      },
       onError: async (error, vars) => {
         converseMutation.error = error
         setIsTyping(false);
