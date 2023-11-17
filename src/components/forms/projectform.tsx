@@ -1,6 +1,11 @@
 "use client";
 
-import { MODELS, Project, STT_ENGINES } from "@/types/project";
+import {
+  ASSISTANT_MODELS,
+  MODELS,
+  Project,
+  STT_ENGINES,
+} from "@/types/project";
 import { useEffect, useState } from "react";
 import { Button, Input, TextArea } from "../ui/interactive";
 import { useQuery } from "@tanstack/react-query";
@@ -24,6 +29,8 @@ export default function ProjectForm(props: {
   });
   const [assistants, setAssistants] = useState([]);
   const [selectedAssistant, setSelectedAssistant] = useState<any>({});
+  const [prompt, setPrompt] = useState<string>("");
+  const [model, setModel] = useState<string | number>("");
 
   const assistantListQuery = useQuery(["assistant"], () =>
     API.projects.assistant.list(project.external_id ?? "")
@@ -45,8 +52,15 @@ export default function ProjectForm(props: {
           (assistant: any) => assistant.id === project.assistant_id
         )
       );
+      setPrompt(selectedAssistant?.instructions ?? "");
+      setModel(selectedAssistant?.model ?? "");
     }
-  }, [project.assistant_id, assistants]);
+  }, [
+    project.assistant_id,
+    assistants,
+    selectedAssistant?.instructions,
+    selectedAssistant?.model,
+  ]);
 
   useEffect(() => {
     setProject(pro);
@@ -57,11 +71,15 @@ export default function ProjectForm(props: {
       ...addAssistantDetails,
       instructions: pro.prompt ?? "",
     });
-  }, [pro.prompt]);
+    if (!pro.assistant_id) {
+      setPrompt(pro.prompt ?? "");
+      setModel(pro.model ?? "");
+    }
+  }, [pro.prompt, pro.assistant_id, pro.model]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(project);
+    onSubmit({ ...project, prompt, model });
   };
 
   const handleRemoveKey = () => {
@@ -107,41 +125,55 @@ export default function ProjectForm(props: {
         <TextArea
           placeholder="Prompt"
           className="h-56"
-          value={
-            project.assistant_id
-              ? selectedAssistant?.instructions
-              : project.prompt
-          }
-          disabled={!!project.assistant_id}
-          onChange={(e) => setProject({ ...project, prompt: e.target.value })}
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           errors={errors?.prompt}
         />
-        <p className="text-sm text-gray-500">OpenAI Key</p>
-        {!project.key_set ? (
-          <Input
-            placeholder="OpenAI Key"
-            value={project.open_ai_key ?? ""}
-            onChange={(e) =>
-              setProject({ ...project, open_ai_key: e.target.value })
-            }
-            errors={errors?.open_ai_key}
-          />
-        ) : (
-          <div className="flex w-full items-center">
+        {project.assistant_id ? (
+          <>
+            <div className="flex gap-1">
+              <p className="text-sm text-gray-500">OpenAI Key</p>
+              <p className="text-sm text-red-500">
+                (Assistant uses the global key)
+              </p>
+            </div>
             <Input
               disabled={true}
               placeholder="*********"
               parentDivClassName="w-full"
             />
-            <Button
-              type="button"
-              className="ml-2 h-8 w-8 text-red-600 flex justify-center items-center"
-              variant="secondary"
-              onClick={handleRemoveKey}
-            >
-              <i className="fas fa-trash"></i>
-            </Button>
-          </div>
+          </>
+        ) : !project.key_set ? (
+          <>
+            <p className="text-sm text-gray-500">OpenAI Key</p>
+            <Input
+              placeholder="OpenAI Key"
+              value={project.open_ai_key ?? ""}
+              onChange={(e) =>
+                setProject({ ...project, open_ai_key: e.target.value })
+              }
+              errors={errors?.open_ai_key}
+            />
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-gray-500">OpenAI Key</p>
+            <div className="flex w-full items-center">
+              <Input
+                disabled={true}
+                placeholder="*********"
+                parentDivClassName="w-full"
+              />
+              <Button
+                type="button"
+                className="ml-2 h-8 w-8 text-red-600 flex justify-center items-center"
+                variant="secondary"
+                onClick={handleRemoveKey}
+              >
+                <i className="fas fa-trash"></i>
+              </Button>
+            </div>
+          </>
         )}
         <p className="text-sm text-gray-500">Speech to text engine</p>
         <select
@@ -157,34 +189,33 @@ export default function ProjectForm(props: {
             </option>
           ))}
         </select>
-        {project.assistant_id ? (
-          <>
-            <div className="flex gap-1">
-              <p className="text-sm text-gray-500">Model</p>
+        <div>
+          <div className="flex gap-1">
+            <p className="text-sm text-gray-500">Model</p>
+            {project.assistant_id && (
               <p className="text-sm text-red-500">
                 (Currently set by assistant)
               </p>
-            </div>
-            <Input value={selectedAssistant?.model} disabled />
-          </>
-        ) : (
-          <>
-            <p className="text-sm text-gray-500">Model</p>
-            <select
-              className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
-              value={project.model ?? 1}
-              onChange={(e) =>
-                setProject({ ...project, model: parseInt(e.target.value) })
-              }
-            >
-              {MODELS.map((model, i) => (
+            )}
+          </div>
+          <select
+            className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+            value={model ?? ""}
+            onChange={(e) => {
+              project.assistant_id
+                ? setModel(e.target.value)
+                : setModel(parseInt(e.target.value));
+            }}
+          >
+            {(project.assistant_id ? ASSISTANT_MODELS : MODELS).map(
+              (model, i) => (
                 <option key={model.id} value={model.id}>
                   {model.label}
                 </option>
-              ))}
-            </select>
-          </>
-        )}
+              )
+            )}
+          </select>
+        </div>
         <p className="text-sm text-gray-500">Assistant</p>
         <div className="flex gap-3">
           <select
@@ -194,23 +225,27 @@ export default function ProjectForm(props: {
               setProject({ ...project, assistant_id: e.target.value })
             }
           >
-            <option key="" value="">
-              Select an assistant
-            </option>
+            {!project.assistant_id && (
+              <option key="" value="">
+                Select an assistant
+              </option>
+            )}
             {assistants.map((assistant: any) => (
               <option key={assistant.id} value={assistant.id}>
                 {assistant.name} ({assistant.id})
               </option>
             ))}
           </select>
-          <Button
-            className="bg-indigo-500 enabled:hover:bg-indigo-600"
-            type="button"
-            onClick={() => setShowAddAssistant(true)}
-          >
-            <i className="fa-regular fa-plus mr-2"></i>
-            New
-          </Button>
+          {project.external_id && (
+            <Button
+              className="bg-indigo-500 enabled:hover:bg-indigo-600"
+              type="button"
+              onClick={() => setShowAddAssistant(true)}
+            >
+              <i className="fa-regular fa-plus mr-2"></i>
+              New
+            </Button>
+          )}
           {project.assistant_id && (
             <Button
               type="button"
@@ -278,12 +313,11 @@ export default function ProjectForm(props: {
                 })
               }
             >
-              <option key="gpt-3.5-turbo-1106" value="gpt-3.5-turbo-1106">
-                gpt-3.5-turbo-1106
-              </option>
-              <option key="gpt-4-1106-preview" value="gpt-4-1106-preview">
-                gpt-4-1106-preview
-              </option>
+              {ASSISTANT_MODELS.map((model, i) => (
+                <option key={model.id} value={model.id}>
+                  {model.label}
+                </option>
+              ))}
             </select>
             <Button
               className=" w-full mt-4"
