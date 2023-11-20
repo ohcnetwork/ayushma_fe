@@ -199,6 +199,11 @@ export const API = {
       request("auth/reset", "POST", { token, email, password }),
   },
   projects: {
+    assistant:{
+      list:
+      (project_id: string) => request(`projects/${project_id}/list_assistants`, "GET"),
+      create: (project_id: string, assistant: Partial<any>) => request(`projects/${project_id}/create_assistant`, "POST", assistant),
+    },
     list: (
       filters: {
         ordering?: string;
@@ -289,14 +294,15 @@ export const API = {
       formdata: FormData,
       openai_api_key?: string,
       onMessage: ((event: ChatConverseStream) => void) | null = null,
-      delay: number | null = null
+      delay: number | null = null,
+      stream: boolean = true
     ) =>
       request(
         `projects/${project_id}/chats/${chat_id}/converse`,
         "POST",
         formdata,
         {
-          stream: true,
+          stream,
           formdata: true,
           headers: openai_api_key
             ? {

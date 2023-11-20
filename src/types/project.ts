@@ -6,12 +6,13 @@ export type Project = BaseModelType & {
     is_default: boolean,
     prompt?: string,
     stt_engine: number,
-    model: number,
+    model: number | string,
     archived: boolean,
     preset_questions?: string[],
     display_preset_questions: string[],
     open_ai_key?: string | null,
     key_set?: boolean
+    assistant_id?: string | null,
 }
 
 export enum DocumentType {
@@ -32,6 +33,10 @@ export const MODELS = [
     { id: 3, label: 'GPT-4' },
     { id: 4, label: 'GPT-4-32k' },
     { id: 5, label: 'GPT-4-VISUAL' },
+]
+export const ASSISTANT_MODELS = [
+    { id: "gpt-3.5-turbo-1106", label: 'gpt-3.5-turbo-1106' },
+    { id: "gpt-4-1106-preview", label: 'gpt-4-1106-preview' },
 ]
 
 export type Document = BaseModelType & {
