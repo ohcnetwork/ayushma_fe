@@ -85,6 +85,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     {
       retry: false,
       onSuccess: async (data, vars) => {
+        if (!data) return;
         setChatID(data.external_id);
         await queryClient.invalidateQueries(["chats"]);
         setIsTyping(false);
