@@ -391,20 +391,20 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   return (
     <div className="mx-4 md:mx-0">
-      <div className="flex">
+      <div className="flex flex-col sm:flex-row">
         <h1 className="text-3xl font-black mb-6">
           Questions for {testSuite?.name}
         </h1>
-        <div className="flex flex-col md:flex-row mr-0 ml-auto">
+        <div className="flex flex-col md:flex-row mr-0 ml-auto w-full sm:w-auto">
           <Button
-            className="h-fit mr-2"
+            className="h-fit mr-2 w-full sm:w-auto"
             variant="danger"
             onClick={() => setShowDeleteModal(true)}
           >
             Delete
           </Button>
           <Button
-            className="h-fit mr-2 my-4 md:my-0"
+            className="h-fit mr-2 my-4 md:my-0 w-full sm:w-auto"
             onClick={() => {
               router.push(`/admin/tests/${testsuite_id}/edit`);
             }}
