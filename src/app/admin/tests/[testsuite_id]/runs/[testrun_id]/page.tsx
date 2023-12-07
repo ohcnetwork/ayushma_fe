@@ -224,9 +224,9 @@ export default function Page({ params }: { params: { testsuite_id: string, testr
     return (
         <div ref={reportTemplateRef}>
             <Toaster />
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-8 flex-col sm:flex-row">
                 <h1 className="text-2xl font-black">Test Run Results</h1>
-                <div data-html2canvas-ignore="true" className="flex gap-4">
+                <div data-html2canvas-ignore="true" className="flex gap-4 mt-2 sm:mt-auto flex-col sm:flex-row w-full sm:w-auto">
                     <Button variant="primary" onClick={handleGenerateCsv}>
                         <i className="fal fa-file-pdf mr-2"></i>Download CSV
                     </Button>

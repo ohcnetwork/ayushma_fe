@@ -16,7 +16,7 @@ export default function Page() {
                 <h1 className="text-3xl font-black">
                     Test Suites
                 </h1>
-                <div className="grid grid-cols-4 gap-4 mt-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
                     <Link href={`/admin/tests/new`} className="border border-dashed border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4">
                         <i className="far fa-plus" /> New Test Suite
                     </Link>
