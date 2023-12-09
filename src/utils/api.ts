@@ -199,9 +199,9 @@ export const API = {
       request("auth/reset", "POST", { token, email, password }),
   },
   projects: {
-    assistant:{
+    assistant: {
       list:
-      (project_id: string) => request(`projects/${project_id}/list_assistants`, "GET"),
+        (project_id: string) => request(`projects/${project_id}/list_assistants`, "GET"),
       create: (project_id: string, assistant: Partial<any>) => request(`projects/${project_id}/create_assistant`, "POST", assistant),
     },
     list: (
@@ -278,11 +278,11 @@ export const API = {
         fetch: string;
       } = { limit, offset, search, fetch: "all" }
     ) => request(`projects/${project_id}/chats`, "GET", filters),
-    get: (project_id: string, id: string, filters:{
+    get: (project_id: string, id: string, filters: {
       fetch: string;
-    } = { 
-      fetch: "all"
-    }) =>
+    } = {
+        fetch: "all"
+      }) =>
       request(`projects/${project_id}/chats/${id}`, "GET", filters),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
       request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
@@ -332,7 +332,7 @@ export const API = {
     questions: {
       list: (
         suite_id: string,
-        filters: { ordering: string } = { ordering: "-created_at" }
+        filters: { ordering: string, limit: number } = { ordering: "-created_at", limit: 100 }
       ) => request(`tests/suites/${suite_id}/questions`, "GET", filters),
       create: (suite_id: string, question: Partial<TestQuestion>) =>
         request(`tests/suites/${suite_id}/questions`, "POST", { ...question }),

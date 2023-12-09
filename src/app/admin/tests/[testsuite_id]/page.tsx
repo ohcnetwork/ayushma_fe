@@ -38,7 +38,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
 
   const TestQuestionsQuery = useQuery(["testsuitequestion", testsuite_id], () =>
-    API.tests.questions.list(testsuite_id, { ordering: "created_at" })
+    API.tests.questions.list(testsuite_id, { ordering: "created_at", limit: 100 })
     , { refetchOnWindowFocus: false });
   const testQuestions: TestQuestion[] | undefined =
     TestQuestionsQuery.data?.results || undefined;
