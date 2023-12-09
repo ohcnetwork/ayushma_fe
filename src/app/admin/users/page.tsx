@@ -19,7 +19,7 @@ const RoleButton = (props: {
 ) => {
     const { color, text, className, state, ...rest } = props;
     return (
-        <button {...rest} className={twMerge(`flex gap-1 border w-fit px-2 py-1 rounded-full items-center ${color === "green" && "hover:border-green-400"} ${color === "blue" && "hover:border-blue-400"} ${color === "orange" && "hover:border-orange-400"} transition-all ${state && `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"} ${color === "orange" && "bg-orange-400"}`}`, className)}>
+        <button {...rest} className={twMerge(`w-full sm:w-fit flex justify-center gap-1 border px-2 py-1 rounded-full items-center ${color === "green" && "hover:border-green-400"} ${color === "blue" && "hover:border-blue-400"} ${color === "orange" && "hover:border-orange-400"} transition-all ${state && `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"} ${color === "orange" && "bg-orange-400"}`}`, className)}>
             <span className={`p-1.5 rounded-full h-fit ${state ? "bg-white" : `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"} ${color === "orange" && "bg-orange-400"}`}`}></span>
             <span className={`${state ? "text-white" : `${color === "green" && "text-green-400"} ${color === "blue" && "text-blue-400"} ${color === "orange" && "text-orange-400"}`}`}>{text}</span>
         </button>
@@ -58,8 +58,8 @@ export default function Page() {
     return (
         <div>
             <h1 className="text-3xl font-black mb-4">Users</h1>
-            <div className="flex items-center gap-2">
-                <Input type="text" placeholder="Search for user" value={searchString} onChange={event => setSearchString(event.target.value)} className="!py-1 placeholder-gray-400" />
+            <div className="flex items-center gap-2 flex-col sm:flex-row">
+                <Input type="text" placeholder="Search for user" value={searchString} onChange={event => setSearchString(event.target.value)} className="!py-1 placeholder-gray-400" parentDivClassName="w-full sm:w-auto" />
                 <RoleButton onClick={() => setIsAdmin(s => !s)} color="green" text="Admin" state={isAdmin} />
                 <RoleButton onClick={() => setIsReviewer(s => !s)} color="orange" text="Reviewer" state={isReviewer} />
                 <RoleButton onClick={() => setIsKeyAllowed(s => !s)} color="blue" text="Key Allowed" state={isKeyAllowed} />
