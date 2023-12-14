@@ -446,12 +446,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.11":
-  version: 18.0.11
-  resolution: "@types/react-dom@npm:18.0.11"
+"@types/react-dom@npm:18.2.0":
+  version: 18.2.0
+  resolution: "@types/react-dom@npm:18.2.0"
   dependencies:
     "@types/react": "npm:*"
-  checksum: e6dd39b2ef65f6e6257f1792c62e997273a06c3e72e05f082185d0b8dfd8972340f9d5452408183b4bf03bd68cbb2fb9da89e063f1ba98c287a38953491febec
+  checksum: 90f026936e3ea1658b0f9597e522d7e88abd3f107c830f238774cd7eb9387cff5ea322e62459b4a3dffc97359df5c2cfd3e4b36cb221a369fc24a1c6684ff993
   languageName: node
   linkType: hard
 
@@ -877,7 +877,7 @@ __metadata:
     "@types/json2csv": "npm:^5.0.3"
     "@types/node": "npm:18.16.0"
     "@types/react": "npm:18.2.0"
-    "@types/react-dom": "npm:18.0.11"
+    "@types/react-dom": "npm:18.2.0"
     "@types/react-google-recaptcha": "npm:^2.1.5"
     "@types/react-infinite-scroller": "npm:^1.2.3"
     autoprefixer: "npm:10.4.14"
