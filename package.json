@@ -3,16 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:all": "npm-run-all --parallel dev:next dev:chatbot",
     "dev": "next dev",
-    "dev:chatbot": "cd chatbot && yarn build-watch",
-    "build": "yarn build:chatbot && yarn build:next",
-    "build:next": "next build",
-    "build:chatbot": "cd chatbot && yarn build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
-    "i-all": "yarn && cd chatbot && yarn"
+    "i-all": "yarn"
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",

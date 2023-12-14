@@ -6,10 +6,7 @@ RUN apk add --no-cache libc6-compat python3 build-base
 
 WORKDIR /app
 
-RUN mkdir chatbot
-
 COPY package.json yarn.lock ./
-COPY ./chatbot/package.json ./chatbot/yarn.lock ./chatbot/
 
 RUN yarn i-all
 
