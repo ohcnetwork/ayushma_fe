@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Input } from "./ui/interactive";
 import Loading from "./ui/loading";
-import { useReactMediaRecorder } from "react-media-recorder-2";
 import LangDialog from "./ui/langdialog";
 import { supportedLanguages } from "@/utils/constants";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import Modal from "./modal";
+import { useAudioRecorder } from "./recorder";
 
 export default function ChatBar(props: {
     chat: string,
@@ -20,11 +20,7 @@ export default function ChatBar(props: {
     const { chat, onChange, onSubmit, errors, loading, onAudio } = props;
 
     const [storage, setStorage] = useAtom(storageAtom);
-
-    const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
-        audio: true,
-        onStop: onAudio
-    });
+    const { status, startRecording, stopRecording } = useAudioRecorder(onAudio);
 
     const [langDialogOpen, setLangDialogOpen] = useState<boolean>(false);
 
@@ -90,7 +86,7 @@ export default function ChatBar(props: {
                                 <i className="fal fa-microphone" />
                             </button>
                             </span>
-                            <button className="w-12 h-12 p-1 text-xl ml-2 rounded-lg enabled:hover:bg-green-600 enabled:bg-green-500 enabled:text-white disabled:text-gray-300 transition"  disabled={chat.length < 1}>
+                            <button className="w-12 h-12 p-1 text-xl ml-2 rounded-lg enabled:hover:bg-green-600 enabled:bg-green-500 enabled:text-white disabled:text-gray-300 transition"  disabled={(chat?.length || 0) < 1}>
                                 <i className="fal fa-paper-plane-top" />
                             </button>
                         </span>
