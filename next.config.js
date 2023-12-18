@@ -21,7 +21,7 @@ module.exports = withSentryConfig(
     // https://github.com/getsentry/sentry-webpack-plugin#options
 
     // Suppresses source map uploading logs during build
-    silent: false,
+    silent: true,
     org: "coronasafe-network",
     project: "ayushma-nextjs",
   },
