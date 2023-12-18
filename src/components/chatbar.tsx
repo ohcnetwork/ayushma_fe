@@ -20,7 +20,7 @@ export default function ChatBar(props: {
     const { chat, onChange, onSubmit, errors, loading, onAudio } = props;
 
     const [storage, setStorage] = useAtom(storageAtom);
-    const { status, startRecording, stopRecording, mediaBlobUrl } = useAudioRecorder(onAudio);
+    const { status, startRecording, stopRecording } = useAudioRecorder(onAudio);
 
     const [langDialogOpen, setLangDialogOpen] = useState<boolean>(false);
 
