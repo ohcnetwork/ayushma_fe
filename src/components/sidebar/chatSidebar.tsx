@@ -117,9 +117,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />
-                <div className="text-xs text-gray-600">
-                  Beta
-                </div>
+                <div className="text-xs text-gray-600">Beta</div>
               </div>
             </Link>
             <Link
@@ -173,7 +171,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                         className="w-full group hover:bg-gray-100 rounded-lg overflow-hidden flex gap-2 justify-between"
                       >
                         <Link
-                          href={`project/${project_id}/chat/${chat.external_id}`}
+                          href={`/project/${project_id}/chat/${chat.external_id}`}
                           className="w-full py-2 px-4 text-left truncate"
                           title={chat.title}
                         >
