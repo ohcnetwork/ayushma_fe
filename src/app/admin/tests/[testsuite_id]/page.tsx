@@ -29,17 +29,24 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
   const { testsuite_id } = params;
 
-  const testSuiteQuery = useQuery(["testsuite", testsuite_id], () =>
-    API.tests.suites.get(testsuite_id),
+  const testSuiteQuery = useQuery(
+    ["testsuite", testsuite_id],
+    () => API.tests.suites.get(testsuite_id),
     {
       refetchOnWindowFocus: false,
     }
   );
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
 
-  const TestQuestionsQuery = useQuery(["testsuitequestion", testsuite_id], () =>
-    API.tests.questions.list(testsuite_id, { ordering: "created_at", limit: 100 })
-    , { refetchOnWindowFocus: false });
+  const TestQuestionsQuery = useQuery(
+    ["testsuitequestion", testsuite_id],
+    () =>
+      API.tests.questions.list(testsuite_id, {
+        ordering: "created_at",
+        limit: 100,
+      }),
+    { refetchOnWindowFocus: false }
+  );
   const testQuestions: TestQuestion[] | undefined =
     TestQuestionsQuery.data?.results || undefined;
 
@@ -261,8 +268,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     human_answer: string | undefined,
     language: string | undefined
   ): void => {
+    setCurrentQuestion({
+      question: "",
+      human_answer: "",
+      language: "en",
+    });
     TestQuestionsAddMutation.mutate({ question, human_answer, language });
-    setCurrentQuestion({});
     setShowAddQuestion(false);
   };
 
@@ -307,7 +318,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   };
 
   const startTestSuite = () => {
-    TestRunCreateMutation.mutate({ project: testSuiteProject as any, references: fetchReferences });
+    TestRunCreateMutation.mutate({
+      project: testSuiteProject as any,
+      references: fetchReferences,
+    });
     setShowRunTestSuite(false);
   };
 
@@ -328,9 +342,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -527,7 +541,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                             </div>
                           </div>
                           <div className="w-1/2">
-                            <img src={document.file} alt="File" className="w-full" />
+                            <img
+                              src={document.file}
+                              alt="File"
+                              className="w-full"
+                            />
                           </div>
                         </Link>
 
@@ -586,10 +604,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${document.state === "selected"
-                            ? "cursor-pointer"
-                            : "cursor-not-allowed"
-                            }`}
+                          className={`text-sm text-gray-700 flex justify-center items-center ${
+                            document.state === "selected"
+                              ? "cursor-pointer"
+                              : "cursor-not-allowed"
+                          }`}
                           onClick={async () => {
                             if (document.state === "uploading") return;
                             setDocument({
@@ -671,18 +690,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.bleu_score || 0),
-                  0
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.bleu_score || 0),
+                    0
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.cosine_sim || 0),
-                  0
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.cosine_sim || 0),
+                    0
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -724,10 +743,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgCosineSim < 0.5
-                            ? "text-red-500"
-                            : "text-green-500"
-                            }`}
+                          className={`font-bold ${
+                            avgCosineSim < 0.5
+                              ? "text-red-500"
+                              : "text-green-500"
+                          }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -741,8 +761,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                            }`}
+                          className={`font-bold ${
+                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                          }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -754,9 +775,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED
-                      )} ${testRun.status === TestRunStatus.RUNNING &&
-                      "animate-pulse"
-                        }`}
+                      )} ${
+                        testRun.status === TestRunStatus.RUNNING &&
+                        "animate-pulse"
+                      }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED
@@ -806,7 +828,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         </div>
       </Modal>
 
-      <Modal show={showAddQuestion} onClose={() => setShowAddQuestion(false)}>
+      <Modal
+        show={showAddQuestion}
+        onClose={() => setShowAddQuestion(false)}
+        className="w-[500px]"
+      >
         <div className="justify-center flex">
           <h1 className="block font-medium text-lg">Add Question</h1>
         </div>
@@ -872,13 +898,13 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             </Button>
             <Button
               loading={saveBtnLoading}
-              onClick={() =>
+              onClick={() => {
                 handleAddQuestion(
                   currentQuestion.question,
                   currentQuestion.human_answer,
                   currentQuestion.language
-                )
-              }
+                );
+              }}
             >
               Save
             </Button>
