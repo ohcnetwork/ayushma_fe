@@ -39,7 +39,7 @@ const request = async (
   method: methods = "GET",
   data: any = {},
   options: options = {},
-  onMessage: ((event: EventSourceMessage) => void) | null = null
+  onMessage: ((event: EventSourceMessage) => void) | null = null,
 ) => {
   const { formdata, external, headers, auth: isAuth, stream } = options;
 
@@ -53,9 +53,9 @@ const request = async (
   if (method === "GET") {
     const requestParams = data
       ? `?${Object.keys(data)
-        .filter((key) => data[key] !== null && data[key] !== undefined)
-        .map((key) => `${key}=${data[key]}`)
-        .join("&")}`
+          .filter((key) => data[key] !== null && data[key] !== undefined)
+          .map((key) => `${key}=${data[key]}`)
+          .join("&")}`
       : "";
     url += requestParams;
     payload = null;
@@ -65,10 +65,10 @@ const request = async (
     isAuth === false
       ? null
       : JSON.parse(
-        localStorage.getItem(
-          process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage"
-        ) || "{}"
-      );
+          localStorage.getItem(
+            process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage",
+          ) || "{}",
+        );
   const localToken = storage?.auth_token;
 
   const auth =
@@ -83,8 +83,8 @@ const request = async (
       ...(formdata === true
         ? {}
         : {
-          "Content-Type": "application/json",
-        }),
+            "Content-Type": "application/json",
+          }),
       ...(auth !== "" ? { Authorization: auth } : {}),
       ...headers,
     },
@@ -158,7 +158,7 @@ let intervalHandle: NodeJS.Timer | number | null = null;
 function handleMessage(
   data: ChatConverseStream,
   onMessage: (event: ChatConverseStream) => void,
-  delay: number | null
+  delay: number | null,
 ) {
   if (!delay || delay == 0) {
     onMessage(data);
@@ -200,9 +200,10 @@ export const API = {
   },
   projects: {
     assistant: {
-      list:
-        (project_id: string) => request(`projects/${project_id}/list_assistants`, "GET"),
-      create: (project_id: string, assistant: Partial<any>) => request(`projects/${project_id}/create_assistant`, "POST", assistant),
+      list: (project_id: string) =>
+        request(`projects/${project_id}/list_assistants`, "GET"),
+      create: (project_id: string, assistant: Partial<any>) =>
+        request(`projects/${project_id}/create_assistant`, "POST", assistant),
     },
     list: (
       filters: {
@@ -211,9 +212,9 @@ export const API = {
         offset?: number;
         archived?: boolean | null;
       } = {
-          ordering: "-created_at",
-          limit: 50,
-        }
+        ordering: "-created_at",
+        limit: 50,
+      },
     ) => request("projects", "GET", filters),
     get: (id: string) => request(`projects/${id}`),
     update: (id: string, project: Partial<Project>) =>
@@ -224,7 +225,7 @@ export const API = {
     documents: {
       list: (
         project_id: string,
-        filters: { ordering: string } = { ordering: "-created_at" }
+        filters: { ordering: string } = { ordering: "-created_at" },
       ) => request(`projects/${project_id}/documents`, "GET", filters),
       create: (project_id: string, document: FormData) =>
         request(`projects/${project_id}/documents`, "POST", document, {
@@ -238,7 +239,7 @@ export const API = {
         }),
       delete: (project_id: string, id: string) =>
         request(`projects/${project_id}/documents/${id}`, "DELETE"),
-    }
+    },
   },
   chat: {
     list: (
@@ -251,7 +252,7 @@ export const API = {
         limit: number;
         offset: number;
         search: string;
-      } = { ordering: "-created_at", limit, offset, search }
+      } = { ordering: "-created_at", limit, offset, search },
     ) => request(`projects/${project_id}/chats`, "GET", filters),
     create: (project_id: string, title: string, openai_api_key?: string) =>
       request(
@@ -260,11 +261,11 @@ export const API = {
         { title },
         openai_api_key
           ? {
-            headers: {
-              "OpenAI-Key": openai_api_key,
-            },
-          }
-          : {}
+              headers: {
+                "OpenAI-Key": openai_api_key,
+              },
+            }
+          : {},
       ),
     chats: (
       project_id: string,
@@ -276,14 +277,17 @@ export const API = {
         offset: number;
         limit: number;
         fetch: string;
-      } = { limit, offset, search, fetch: "all" }
+      } = { limit, offset, search, fetch: "all" },
     ) => request(`projects/${project_id}/chats`, "GET", filters),
-    get: (project_id: string, id: string, filters: {
-      fetch: string;
-    } = {
-        fetch: "all"
-      }) =>
-      request(`projects/${project_id}/chats/${id}`, "GET", filters),
+    get: (
+      project_id: string,
+      id: string,
+      filters: {
+        fetch: string;
+      } = {
+        fetch: "all",
+      },
+    ) => request(`projects/${project_id}/chats/${id}`, "GET", filters),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
       request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
     delete: (project_id: string, id: string) =>
@@ -295,7 +299,7 @@ export const API = {
       openai_api_key?: string,
       onMessage: ((event: ChatConverseStream) => void) | null = null,
       delay: number | null = null,
-      stream: boolean = true
+      stream: boolean = true,
     ) =>
       request(
         `projects/${project_id}/chats/${chat_id}/converse`,
@@ -306,8 +310,8 @@ export const API = {
           formdata: true,
           headers: openai_api_key
             ? {
-              "OpenAI-Key": openai_api_key,
-            }
+                "OpenAI-Key": openai_api_key,
+              }
             : {},
         },
         (e) => {
@@ -315,7 +319,7 @@ export const API = {
             const data = JSON.parse(e.data);
             handleMessage(data, onMessage, delay);
           }
-        }
+        },
       ),
   },
   tests: {
@@ -332,7 +336,10 @@ export const API = {
     questions: {
       list: (
         suite_id: string,
-        filters: { ordering: string, limit: number } = { ordering: "-created_at", limit: 100 }
+        filters: { ordering: string; limit: number } = {
+          ordering: "-created_at",
+          limit: 100,
+        },
       ) => request(`tests/suites/${suite_id}/questions`, "GET", filters),
       create: (suite_id: string, question: Partial<TestQuestion>) =>
         request(`tests/suites/${suite_id}/questions`, "POST", { ...question }),
@@ -343,18 +350,30 @@ export const API = {
       delete: (suite_id: string, id: string) =>
         request(`tests/suites/${suite_id}/questions/${id}`, "DELETE"),
       documents: {
-        list: (
-          suite_id: string, question_id: string
-        ) => request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "GET"),
+        list: (suite_id: string, question_id: string) =>
+          request(
+            `tests/suites/${suite_id}/questions/${question_id}/documents`,
+            "GET",
+          ),
         create: (suite_id: string, question_id: string, document: any) =>
-          request(`tests/suites/${suite_id}/questions/${question_id}/documents`, "POST", document, {
-            formdata: true,
-          }),
+          request(
+            `tests/suites/${suite_id}/questions/${question_id}/documents`,
+            "POST",
+            document,
+            {
+              formdata: true,
+            },
+          ),
         get: (suite_id: string, question_id: string, id: string) =>
-          request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`),
+          request(
+            `tests/suites/${suite_id}/questions/${question_id}/documents/${id}`,
+          ),
         delete: (suite_id: string, question_id: string, id: string) =>
-          request(`tests/suites/${suite_id}/questions/${question_id}/documents/${id}`, "DELETE"),
-      }
+          request(
+            `tests/suites/${suite_id}/questions/${question_id}/documents/${id}`,
+            "DELETE",
+          ),
+      },
     },
     runs: {
       list: (
@@ -363,7 +382,7 @@ export const API = {
           ordering: "-created_at",
           limit: 10,
           offset: 0,
-        }
+        },
       ) => request(`tests/suites/${suite_id}/runs`, "GET", filters),
       create: (suite_id: string, run: Partial<TestRun>) =>
         request(`tests/suites/${suite_id}/runs`, "POST", { ...run }),
@@ -378,12 +397,12 @@ export const API = {
       list: (
         suite_id: string,
         run_id: string,
-        filters: { ordering?: string; test_result_id?: string }
+        filters: { ordering?: string; test_result_id?: string },
       ) =>
         request(
           `tests/suites/${suite_id}/runs/${run_id}/feedback`,
           "GET",
-          filters
+          filters,
         ),
       create: (suite_id: string, run_id: string, feedback: Partial<Feedback>) =>
         request(`tests/suites/${suite_id}/runs/${run_id}/feedback`, "POST", {
@@ -395,17 +414,17 @@ export const API = {
         suite_id: string,
         run_id: string,
         id: string,
-        fields: Feedback
+        fields: Feedback,
       ) =>
         request(
           `tests/suites/${suite_id}/runs/${run_id}/feedback/${id}`,
           "PATCH",
-          fields
+          fields,
         ),
       delete: (suite_id: string, run_id: string, id: string) =>
         request(
           `tests/suites/${suite_id}/runs/${run_id}/feedback/${id}`,
-          "DELETE"
+          "DELETE",
         ),
     },
   },
@@ -426,7 +445,7 @@ export const API = {
         allow_key?: boolean | null;
         offset?: number;
         limit?: number;
-      } = { ordering: "-created_at" }
+      } = { ordering: "-created_at" },
     ) => request(`users`, "GET", filters),
     delete: (username: string) => request(`users/${username}`, "DELETE"),
   },
@@ -436,7 +455,7 @@ export const API = {
         `temptokens`,
         "POST",
         { ip: user_ip },
-        { headers: { "X-API-KEY": api_key }, auth: false }
+        { headers: { "X-API-KEY": api_key }, auth: false },
       ),
     token: () => request(`/api/chatbot-token`, "GET", {}, { external: true }),
   },

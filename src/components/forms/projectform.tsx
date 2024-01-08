@@ -33,14 +33,14 @@ export default function ProjectForm(props: {
   const [model, setModel] = useState<string | number>("");
 
   const assistantListQuery = useQuery(["assistant"], () =>
-    API.projects.assistant.list(project.external_id ?? "")
+    API.projects.assistant.list(project.external_id ?? ""),
   );
   useEffect(() => {
     const assistants = assistantListQuery.data || [];
     setAssistants(assistants);
 
     const selectedAssistant = assistants.find(
-      (assistant: any) => assistant.id === project.assistant_id
+      (assistant: any) => assistant.id === project.assistant_id,
     );
     setSelectedAssistant(selectedAssistant);
   }, [assistantListQuery.data]);
@@ -49,8 +49,8 @@ export default function ProjectForm(props: {
     if (project.assistant_id) {
       setSelectedAssistant(
         assistants.find(
-          (assistant: any) => assistant.id === project.assistant_id
-        )
+          (assistant: any) => assistant.id === project.assistant_id,
+        ),
       );
       setPrompt(selectedAssistant?.instructions ?? "");
       setModel(selectedAssistant?.model ?? "");
@@ -85,7 +85,7 @@ export default function ProjectForm(props: {
   const handleRemoveKey = () => {
     if (
       window.confirm(
-        "Are you sure you want to remove this project's OpenAI key?"
+        "Are you sure you want to remove this project's OpenAI key?",
       )
     )
       onSubmit({ open_ai_key: null });
@@ -212,7 +212,7 @@ export default function ProjectForm(props: {
                 <option key={model.id} value={model.id}>
                   {model.label}
                 </option>
-              )
+              ),
             )}
           </select>
         </div>

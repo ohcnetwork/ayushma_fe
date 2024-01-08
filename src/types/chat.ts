@@ -1,22 +1,22 @@
 import { Document } from "./project";
 
 export type BaseModelType = {
-    external_id: string,
-    created_at: string,
-    modified_at: string
-}
+  external_id: string;
+  created_at: string;
+  modified_at: string;
+};
 
 export type Chat = BaseModelType & {
-    title: string,
-    namespace: string,
-    chats?: ChatMessage[],
-    username?: string
-}
+  title: string;
+  namespace: string;
+  chats?: ChatMessage[];
+  username?: string;
+};
 
 export enum ChatMessageType {
-    USER = 1,
-    SYSTEM = 2,
-    AYUSHMA = 3
+  USER = 1,
+  SYSTEM = 2,
+  AYUSHMA = 3,
 }
 
 export type ChatFeedback = {
@@ -41,24 +41,24 @@ export type ChatMessage = BaseModelType & {
 };
 
 export type ChatConverseStream = {
-    chat: string,
-    input: string,
-    delta: string,
-    message: string,
-    stop: boolean,
-    error: boolean,
-    ayushma_voice?: string
-}
+  chat: string;
+  input: string;
+  delta: string;
+  message: string;
+  stop: boolean;
+  error: boolean;
+  ayushma_voice?: string;
+};
 
 export type ChatMessageMeta = {
-    reference_start?: number,
-    reference_end?: number,
-    response_start?: number,
-    response_end?: number,
-    translate_start?: number,
-    translate_end?: number,
-    tts_start?: number,
-    tts_end?: number,
-    upload_start?: number,
-    upload_end?: number,
-}
+  reference_start?: number;
+  reference_end?: number;
+  response_start?: number;
+  response_end?: number;
+  translate_start?: number;
+  translate_end?: number;
+  tts_start?: number;
+  tts_end?: number;
+  upload_start?: number;
+  upload_end?: number;
+};

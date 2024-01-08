@@ -11,7 +11,9 @@
     "build:chatbot": "cd chatbot && yarn build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier ./src --write",
+    "format": "yarn format:next && yarn format:chatbot",
+    "format:next": "prettier ./src --write",
+    "format:chatbot": "prettier ./chatbot --write",
     "prepare": "husky install",
     "i-all": "yarn && cd chatbot && yarn"
   },

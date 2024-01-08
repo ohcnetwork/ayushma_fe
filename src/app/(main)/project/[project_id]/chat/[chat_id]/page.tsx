@@ -28,15 +28,15 @@ export default function Chat(params: {
     () => API.chat.get(project_id, chat_id),
     {
       refetchOnWindowFocus: false,
-    }
+    },
   );
-  
+
   const projectQuery = useQuery(
     ["chat", project_id],
     () => API.projects.get(project_id),
     {
       refetchOnWindowFocus: false,
-    }
+    },
   );
   const project: Project | undefined = projectQuery.data;
 
@@ -54,7 +54,7 @@ export default function Chat(params: {
       window.history.replaceState(
         {},
         document.title,
-        uri.substring(0, uri.indexOf("?"))
+        uri.substring(0, uri.indexOf("?")),
       );
   }, []);
 
@@ -96,19 +96,18 @@ export default function Chat(params: {
         openai_key,
         streamChatMessage,
         20,
-        !project?.assistant_id
+        !project?.assistant_id,
       ),
     {
       retry: false,
       onSuccess: async (data, vars) => {
-        if(!project?.assistant_id)
-          await chatQuery.refetch();
+        if (!project?.assistant_id) await chatQuery.refetch();
       },
       onError: async (error, vars) => {
-        converseMutation.error = error
+        converseMutation.error = error;
         setIsTyping(false);
       },
-    }
+    },
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

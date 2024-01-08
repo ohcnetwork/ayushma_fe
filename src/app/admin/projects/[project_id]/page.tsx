@@ -13,11 +13,11 @@ import { useState } from "react";
 export default function Page({ params }: { params: { project_id: string } }) {
   const { project_id } = params;
   const projectsQuery = useQuery(["project", project_id], () =>
-    API.projects.get(project_id)
+    API.projects.get(project_id),
   );
   const project: Project | undefined = projectsQuery.data || undefined;
   const documentsQuery = useQuery(["project", project_id, "documents"], () =>
-    API.projects.documents.list(project_id)
+    API.projects.documents.list(project_id),
   );
   const documents: Document[] | undefined = documentsQuery.data?.results;
   const [showDeleteModal, setShowDeleteModel] = useState(false);
@@ -38,7 +38,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
       onSuccess: () => {
         projectsQuery.refetch();
       },
-    }
+    },
   );
 
   const deleteProjectMutation = useMutation(
@@ -47,7 +47,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
       onSuccess: () => {
         router.push("/admin");
       },
-    }
+    },
   );
 
   const setAsDefautMutation = useMutation(
@@ -59,7 +59,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
       onSuccess: () => {
         projectsQuery.refetch();
       },
-    }
+    },
   );
 
   const archiveProjectMutation = useMutation(
@@ -71,7 +71,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
       onSuccess: () => {
         projectsQuery.refetch();
       },
-    }
+    },
   );
 
   const handleProjectSave = async (project: Partial<Project>) => {
