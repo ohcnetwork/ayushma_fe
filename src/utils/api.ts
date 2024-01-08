@@ -172,7 +172,7 @@ function handleMessage(
         const message = messageBuffer.shift();
         if (message) onMessage(message);
       } else {
-        intervalHandle && clearInterval(intervalHandle);
+        intervalHandle && clearInterval(intervalHandle as number | undefined);
         intervalHandle = null;
       }
     }, delay);
