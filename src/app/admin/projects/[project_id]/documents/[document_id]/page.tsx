@@ -8,48 +8,57 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Page({ params }: { params: { project_id: string, document_id: string } }) {
+export default function Page({
+  params,
+}: {
+  params: { project_id: string; document_id: string };
+}) {
+  const { project_id, document_id } = params;
+  const projectQuery = useQuery(["project", project_id], () =>
+    API.projects.get(project_id),
+  );
+  const project: Project | undefined = projectQuery.data || undefined;
 
-    const { project_id, document_id } = params;
-    const projectQuery = useQuery(["project", project_id], () => API.projects.get(project_id));
-    const project: Project | undefined = projectQuery.data || undefined;
+  const router = useRouter();
 
-    const router = useRouter();
+  const documentQuery = useQuery(["document", document_id], () =>
+    API.projects.documents.get(project_id, document_id),
+  );
 
-    const documentQuery = useQuery(["document", document_id], () => API.projects.documents.get(project_id, document_id));
+  const doc: Document | undefined = documentQuery.data;
 
-    const doc: Document | undefined = documentQuery.data;
+  const editDocumentMutation = useMutation(
+    (formData) =>
+      API.projects.documents.edit(project_id, document_id, formData as any),
+    {
+      onSuccess: () => {
+        documentQuery.refetch();
+      },
+    },
+  );
 
-    const editDocumentMutation = useMutation((formData) => API.projects.documents.edit(project_id, document_id, formData as any), {
-        onSuccess: () => {
-            documentQuery.refetch();
-        }
-    });
+  const onSubmit = async (document: Partial<Document>) => {
+    const formData = new FormData();
+    formData.append("title", document.title as string);
+    formData.append("file", document.raw_file as File);
+    formData.append("description", document.description as string);
+    await editDocumentMutation.mutateAsync(formData as any);
+  };
 
-    const onSubmit = async (document: Partial<Document>) => {
-        const formData = new FormData();
-        formData.append("title", document.title as string);
-        formData.append("file", document.raw_file as File);
-        formData.append("description", document.description as string);
-        await editDocumentMutation.mutateAsync(formData as any);
-    }
-
-    return (
-        <div>
-            <h1 className="text-3xl font-black">
-                {doc?.title}
-            </h1>
-            <div className="mt-8">
-                {doc &&
-                    <DocumentForm
-                        document={doc}
-                        project_id={project_id}
-                        onSubmit={onSubmit}
-                        loading={editDocumentMutation.isLoading}
-                        errors={(editDocumentMutation.error as any)?.error}
-                    />
-                }
-            </div>
-        </div>
-    )
+  return (
+    <div>
+      <h1 className="text-3xl font-black">{doc?.title}</h1>
+      <div className="mt-8">
+        {doc && (
+          <DocumentForm
+            document={doc}
+            project_id={project_id}
+            onSubmit={onSubmit}
+            loading={editDocumentMutation.isLoading}
+            errors={(editDocumentMutation.error as any)?.error}
+          />
+        )}
+      </div>
+    </div>
+  );
 }

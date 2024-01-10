@@ -9,7 +9,7 @@ export function Input(
     left?: React.ReactNode;
     parentDivClassName?: string;
     disabled?: boolean;
-  } & React.InputHTMLAttributes<HTMLInputElement>
+  } & React.InputHTMLAttributes<HTMLInputElement>,
 ) {
   const {
     className,
@@ -31,7 +31,7 @@ export function Input(
           {...rest}
           className={twMerge(
             "border-none bg-transparent w-full p-3 py-3 outline-none",
-            className
+            className,
           )}
           disabled={props.disabled || loading}
         />
@@ -48,7 +48,7 @@ export function TextArea(
     loading?: boolean;
     right?: React.ReactNode;
     left?: React.ReactNode;
-  } & React.TextareaHTMLAttributes<HTMLTextAreaElement>
+  } & React.TextareaHTMLAttributes<HTMLTextAreaElement>,
 ) {
   const { className, loading, errors, right, left, ...rest } = props;
 
@@ -61,7 +61,7 @@ export function TextArea(
           {...rest}
           className={twMerge(
             "border-none bg-transparent w-full p-3 outline-none",
-            className
+            className,
           )}
           disabled={loading}
         />
@@ -77,7 +77,7 @@ export function Button(
     children: React.ReactNode;
     loading?: boolean;
     variant?: "primary" | "secondary" | "danger";
-  } & React.ButtonHTMLAttributes<HTMLButtonElement>
+  } & React.ButtonHTMLAttributes<HTMLButtonElement>,
 ) {
   const { children, className, loading, ...rest } = props;
 
@@ -93,9 +93,9 @@ export function Button(
     props.variant === "secondary"
       ? secondaryClasses
       : props.variant === "danger"
-      ? dangerClasses
-      : primaryClasses,
-    className
+        ? dangerClasses
+        : primaryClasses,
+    className,
   );
   return (
     <button {...rest} className={classes}>
@@ -125,7 +125,7 @@ export function Errors(props: { errors?: string[]; className?: string }) {
 export function CheckBox(
   props: {
     label: string;
-  } & React.InputHTMLAttributes<HTMLInputElement>
+  } & React.InputHTMLAttributes<HTMLInputElement>,
 ) {
   const { label, ...rest } = props;
 
@@ -145,7 +145,7 @@ export function Dropdown(
     errors?: string[];
     loading?: boolean;
     children: ReactNode;
-  } & React.SelectHTMLAttributes<HTMLSelectElement>
+  } & React.SelectHTMLAttributes<HTMLSelectElement>,
 ) {
   const { className, children, loading, errors, ...rest } = props;
 
@@ -157,7 +157,7 @@ export function Dropdown(
           {...rest}
           className={twMerge(
             "border-none bg-transparent w-full p-3 outline-none",
-            className
+            className,
           )}
           disabled={loading}
         >

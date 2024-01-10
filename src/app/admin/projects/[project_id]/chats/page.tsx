@@ -14,18 +14,23 @@ export default function Page({ params }: { params: { project_id: string } }) {
   const { project_id } = params;
   const limit = 10;
   const [search, setSearch] = useState("");
-  const chatsListQuery = useInfiQuery(["chat", project_id], ({ pageParam = 1 }) => {
-    const offset = (pageParam - 1) * limit;
-    return API.chat.chats(project_id, search, limit, offset);
-  });
+  const chatsListQuery = useInfiQuery(
+    ["chat", project_id],
+    ({ pageParam = 1 }) => {
+      const offset = (pageParam - 1) * limit;
+      return API.chat.chats(project_id, search, limit, offset);
+    },
+  );
   const projectQuery = useQuery(["project", project_id], () =>
-    API.projects.get(project_id)
+    API.projects.get(project_id),
   );
   const project: Project = projectQuery.data;
   const chatsList: any[] = chatsListQuery.data?.pages || [];
   const columns: string[] = ["Title", "User", ""];
 
-  useEffect(() => {chatsListQuery.refetch()}, [search])
+  useEffect(() => {
+    chatsListQuery.refetch();
+  }, [search]);
 
   const chatTableBody = () => {
     if (chatsList.length > 0 && chatsList[0].count !== 0) {

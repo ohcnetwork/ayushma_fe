@@ -20,7 +20,7 @@ export default function Page() {
         archived: isArchived,
       });
     },
-    {}
+    {},
   );
   const projects: any[] = projectsQuery.data?.pages || [];
 
@@ -71,7 +71,7 @@ export default function Page() {
                     </span>
                   )}
                 </Link>
-              ))
+              )),
             )}
         </div>
         <div

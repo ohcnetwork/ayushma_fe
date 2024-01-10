@@ -43,7 +43,7 @@ export default function Page() {
           router.push("/");
         }, 1000);
       },
-    }
+    },
   );
 
   useEffect(() => {

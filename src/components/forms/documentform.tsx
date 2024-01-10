@@ -36,7 +36,7 @@ export default function DocumentForm(props: {
       onSuccess: () => {
         router.push(`/admin/projects/${project_id}`);
       },
-    }
+    },
   );
 
   const handleDelete = async () => {

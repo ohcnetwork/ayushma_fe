@@ -34,7 +34,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     () => API.tests.suites.get(testsuite_id),
     {
       refetchOnWindowFocus: false,
-    }
+    },
   );
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
 
@@ -45,7 +45,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         ordering: "created_at",
         limit: 100,
       }),
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
   );
   const testQuestions: TestQuestion[] | undefined =
     TestQuestionsQuery.data?.results || undefined;
@@ -59,7 +59,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       await API.tests.questions.documents.create(
         testsuite_id,
         question_id,
-        formData
+        formData,
       );
     },
     {
@@ -72,7 +72,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         toast.error("Error attaching document");
         console.log(error);
       },
-    }
+    },
   );
 
   const deleteDocumentMutation = useMutation(
@@ -81,7 +81,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       await API.tests.questions.documents.delete(
         testsuite_id,
         question_id,
-        document_id
+        document_id,
       );
     },
     {
@@ -93,7 +93,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         toast.error("Error deleting document");
         console.log(error);
       },
-    }
+    },
   );
 
   const [document, setDocument] = useState<
@@ -142,7 +142,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   const testRuns = useMemo(
     () => (data ? data?.pages.flatMap((item) => item.results) : []),
-    [data]
+    [data],
   );
 
   const observer = useRef<IntersectionObserver>();
@@ -157,7 +157,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       });
       if (node) observer.current.observe(node);
     },
-    [isLoading, hasNextPage, fetchNextPage, isFetching]
+    [isLoading, hasNextPage, fetchNextPage, isFetching],
   );
 
   const TestQuestionsAddMutation = useMutation(
@@ -168,7 +168,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         toast.success("Test Question Added");
         TestQuestionsQuery.refetch();
       },
-    }
+    },
   );
 
   const TestQuestionDeleteMutation = useMutation(
@@ -179,7 +179,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         toast.success("Test Question Deleted");
         TestQuestionsQuery.refetch();
       },
-    }
+    },
   );
 
   const TestRunCreateMutation = useMutation(
@@ -189,12 +189,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         toast.success("Test Started");
         refetch();
       },
-    }
+    },
   );
 
   const [currentQuestions, setCurrentQuestions] = useState<TestQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<TestQuestion>>(
-    {}
+    {},
   );
   const [showAddQuestion, setShowAddQuestion] = useState(false);
   const [saveBtnLoading, setSaveBtnLoading] = useState(false);
@@ -210,7 +210,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       setCurrentQuestions(
         testQuestions.map((question) => {
           return { ...question };
-        })
+        }),
       );
     }
   }, [testQuestions]);
@@ -223,7 +223,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   const handleQuestionChange = (
     external_id: string | undefined,
-    value: string
+    value: string,
   ): void => {
     setCurrentQuestions(
       currentQuestions.map((question) => {
@@ -231,13 +231,13 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           question.question = value;
         }
         return question;
-      })
+      }),
     );
   };
 
   const handleAnswerChange = (
     external_id: string | undefined,
-    value: string
+    value: string,
   ): void => {
     setCurrentQuestions(
       currentQuestions.map((question) => {
@@ -245,13 +245,13 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           question.human_answer = value;
         }
         return question;
-      })
+      }),
     );
   };
 
   const handleLanguageChange = (
     external_id: string | undefined,
-    value: string
+    value: string,
   ): void => {
     setCurrentQuestions(
       currentQuestions.map((question) => {
@@ -259,14 +259,14 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           question.language = value;
         }
         return question;
-      })
+      }),
     );
   };
 
   const handleAddQuestion = (
     question: string | undefined,
     human_answer: string | undefined,
-    language: string | undefined
+    language: string | undefined,
   ): void => {
     setCurrentQuestion({
       question: "",
@@ -279,7 +279,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   const handleQuestionDelete = (index: number): void => {
     TestQuestionDeleteMutation.mutate(
-      currentQuestions[index].external_id || ""
+      currentQuestions[index].external_id || "",
     );
   };
 
@@ -305,7 +305,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         return API.tests.questions.update(
           testsuite_id,
           question.external_id,
-          question
+          question,
         );
       return Promise.resolve();
     });
@@ -468,7 +468,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                       onChange={(e) =>
                         handleQuestionChange(
                           question.external_id,
-                          e.target.value
+                          e.target.value,
                         )
                       }
                     />
@@ -505,7 +505,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         onChange={(e) =>
                           handleLanguageChange(
                             question.external_id,
-                            e.target.value
+                            e.target.value,
                           )
                         }
                         className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
@@ -555,7 +555,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                           onClick={async () =>
                             await handleDelete(
                               question.external_id,
-                              document.external_id
+                              document.external_id,
                             )
                           }
                         >
@@ -692,7 +692,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 ? testRun?.test_results?.reduce(
                     (acc: number, test: TestResult) =>
                       acc + (test.bleu_score || 0),
-                    0
+                    0,
                   ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
@@ -700,7 +700,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 ? testRun?.test_results?.reduce(
                     (acc: number, test: TestResult) =>
                       acc + (test.cosine_sim || 0),
-                    0
+                    0,
                   ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
@@ -711,7 +711,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 onClick={() => {
                   if (testRun.status === TestRunStatus.COMPLETED) {
                     router.push(
-                      `/admin/tests/${testsuite_id}/runs/${testRun.external_id}`
+                      `/admin/tests/${testsuite_id}/runs/${testRun.external_id}`,
                     );
                   } else if (testRun.status === TestRunStatus.RUNNING) {
                     if (confirm("Are you sure you want to stop the test?")) {
@@ -774,7 +774,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span className="text-gray-500">Status: </span>
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
-                        testRun.status ?? TestRunStatus.FAILED
+                        testRun.status ?? TestRunStatus.FAILED,
                       )} ${
                         testRun.status === TestRunStatus.RUNNING &&
                         "animate-pulse"
@@ -788,12 +788,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <div className="ml-auto mr-0">
                       <span
                         className={`${getStatusClassName(
-                          testRun.status ?? TestRunStatus.FAILED
+                          testRun.status ?? TestRunStatus.FAILED,
                         )} font-bold`}
                       >
                         <i
                           className={iconClassName(
-                            testRun.status ?? TestRunStatus.FAILED
+                            testRun.status ?? TestRunStatus.FAILED,
                           )}
                         ></i>
                       </span>
@@ -902,9 +902,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 handleAddQuestion(
                   currentQuestion.question,
                   currentQuestion.human_answer,
-                  currentQuestion.language
-                );
-              }}
+                  currentQuestion.language,
+                )
+              }
             >
               Save
             </Button>

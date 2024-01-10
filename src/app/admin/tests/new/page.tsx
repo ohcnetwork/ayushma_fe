@@ -12,31 +12,32 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Page() {
-    const router = useRouter();
+  const router = useRouter();
 
-    const createTestSuiteMutation = useMutation((testSuite) => API.tests.suites.create(testSuite as any), {
-        onSuccess: (data) => {
-            router.push(`/admin/tests/${data.external_id}`);
-        }
-    });
+  const createTestSuiteMutation = useMutation(
+    (testSuite) => API.tests.suites.create(testSuite as any),
+    {
+      onSuccess: (data) => {
+        router.push(`/admin/tests/${data.external_id}`);
+      },
+    },
+  );
 
-    const onSubmit = async (testSuite: Partial<TestSuite>) => {
-        await createTestSuiteMutation.mutateAsync(testSuite as any);
-    }
+  const onSubmit = async (testSuite: Partial<TestSuite>) => {
+    await createTestSuiteMutation.mutateAsync(testSuite as any);
+  };
 
-    return (
-        <div>
-            <h1 className="text-3xl font-black">
-                New Test Suite
-            </h1>
-            <div className="mt-8">
-                <TestSuiteForm
-                    testSuite={{}}
-                    onSubmit={onSubmit}
-                    loading={createTestSuiteMutation.isLoading}
-                    errors={(createTestSuiteMutation.error as any)?.error}
-                />
-            </div>
-        </div>
-    )
+  return (
+    <div>
+      <h1 className="text-3xl font-black">New Test Suite</h1>
+      <div className="mt-8">
+        <TestSuiteForm
+          testSuite={{}}
+          onSubmit={onSubmit}
+          loading={createTestSuiteMutation.isLoading}
+          errors={(createTestSuiteMutation.error as any)?.error}
+        />
+      </div>
+    </div>
+  );
 }

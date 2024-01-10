@@ -36,8 +36,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#to stop npm
+# lock files
 package-lock.json
+pnpm-lock.yaml
+bun.lockb
 
 #chatbot
 public/chatbot.js
