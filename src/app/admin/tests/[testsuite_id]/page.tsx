@@ -268,8 +268,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     human_answer: string | undefined,
     language: string | undefined,
   ): void => {
+    setCurrentQuestion({
+      question: "",
+      human_answer: "",
+      language: "en",
+    });
     TestQuestionsAddMutation.mutate({ question, human_answer, language });
-    setCurrentQuestion({});
     setShowAddQuestion(false);
   };
 
@@ -824,7 +828,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         </div>
       </Modal>
 
-      <Modal show={showAddQuestion} onClose={() => setShowAddQuestion(false)}>
+      <Modal
+        show={showAddQuestion}
+        onClose={() => setShowAddQuestion(false)}
+        className="w-[500px]"
+      >
         <div className="justify-center flex">
           <h1 className="block font-medium text-lg">Add Question</h1>
         </div>
@@ -890,7 +898,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             </Button>
             <Button
               loading={saveBtnLoading}
-              onClick={() =>
+              onClick={() => {
                 handleAddQuestion(
                   currentQuestion.question,
                   currentQuestion.human_answer,
