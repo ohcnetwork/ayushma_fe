@@ -36,7 +36,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     () => API.projects.get(project_id),
     {
       refetchOnWindowFocus: false,
-    }
+    },
   );
   const project: Project | undefined = projectQuery.data;
 
@@ -57,7 +57,7 @@ export default function Chat(params: { params: { project_id: string } }) {
       API.chat.create(
         project_id,
         chat !== "" ? chat.slice(0, 50) : "new chat",
-        storage.openai_api_key
+        storage.openai_api_key,
       ),
     {
       retry: false,
@@ -68,7 +68,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         });
         setChatID(data.external_id);
       },
-    }
+    },
   );
 
   const converseMutation = useMutation(
@@ -80,7 +80,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         openai_key,
         streamChatMessage,
         20,
-        !project?.assistant_id
+        !project?.assistant_id,
       ),
     {
       retry: false,
@@ -90,7 +90,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         await queryClient.invalidateQueries(["chats"]);
         setIsTyping(false);
       },
-    }
+    },
   );
 
   const getFormData = async (blobUrl?: string, text?: string) => {
@@ -151,7 +151,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                       >
                         {prompt}
                       </button>
-                    )
+                    ),
                   )}
                 </div>
               </>

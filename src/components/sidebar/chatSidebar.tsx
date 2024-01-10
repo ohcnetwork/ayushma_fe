@@ -28,12 +28,12 @@ export default function ChatSideBar(props: { project_id?: string }) {
         project_id || "",
         LIMIT,
         offset,
-        debouncedSearchQuery
+        debouncedSearchQuery,
       );
     },
     {
       enabled: !!project_id,
-    }
+    },
   );
 
   const [storage, setStorage] = useAtom(storageAtom);
@@ -95,7 +95,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
         if (path === `/project/${project_id}/chat/${external_id}`)
           router.push(`/project/${project_id}`);
       },
-    }
+    },
   );
 
   const deleteChat = (external_id: string) => {

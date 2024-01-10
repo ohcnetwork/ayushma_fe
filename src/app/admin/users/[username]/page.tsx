@@ -17,7 +17,7 @@ const Page = ({ params }: { params: { username: string } }) => {
       onSuccess(data) {
         setUserState(data);
       },
-    }
+    },
   );
   const userData: User | undefined = userQuery.data;
 
@@ -37,7 +37,7 @@ const Page = ({ params }: { params: { username: string } }) => {
     {
       onSuccess: () => setUpdatingUser(false),
       onError: () => setUpdatingUser(false),
-    }
+    },
   );
 
   const updateError = updateUserMutation.error as any;
@@ -54,7 +54,7 @@ const Page = ({ params }: { params: { username: string } }) => {
             setDeletingUser(false);
             router.push("/admin/users");
           },
-        }
+        },
       );
     }
   };
@@ -66,7 +66,7 @@ const Page = ({ params }: { params: { username: string } }) => {
         alert("Cannot delete account that is currently being used");
         setDeletingUser(false);
       },
-    }
+    },
   );
 
   return (

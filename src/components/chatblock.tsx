@@ -233,11 +233,18 @@ export default function ChatBlock(props: {
           <div className="flex flex-wrap gap-2 pl-16 items-center pb-4 max-w-4xl mx-auto w-full">
             <p className="mr-1 text-sm italic">References:</p>
             {message?.reference_documents.map((doc, i) => {
-              if (doc.document_type === DocumentType.FILE || doc.document_type === DocumentType.URL)
+              if (
+                doc.document_type === DocumentType.FILE ||
+                doc.document_type === DocumentType.URL
+              )
                 return (
                   <a
                     key={i}
-                    href={doc.document_type === DocumentType.FILE ? doc.file : doc.text_content}
+                    href={
+                      doc.document_type === DocumentType.FILE
+                        ? doc.file
+                        : doc.text_content
+                    }
                     target="_blank"
                     rel="noreferrer"
                     className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
@@ -296,7 +303,7 @@ const ChatFeedback = ({
         await queryClient.invalidateQueries(["chat", chat_id]);
         onSuccess?.(data);
       },
-    }
+    },
   );
 
   return feedback ? (
@@ -363,7 +370,7 @@ const ChatFeedback = ({
                 >
                   {suggestion}
                 </p>
-              )
+              ),
             )}
           </div>
         </div>
