@@ -7,6 +7,7 @@ import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import Modal from "./modal";
 import { useAudioRecorder } from "./recorder";
+import { useRouter } from "next/navigation";
 
 export default function ChatBar(props: {
   chat: string;
@@ -15,8 +16,11 @@ export default function ChatBar(props: {
   onAudio: (blobUrl: string) => void;
   errors: string[];
   loading?: boolean;
+  projectId: string;
 }) {
-  const { chat, onChange, onSubmit, errors, loading, onAudio } = props;
+  const { chat, onChange, onSubmit, errors, loading, onAudio, projectId } =
+    props;
+  const router = useRouter();
 
   const [storage, setStorage] = useAtom(storageAtom);
   const { status, startRecording, stopRecording } = useAudioRecorder(onAudio);
@@ -77,7 +81,10 @@ export default function ChatBar(props: {
         <br />
         <select
           value={storage?.language || "en"}
-          onChange={(e) => setStorage({ ...storage, language: e.target.value })}
+          onChange={(e) => {
+            setStorage({ ...storage, language: e.target.value });
+            router.push(`/project/${projectId}`);
+          }}
           className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline-blue focus:border-green-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
         >
           {supportedLanguages.map((language) => (

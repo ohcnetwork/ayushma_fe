@@ -181,6 +181,7 @@ export default function Chat(params: {
           onAudio={handleAudio}
           errors={[(converseMutation.error as any)?.error?.error]}
           loading={converseMutation.isLoading || isTyping}
+          projectId={project_id}
         />
         <p className="text-xs pl-0.5 text-center text-gray-500">
           {" "}
