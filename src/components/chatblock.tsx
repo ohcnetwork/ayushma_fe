@@ -15,7 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { API } from "@/utils/api";
 import { useParams } from "next/navigation";
 import { DocumentType } from "@/types/project";
-import { isIOS } from "@/utils/misc";
+import useIsIOS from "@/utils/hooks/useIsIOS";
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
@@ -27,7 +27,6 @@ export default function ChatBlock(props: {
 }) {
   const [storage] = useAtom(storageAtom);
   const { message, loading, cursor, autoplay } = props;
-  const [shouldAutoplay, setShouldAutoplay] = useState<boolean>();
   const cursorText = cursor
     ? (message?.original_message?.length || 0) % 2 === 0
       ? "|"
@@ -36,12 +35,11 @@ export default function ChatBlock(props: {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [audioStatus, setAudioStatus] = useState<AudioStatus>("unloaded");
   const [percentagePlayed, setPercentagePlayed] = useState(0);
+  const isIOS = useIsIOS();
 
-  useEffect(() => {
-    setShouldAutoplay(
-      isIOS() ? false : autoplay && (storage.tts_autoplay ?? true),
-    );
-  }, [storage.tts_autoplay, autoplay]);
+  const shouldAutoplay = isIOS
+    ? false
+    : autoplay && (storage.tts_autoplay ?? true);
 
   const isCompleteLetter = (str: string) => {
     const regex = /^\p{L}$/u;
