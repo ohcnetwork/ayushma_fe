@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { ChatFeedback, ChatMessage, ChatMessageType } from "@/types/chat";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
