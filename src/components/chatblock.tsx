@@ -27,6 +27,7 @@ export default function ChatBlock(props: {
 }) {
   const [storage] = useAtom(storageAtom);
   const { message, loading, cursor, autoplay } = props;
+  const [shouldAutoplay, setShouldAutoplay] = useState<boolean>();
   const cursorText = cursor
     ? (message?.original_message?.length || 0) % 2 === 0
       ? "|"
@@ -36,9 +37,11 @@ export default function ChatBlock(props: {
   const [audioStatus, setAudioStatus] = useState<AudioStatus>("unloaded");
   const [percentagePlayed, setPercentagePlayed] = useState(0);
 
-  const shouldAutoplay = isIOS()
-    ? false
-    : autoplay && (storage.tts_autoplay ?? true);
+  useEffect(() => {
+    setShouldAutoplay(
+      isIOS() ? false : autoplay && (storage.tts_autoplay ?? true),
+    );
+  }, [storage.tts_autoplay, autoplay]);
 
   const isCompleteLetter = (str: string) => {
     const regex = /^\p{L}$/u;
