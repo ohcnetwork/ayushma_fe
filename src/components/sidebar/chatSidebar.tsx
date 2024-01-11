@@ -14,8 +14,10 @@ import Slider from "../ui/slider";
 import InfiniteScroll from "react-infinite-scroller";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
 import { useDebounce } from "@/utils/hooks/useDebounce";
+import useIsIOS from "@/utils/hooks/useIsIOS";
 
 export default function ChatSideBar(props: { project_id?: string }) {
+  const isIOS = useIsIOS();
   const { project_id } = props;
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
@@ -287,6 +289,19 @@ export default function ChatSideBar(props: { project_id?: string }) {
               setStorage({
                 ...storage,
                 show_stats: e.target.checked,
+              })
+            }
+          />
+          <br />
+          <CheckBox
+            disabled={isIOS}
+            label="Autoplay responses text to speech"
+            type="checkbox"
+            checked={isIOS ? false : storage?.tts_autoplay}
+            onChange={(e) =>
+              setStorage({
+                ...storage,
+                tts_autoplay: e.target.checked,
               })
             }
           />

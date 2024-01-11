@@ -11,4 +11,5 @@ export type Storage = {
   temperature?: number;
   top_k?: number;
   chatbot_token?: string;
+  tts_autoplay?: boolean;
 };
