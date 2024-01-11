@@ -903,8 +903,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                   currentQuestion.question,
                   currentQuestion.human_answer,
                   currentQuestion.language,
-                )
-              }
+                );
+              }}
             >
               Save
             </Button>
