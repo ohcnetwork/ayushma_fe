@@ -206,6 +206,7 @@ export default function Chat(params: { params: { project_id: string } }) {
           loading={
             newChatMutation.isLoading || converseMutation.isLoading || isTyping
           }
+          projectId={project_id}
         />
         <p className="text-xs pl-0.5 text-center text-gray-500">
           {process.env.NEXT_PUBLIC_AI_WARNING}
