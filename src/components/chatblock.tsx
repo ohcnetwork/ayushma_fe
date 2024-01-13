@@ -130,7 +130,7 @@ export default function ChatBlock(props: {
 
   return (
     <div
-      className={`relative flex flex-col gap-4 p-4 pt-8 md:p-6 md:pt-8 ${
+      className={`flex flex-col gap-4 p-4 pt-8 md:p-6 md:pt-8 ${
         message?.messageType === ChatMessageType.USER ? "bg-gray-500/5" : ""
       }`}
     >
@@ -271,12 +271,10 @@ export default function ChatBlock(props: {
           </div>
         )}
       {message?.messageType === ChatMessageType.AYUSHMA && (
-        <div className="absolute top-2 right-2">
-          <ChatFeedback
-            message_id={message.external_id}
-            feedback={message?.feedback ?? null}
-          />
-        </div>
+        <ChatFeedback
+          message_id={message.external_id}
+          feedback={message?.feedback ?? null}
+        />
       )}
     </div>
   );
