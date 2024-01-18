@@ -85,7 +85,10 @@ export default function ChatBlock(props: {
       const interval = setInterval(() => {
         setPercentagePlayed((audio.currentTime / audio.duration) * 100);
       }, 10);
-      return () => clearInterval(interval);
+      return () => {
+        stopAudio();
+        clearInterval(interval);
+      };
     }
   }, [audio]);
 
