@@ -98,6 +98,7 @@ export default function ChatBlock(props: {
       const audio = new Audio(message?.audio);
       setAudio(audio);
       setAudioStatus("playing");
+      console.log("playing");
       audio.play();
       audio.addEventListener("ended", () => {
         setAudioStatus("stopped");
@@ -106,6 +107,7 @@ export default function ChatBlock(props: {
   };
 
   const togglePlay = () => {
+    console.log(audioStatus);
     if (audioStatus === "loading") return;
     if (audioStatus === "unloaded") loadAudio();
     if (audioStatus === "playing") {
@@ -133,9 +135,8 @@ export default function ChatBlock(props: {
 
   return (
     <div
-      className={`flex flex-col gap-4 p-4 pt-8 md:p-6 md:pt-8 ${
-        message?.messageType === ChatMessageType.USER ? "bg-gray-500/5" : ""
-      }`}
+      className={`flex flex-col gap-4 p-4 pt-8 md:p-6 md:pt-8 ${message?.messageType === ChatMessageType.USER ? "bg-gray-500/5" : ""
+        }`}
     >
       <div className="flex gap-6 max-w-4xl mx-auto w-full">
         <div>
@@ -187,7 +188,7 @@ export default function ChatBlock(props: {
                 >
                   {audioStatus === "unloaded"
                     ? (message?.message || message?.original_message) +
-                        cursorText || ""
+                    cursorText || ""
                     : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
                 </ReactMarkdown>
               )}
@@ -206,13 +207,13 @@ export default function ChatBlock(props: {
                     </button>
                     {(audioStatus === "paused" ||
                       audioStatus === "playing") && (
-                      <button
-                        onClick={stopAudio}
-                        className="flex items-center justify-center text-red-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 p-2 "
-                      >
-                        <i className="fa-regular fa-circle-stop text-xl"></i>
-                      </button>
-                    )}
+                        <button
+                          onClick={stopAudio}
+                          className="flex items-center justify-center text-red-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 p-2 "
+                        >
+                          <i className="fa-regular fa-circle-stop text-xl"></i>
+                        </button>
+                      )}
                   </div>
                 )}
               {storage?.show_english &&
@@ -303,7 +304,7 @@ const ChatFeedback = ({
       "This is harmful / unsafe.",
     ],
   });
-  const { chat_id } = useParams();
+  const { chat_id }: any = useParams();
 
   const createChatFeedbackMutation = useMutation(
     (feedback: Partial<ChatFeedback>) => API.feedback.create(feedback),

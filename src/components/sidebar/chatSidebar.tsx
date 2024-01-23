@@ -72,14 +72,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
     ...(storage?.user?.is_staff
       ? [
-          {
-            icon: "user-shield",
-            text: "Admin",
-            onclick: () => {
-              router.push("/admin");
-            },
+        {
+          icon: "user-shield",
+          text: "Admin",
+          onclick: () => {
+            router.push("/admin");
           },
-        ]
+        },
+      ]
       : []),
     {
       icon: "sign-out-alt",
@@ -149,9 +149,8 @@ export default function ChatSideBar(props: { project_id?: string }) {
               threshold={10}
               loader={
                 <div
-                  className={`${
-                    chatsQuery.isFetching ? "" : "hidden"
-                  } flex justify-center items-center mt-2 h-full`}
+                  className={`${chatsQuery.isFetching ? "" : "hidden"
+                    } flex justify-center items-center mt-2 h-full`}
                 >
                   <div
                     className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
@@ -164,39 +163,34 @@ export default function ChatSideBar(props: { project_id?: string }) {
                 </div>
               }
             >
-              {project_id ? (
-                chatsQuery.data?.pages.map((group, index) => (
-                  <div key={index} className="flex flex-col gap-2">
-                    {group.results.map((chat: Chat) => (
-                      <div
-                        key={chat.external_id}
-                        className="w-full group hover:bg-gray-100 rounded-lg overflow-hidden flex gap-2 justify-between"
+              <div className="flex flex-col gap-2">
+                {project_id && (
+                  chatsQuery.fullData?.map((chat: Chat, j: number) => (
+                    <div
+                      key={j}
+                      className="w-full group hover:bg-gray-100 rounded-lg overflow-hidden flex gap-2 justify-between"
+                    >
+                      <Link
+                        href={`/project/${project_id}/chat/${chat.external_id}`}
+                        className="w-full py-2 px-4 text-left truncate"
+                        title={chat.title}
                       >
-                        <Link
-                          href={`/project/${project_id}/chat/${chat.external_id}`}
-                          className="w-full py-2 px-4 text-left truncate"
-                          title={chat.title}
-                        >
-                          {chat.title}
-                        </Link>
-                        <button
-                          className="py-2 px-2 hidden group-hover:block"
-                          onClick={() =>
-                            setDeleteModal({
-                              open: true,
-                              external_id: chat.external_id,
-                            })
-                          }
-                        >
-                          <i className="fal fa-trash-alt" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ))
-              ) : (
-                <></>
-              )}
+                        {chat.title}
+                      </Link>
+                      <button
+                        className="py-2 px-2 hidden group-hover:block"
+                        onClick={() =>
+                          setDeleteModal({
+                            open: true,
+                            external_id: chat.external_id,
+                          })
+                        }
+                      >
+                        <i className="fal fa-trash-alt" />
+                      </button>
+                    </div>
+                  )))}
+              </div>
             </InfiniteScroll>
           </div>
         </div>

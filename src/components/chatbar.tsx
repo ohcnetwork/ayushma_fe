@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Input } from "./ui/interactive";
 import Loading from "./ui/loading";
-import LangDialog from "./ui/langdialog";
 import { supportedLanguages } from "@/utils/constants";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
@@ -30,9 +29,8 @@ export default function ChatBar(props: {
   return (
     <>
       <div
-        className={`fixed inset-0 flex items-center justify-center transition-all ${
-          status === "recording" ? "visible opacity-100" : "invisible opacity-0"
-        }`}
+        className={`fixed inset-0 flex items-center justify-center transition-all ${status === "recording" ? "visible opacity-100" : "invisible opacity-0"
+          }`}
       >
         <div className="bg-black/40 absolute inset-0 -z-10" />
         <div className="md:min-w-[300px] md:min-h-[300px] bg-white rounded-xl p-4 flex items-center flex-col gap-4">
@@ -122,9 +120,8 @@ export default function ChatBar(props: {
                   <button
                     title="Search by Voice"
                     type="button"
-                    className={`w-12 h-12 p-1 ml-2 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition ${
-                      status === "recording" ? "text-green-500" : ""
-                    }`}
+                    className={`w-12 h-12 p-1 ml-2 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition ${status === "recording" ? "text-green-500" : ""
+                      }`}
                     onClick={
                       status === "recording" ? stopRecording : startRecording
                     }

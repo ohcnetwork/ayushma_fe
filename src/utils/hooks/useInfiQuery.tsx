@@ -15,5 +15,8 @@ export const useInfiQuery = (
   const loadMore = () => {
     if (query.hasNextPage) query.fetchNextPage();
   };
-  return { ...query, loadMore };
+
+  const fullData = query.data?.pages.flatMap((page) => page.results);
+
+  return { ...query, loadMore, fullData };
 };

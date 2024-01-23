@@ -38,7 +38,7 @@ export const useAudioRecorder = (
           const audioUrl = URL.createObjectURL(audioBlob);
           setMediaBlobUrl(audioUrl);
           onStop?.(audioUrl);
-          setStatus("stopped");
+          setStatus("idle");
         });
 
         recorder.start();

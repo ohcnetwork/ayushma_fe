@@ -17,7 +17,8 @@ export default function Chat(params: {
 }) {
   const { project_id, chat_id } = params.params;
   const searchParams = useSearchParams();
-  const shouldAutoPlay = searchParams?.get("autoplay") !== null;
+  const autoplayParam = searchParams?.get("autoplay") !== null;
+  const [shouldAutoPlay, setShouldAutoPlay] = useState<boolean>(false);
   const [newChat, setNewChat] = useState("");
   const [chatMessage, setChatMessage] = useState<string>("");
   const [storage] = useAtom(storageAtom);
@@ -42,6 +43,7 @@ export default function Chat(params: {
 
   const chat: Chat | undefined = chatQuery.data;
   const [projectData, setProjectData] = useState<Project>();
+  const [autoPlayIndex, setAutoPlayIndex] = useState<number>(-1);
 
   const openai_key =
     !storage?.user?.allow_key || storage?.override_api_key
@@ -49,14 +51,16 @@ export default function Chat(params: {
       : undefined;
 
   useEffect(() => {
+    if (!chat?.chats) return;
     const uri = window.location.toString();
     if (uri.indexOf("?") > 0)
-      window.history.replaceState(
-        {},
-        document.title,
-        uri.substring(0, uri.indexOf("?")),
-      );
-  }, []);
+      setShouldAutoPlay(true);
+    window.history.replaceState(
+      {},
+      document.title,
+      uri.substring(0, uri.indexOf("?")),
+    );
+  }, [chat, autoplayParam]);
 
   useEffect(() => {
     const prevTitle = document.title;
@@ -101,6 +105,7 @@ export default function Chat(params: {
     {
       retry: false,
       onSuccess: async (data, vars) => {
+        setAutoPlayIndex((chat?.chats?.length || 0) + 1);
         if (!project?.assistant_id) await chatQuery.refetch();
       },
       onError: async (error, vars) => {
@@ -111,8 +116,8 @@ export default function Chat(params: {
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsTyping(true);
     e.preventDefault();
+    setIsTyping(true);
     const fd = await getFormData(storage, undefined, newChat);
     converseMutation.mutate({ formdata: fd });
   };
@@ -131,6 +136,15 @@ export default function Chat(params: {
     }
   }, [chatMessage]);
 
+  useEffect(() => {
+    setShouldAutoPlay(false);
+  }, [shouldAutoPlay]);
+
+  useEffect(() => {
+    console.log(autoPlayIndex);
+    if (autoPlayIndex !== -1) setTimeout(() => setAutoPlayIndex(-1), 1000);
+  }, [autoPlayIndex]);
+
   return (
     <div className="h-screen flex flex-col flex-1">
       <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
@@ -139,8 +153,8 @@ export default function Chat(params: {
             message={message}
             key={message.external_id}
             autoplay={
-              (!!chatMessage || shouldAutoPlay) &&
-              i === (chat?.chats?.length || 0) - 1
+              (shouldAutoPlay && i === 1) ||
+              i === autoPlayIndex
             }
           />
         ))}
