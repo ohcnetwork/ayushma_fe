@@ -1,6 +1,7 @@
 import "./globals.css";
 import Script from "next/script";
 import Providers from "@/utils/provider";
+import { Suspense } from "react";
 
 export const metadata = {
   title: process.env.NEXT_PUBLIC_AI_NAME,
@@ -21,7 +22,11 @@ export default function RootLayout({
         <Script src="https://www.writeroo.net/fawesome.js" />
       </head>
       <body className="font-inter">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Suspense>
+            {children}
+          </Suspense>
+        </Providers>
       </body>
     </html>
   );
