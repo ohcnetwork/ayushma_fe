@@ -14,23 +14,27 @@ export default function Page({
   params: { project_id: string; document_id: string };
 }) {
   const { project_id, document_id } = params;
-  const projectQuery = useQuery(["project", project_id], () =>
-    API.projects.get(project_id),
-  );
+  const projectQuery = useQuery({
+    queryKey: ["project", project_id],
+    queryFn: () =>
+      API.projects.get(project_id),
+  });
   const project: Project | undefined = projectQuery.data || undefined;
 
   const router = useRouter();
 
-  const documentQuery = useQuery(["document", document_id], () =>
-    API.projects.documents.get(project_id, document_id),
-  );
+  const documentQuery = useQuery({
+    queryKey: ["document", document_id],
+    queryFn: () =>
+      API.projects.documents.get(project_id, document_id),
+  });
 
   const doc: Document | undefined = documentQuery.data;
 
   const editDocumentMutation = useMutation(
-    (formData) =>
-      API.projects.documents.edit(project_id, document_id, formData as any),
     {
+      mutationFn: (formData) =>
+        API.projects.documents.edit(project_id, document_id, formData as any),
       onSuccess: () => {
         documentQuery.refetch();
       },
@@ -54,7 +58,7 @@ export default function Page({
             document={doc}
             project_id={project_id}
             onSubmit={onSubmit}
-            loading={editDocumentMutation.isLoading}
+            loading={editDocumentMutation.isPending}
             errors={(editDocumentMutation.error as any)?.error}
           />
         )}

@@ -10,8 +10,8 @@ export default function Page() {
   const router = useRouter();
 
   const createProjectMutation = useMutation(
-    (project) => API.projects.create(project as any),
     {
+      mutationFn: (project) => API.projects.create(project as any),
       onSuccess: (data) => {
         router.push(`/admin/projects/${data.external_id}`);
       },
@@ -29,7 +29,7 @@ export default function Page() {
         <ProjectForm
           project={{}}
           onSubmit={onSubmit}
-          loading={createProjectMutation.isLoading}
+          loading={createProjectMutation.isPending}
           errors={(createProjectMutation.error as any)?.error}
         />
       </div>

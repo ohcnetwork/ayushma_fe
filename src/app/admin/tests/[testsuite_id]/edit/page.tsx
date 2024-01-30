@@ -9,14 +9,15 @@ import { useRouter } from "next/navigation";
 export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
   const { testsuite_id } = params;
-  const testSuiteQuery = useQuery(["testsuite", testsuite_id], () =>
-    API.tests.suites.get(testsuite_id),
-  );
+  const testSuiteQuery = useQuery({
+    queryKey: ["testsuite", testsuite_id],
+    queryFn: () => API.tests.suites.get(testsuite_id),
+  });
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
 
   const updateTestSuiteMutation = useMutation(
-    (testSuite) => API.tests.suites.update(testsuite_id, testSuite as any),
     {
+      mutationFn: (testSuite) => API.tests.suites.update(testsuite_id, testSuite as any),
       onSuccess: (data) => {
         router.push(`/admin/tests/${data.external_id}`);
       },
@@ -35,7 +36,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           <TestSuiteForm
             testSuite={testSuite}
             onSubmit={onSubmit}
-            loading={updateTestSuiteMutation.isLoading}
+            loading={updateTestSuiteMutation.isPending}
             errors={(updateTestSuiteMutation.error as any)?.errors}
           />
         )}

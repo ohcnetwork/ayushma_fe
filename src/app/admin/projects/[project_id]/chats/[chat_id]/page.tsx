@@ -12,13 +12,16 @@ export default function Page({
   params: { project_id: string; chat_id: string };
 }) {
   const { project_id, chat_id } = params;
-  const chatQuery = useQuery(["chat", project_id, chat_id], () =>
-    API.chat.get(project_id, chat_id),
-  );
+  const chatQuery = useQuery({
+    queryKey: ["chat", project_id, chat_id],
+    queryFn: () => API.chat.get(project_id, chat_id),
+  });
 
-  const projectQuery = useQuery(["project", project_id], () =>
-    API.projects.get(project_id),
-  );
+  const projectQuery = useQuery({
+    queryKey: ["project", project_id],
+    queryFn: () =>
+      API.projects.get(project_id),
+  });
   const project: Project = projectQuery.data;
   const chats: any | undefined = chatQuery.data;
 

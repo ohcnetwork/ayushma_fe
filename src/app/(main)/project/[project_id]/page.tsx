@@ -32,9 +32,9 @@ export default function Chat(params: { params: { project_id: string } }) {
   }, [chatID, isTyping, project_id, router]);
 
   const projectQuery = useQuery(
-    ["chat", project_id],
-    () => API.projects.get(project_id),
     {
+      queryKey: ["chat", project_id],
+      queryFn: () => API.projects.get(project_id),
       refetchOnWindowFocus: false,
     },
   );
@@ -53,13 +53,13 @@ export default function Chat(params: { params: { project_id: string } }) {
   };
 
   const newChatMutation = useMutation(
-    (params: { formdata: FormData }) =>
-      API.chat.create(
-        project_id,
-        chat !== "" ? chat.slice(0, 50) : "new chat",
-        storage.openai_api_key,
-      ),
     {
+      mutationFn: (params: { formdata: FormData }) =>
+        API.chat.create(
+          project_id,
+          chat !== "" ? chat.slice(0, 50) : "new chat",
+          storage.openai_api_key,
+        ),
       retry: false,
       onSuccess: async (data, vars) => {
         await converseMutation.mutateAsync({
@@ -72,22 +72,22 @@ export default function Chat(params: { params: { project_id: string } }) {
   );
 
   const converseMutation = useMutation(
-    (params: { external_id: string; formdata: FormData }) =>
-      API.chat.converse(
-        project_id,
-        params.external_id,
-        params.formdata,
-        openai_key,
-        streamChatMessage,
-        20,
-        !project?.assistant_id,
-      ),
     {
+      mutationFn: (params: { external_id: string; formdata: FormData }) =>
+        API.chat.converse(
+          project_id,
+          params.external_id,
+          params.formdata,
+          openai_key,
+          streamChatMessage,
+          20,
+          !project?.assistant_id,
+        ),
       retry: false,
       onSuccess: async (data, vars) => {
         if (!data) return;
         setChatID(data.external_id);
-        await queryClient.invalidateQueries(["chats"]);
+        await queryClient.invalidateQueries({ queryKey: ["chats"] });
         setIsTyping(false);
       },
     },
@@ -145,7 +145,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                           const fd = await getFormData(undefined, prompt);
                           newChatMutation.mutate({ formdata: fd });
                         }}
-                        disabled={newChatMutation.isLoading}
+                        disabled={newChatMutation.isPending}
                         className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
                         key={i}
                       >
@@ -204,7 +204,7 @@ export default function Chat(params: { params: { project_id: string } }) {
             (newChatMutation.error as any)?.error?.non_field_errors,
           ]}
           loading={
-            newChatMutation.isLoading || converseMutation.isLoading || isTyping
+            newChatMutation.isPending || converseMutation.isPending || isTyping
           }
           projectId={project_id}
         />

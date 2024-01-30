@@ -10,14 +10,16 @@ import { storageAtom } from "@/store";
 export default function Page() {
   const [storage, setStorage] = useAtom(storageAtom);
 
-  const temptokenMutation = useMutation(() => API.chatbot.token(), {
-    onSuccess: (data) => {
-      setStorage((prev) => ({
-        ...prev,
-        chatbot_token: data.token,
-      }));
-    },
-  });
+  const temptokenMutation = useMutation(
+    {
+      mutationFn: () => API.chatbot.token(),
+      onSuccess: (data) => {
+        setStorage((prev) => ({
+          ...prev,
+          chatbot_token: data.token,
+        }));
+      },
+    });
 
   useEffect(() => {
     if (storage && !storage.chatbot_token) {

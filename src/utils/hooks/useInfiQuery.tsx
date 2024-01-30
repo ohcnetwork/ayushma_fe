@@ -1,22 +1,33 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { UseInfiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
 
-export const useInfiQuery = (
-  name: string[],
-  fetchApi: ({ pageParam }: { pageParam?: number | undefined }) => Promise<any>,
-  options: any = {},
-) => {
-  const query = useInfiniteQuery(name, fetchApi, {
-    getNextPageParam: (lastPage, pages) => {
-      return lastPage.has_next ? pages.length + 1 : undefined;
-    },
-    ...options,
+export type InfiQueryProps = {
+  queryKey: string[],
+  queryFn: (o: { pageParam?: number }) => Promise<any>,
+  fetchLimit?: number,
+} & Omit<UseInfiniteQueryOptions, 'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam'>;
+
+export type InfiQueryResult<T> = ReturnType<typeof useInfiniteQuery<any>> & {
+  loadMore: () => void,
+  fullData: T[],
+}
+
+export const useInfiQuery: (options: InfiQueryProps) => InfiQueryResult<any> = (options: InfiQueryProps) => {
+
+  const { fetchLimit, queryFn, queryKey, ...otherOptions } = options;
+
+  const query = (useInfiniteQuery as any)({
+    ...otherOptions,
+    queryKey,
+    queryFn,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: any) => lastPage.has_next ? lastPage.offset + (fetchLimit || 10) : undefined,
   });
 
   const loadMore = () => {
     if (query.hasNextPage) query.fetchNextPage();
-  };
+  }
 
-  const fullData = query.data?.pages.flatMap((page) => page.results);
+  const fullData = query.data?.pages.map((page: any) => page.results).flat();
 
-  return { ...query, loadMore, fullData };
-};
+  return { ...query, loadMore, fullData }
+}

@@ -32,9 +32,11 @@ export default function ProjectForm(props: {
   const [prompt, setPrompt] = useState<string>("");
   const [model, setModel] = useState<string | number>("");
 
-  const assistantListQuery = useQuery(["assistant"], () =>
-    API.projects.assistant.list(project.external_id ?? ""),
-  );
+  const assistantListQuery = useQuery({
+    queryKey: ["assistant"],
+    queryFn: () =>
+      API.projects.assistant.list(project.external_id ?? ""),
+  });
   useEffect(() => {
     const assistants = assistantListQuery.data || [];
     setAssistants(assistants);

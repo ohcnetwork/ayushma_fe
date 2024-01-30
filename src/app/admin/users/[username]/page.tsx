@@ -11,12 +11,9 @@ const Page = ({ params }: { params: { username: string } }) => {
   const { username } = params;
   const router = useRouter();
   const userQuery = useQuery(
-    ["user", username],
-    () => API.users.get(username),
     {
-      onSuccess(data) {
-        setUserState(data);
-      },
+      queryKey: ["user", username],
+      queryFn: () => API.users.get(username),
     },
   );
   const userData: User | undefined = userQuery.data;
@@ -24,7 +21,7 @@ const Page = ({ params }: { params: { username: string } }) => {
   const [updatingUser, setUpdatingUser] = useState(false);
   const [deletingUser, setDeletingUser] = useState(false);
 
-  const [userState, setUserState] = useState<UserUpdate>({});
+  const [userState, setUserState] = useState<UserUpdate>(userQuery.data || {});
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setUpdatingUser(true);
@@ -33,8 +30,8 @@ const Page = ({ params }: { params: { username: string } }) => {
   };
 
   const updateUserMutation = useMutation(
-    () => API.users.update(userData ? userData.username : "", userState),
     {
+      mutationFn: () => API.users.update(userData ? userData.username : "", userState),
       onSuccess: () => setUpdatingUser(false),
       onError: () => setUpdatingUser(false),
     },
@@ -60,8 +57,8 @@ const Page = ({ params }: { params: { username: string } }) => {
   };
 
   const deleteUserMutation = useMutation(
-    (params: { username: string }) => API.users.delete(params.username),
     {
+      mutationFn: (params: { username: string }) => API.users.delete(params.username),
       onError: () => {
         alert("Cannot delete account that is currently being used");
         setDeletingUser(false);

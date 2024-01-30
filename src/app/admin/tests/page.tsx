@@ -7,9 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 export default function Page() {
-  const testSuitesQuery = useQuery(["testsuite"], () =>
-    API.tests.suites.list(),
-  );
+  const testSuitesQuery = useQuery({
+    queryKey: ["testsuite"],
+    queryFn: () =>
+      API.tests.suites.list(),
+  });
   const testSuites: TestSuite[] = testSuitesQuery.data?.results || [];
 
   return (

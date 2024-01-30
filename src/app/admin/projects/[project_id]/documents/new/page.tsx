@@ -10,16 +10,18 @@ import { useState } from "react";
 
 export default function Page({ params }: { params: { project_id: string } }) {
   const { project_id } = params;
-  const projectsQuery = useQuery(["project", project_id], () =>
-    API.projects.get(project_id),
-  );
+  const projectsQuery = useQuery({
+    queryKey: ["project", project_id],
+    queryFn: () =>
+      API.projects.get(project_id),
+  });
   const project: Project | undefined = projectsQuery.data || undefined;
 
   const router = useRouter();
 
   const createDocumentMutation = useMutation(
-    (formData) => API.projects.documents.create(project_id, formData as any),
     {
+      mutationFn: (formData) => API.projects.documents.create(project_id, formData as any),
       onSuccess: () => {
         router.push(`/admin/projects/${project_id}`);
       },
@@ -45,7 +47,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
           document={{}}
           project_id={project_id}
           onSubmit={onSubmit}
-          loading={createDocumentMutation.isLoading}
+          loading={createDocumentMutation.isPending}
           errors={(createDocumentMutation.error as any)?.error}
         />
       </div>

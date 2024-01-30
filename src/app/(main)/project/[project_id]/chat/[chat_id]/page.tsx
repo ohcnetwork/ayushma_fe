@@ -25,17 +25,17 @@ export default function Chat(params: {
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
   const chatQuery = useQuery(
-    ["chat", chat_id],
-    () => API.chat.get(project_id, chat_id),
     {
+      queryKey: ["chat", chat_id],
+      queryFn: () => API.chat.get(project_id, chat_id),
       refetchOnWindowFocus: false,
     },
   );
 
   const projectQuery = useQuery(
-    ["chat", project_id],
-    () => API.projects.get(project_id),
     {
+      queryKey: ["chat", project_id],
+      queryFn: () => API.projects.get(project_id),
       refetchOnWindowFocus: false,
     },
   );
@@ -92,17 +92,17 @@ export default function Chat(params: {
   };
 
   const converseMutation = useMutation(
-    (params: { formdata: FormData }) =>
-      API.chat.converse(
-        project_id,
-        chat_id,
-        params.formdata,
-        openai_key,
-        streamChatMessage,
-        20,
-        !project?.assistant_id,
-      ),
     {
+      mutationFn: (params: { formdata: FormData }) =>
+        API.chat.converse(
+          project_id,
+          chat_id,
+          params.formdata,
+          openai_key,
+          streamChatMessage,
+          20,
+          !project?.assistant_id,
+        ),
       retry: false,
       onSuccess: async (data, vars) => {
         setAutoPlayIndex((chat?.chats?.length || 0) + 1);
@@ -194,7 +194,7 @@ export default function Chat(params: {
           onSubmit={handleSubmit}
           onAudio={handleAudio}
           errors={[(converseMutation.error as any)?.error?.error]}
-          loading={converseMutation.isLoading || isTyping}
+          loading={converseMutation.isPending || isTyping}
           projectId={project_id}
         />
         <p className="text-xs pl-0.5 text-center text-gray-500">

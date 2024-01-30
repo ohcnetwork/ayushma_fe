@@ -1,8 +1,6 @@
 "use client";
 
 import { supportedLanguages } from "@/utils/constants";
-import ProjectForm from "@/components/forms/projectform";
-import TestSuiteForm from "@/components/forms/testsuiteform";
 import Modal from "@/components/modal";
 import { Button, CheckBox, Input, TextArea } from "@/components/ui/interactive";
 import { Document, DocumentType, Project } from "@/types/project";
@@ -30,39 +28,44 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const { testsuite_id } = params;
 
   const testSuiteQuery = useQuery(
-    ["testsuite", testsuite_id],
-    () => API.tests.suites.get(testsuite_id),
     {
+      queryKey: ["testsuite", testsuite_id],
+      queryFn: () => API.tests.suites.get(testsuite_id),
       refetchOnWindowFocus: false,
     },
   );
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
 
   const TestQuestionsQuery = useQuery(
-    ["testsuitequestion", testsuite_id],
-    () =>
-      API.tests.questions.list(testsuite_id, {
-        ordering: "created_at",
-        limit: 100,
-      }),
-    { refetchOnWindowFocus: false },
+    {
+      queryKey: ["testsuitequestion", testsuite_id],
+      queryFn: () =>
+        API.tests.questions.list(testsuite_id, {
+          ordering: "created_at",
+          limit: 100,
+        }),
+      refetchOnWindowFocus: false
+    },
   );
   const testQuestions: TestQuestion[] | undefined =
     TestQuestionsQuery.data?.results || undefined;
 
-  const ProjectListQuery = useQuery(["projects"], () => API.projects.list());
+  const ProjectListQuery = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => API.projects.list()
+  });
   const projects: Project[] = ProjectListQuery.data?.results || [];
 
   const createDocumentMutation = useMutation(
-    async (args: { question_id: string; formData: any }) => {
-      const { question_id, formData } = args;
-      await API.tests.questions.documents.create(
-        testsuite_id,
-        question_id,
-        formData,
-      );
-    },
     {
+      mutationFn: async (args: { question_id: string; formData: any }) => {
+        const { question_id, formData } = args;
+        await API.tests.questions.documents.create(
+          testsuite_id,
+          question_id,
+          formData,
+        );
+      },
       onSuccess: () => {
         toast.success("Document Attached!");
         TestQuestionsQuery.refetch();
@@ -76,15 +79,15 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   );
 
   const deleteDocumentMutation = useMutation(
-    async (args: { question_id: string; document_id: string }) => {
-      const { question_id, document_id } = args;
-      await API.tests.questions.documents.delete(
-        testsuite_id,
-        question_id,
-        document_id,
-      );
-    },
     {
+      mutationFn: async (args: { question_id: string; document_id: string }) => {
+        const { question_id, document_id } = args;
+        await API.tests.questions.documents.delete(
+          testsuite_id,
+          question_id,
+          document_id,
+        );
+      },
       onSuccess: () => {
         toast.success("Document Deleted");
         TestQuestionsQuery.refetch();
@@ -105,7 +108,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     offset: number | null;
   };
 
-  const fetchData: QueryFunction<APIResponse> = async ({ pageParam }) => {
+  const fetchData: QueryFunction<APIResponse> = async ({ pageParam = 0 }) => {
     const offset = pageParam ? pageParam : 0;
     const res = await API.tests.runs.list(testsuite_id, {
       ordering: "-created_at",
@@ -161,9 +164,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   );
 
   const TestQuestionsAddMutation = useMutation(
-    (question: Partial<TestQuestion>) =>
-      API.tests.questions.create(testsuite_id, question),
     {
+      mutationFn: (question: Partial<TestQuestion>) =>
+        API.tests.questions.create(testsuite_id, question),
       onSuccess: () => {
         toast.success("Test Question Added");
         TestQuestionsQuery.refetch();
@@ -172,9 +175,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   );
 
   const TestQuestionDeleteMutation = useMutation(
-    (question_id: string) =>
-      API.tests.questions.delete(testsuite_id, question_id),
     {
+      mutationFn: (question_id: string) =>
+        API.tests.questions.delete(testsuite_id, question_id),
       onSuccess: () => {
         toast.success("Test Question Deleted");
         TestQuestionsQuery.refetch();
@@ -183,8 +186,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   );
 
   const TestRunCreateMutation = useMutation(
-    (testRun: Partial<TestRun>) => API.tests.runs.create(testsuite_id, testRun),
     {
+      mutationFn: (testRun: Partial<TestRun>) => API.tests.runs.create(testsuite_id, testRun),
       onSuccess: (testRun) => {
         toast.success("Test Started");
         refetch();
@@ -342,9 +345,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -604,11 +607,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${
-                            document.state === "selected"
-                              ? "cursor-pointer"
-                              : "cursor-not-allowed"
-                          }`}
+                          className={`text-sm text-gray-700 flex justify-center items-center ${document.state === "selected"
+                            ? "cursor-pointer"
+                            : "cursor-not-allowed"
+                            }`}
                           onClick={async () => {
                             if (document.state === "uploading") return;
                             setDocument({
@@ -690,18 +692,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.bleu_score || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.bleu_score || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.cosine_sim || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.cosine_sim || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -743,11 +745,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgCosineSim < 0.5
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgCosineSim < 0.5
+                            ? "text-red-500"
+                            : "text-green-500"
+                            }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -761,9 +762,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                            }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -775,10 +775,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
-                      )} ${
-                        testRun.status === TestRunStatus.RUNNING &&
-                        "animate-pulse"
-                      }`}
+                      )} ${testRun.status === TestRunStatus.RUNNING &&
+                      "animate-pulse"
+                        }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED

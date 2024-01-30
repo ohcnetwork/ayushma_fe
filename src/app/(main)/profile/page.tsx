@@ -14,7 +14,10 @@ export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const userQuery = useQuery<User, Error>(["userDetails"], API.user.me);
+  const userQuery = useQuery<User, Error>({
+    queryKey: ["userDetails"],
+    queryFn: API.user.me
+  });
   const userData: User | undefined = userQuery.data || undefined;
 
   const [formData, setFormData] = useState({
@@ -34,8 +37,8 @@ export default function Page() {
   };
 
   const updateProfileMutation = useMutation(
-    (params: { userDetails: UserUpdate }) => API.user.save(params.userDetails),
     {
+      mutationFn: (params: { userDetails: UserUpdate }) => API.user.save(params.userDetails),
       retry: false,
       onSuccess: async (data, vars) => {
         toast.success("Profile updated successfully");

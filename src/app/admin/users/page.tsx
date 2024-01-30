@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/interactive";
 import { User } from "@/types/user";
 import { API } from "@/utils/api";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
@@ -22,36 +21,28 @@ const RoleButton = (
     <button
       {...rest}
       className={twMerge(
-        `w-full sm:w-fit flex justify-center gap-1 border px-2 py-1 rounded-full items-center ${
-          color === "green" && "hover:border-green-400"
-        } ${color === "blue" && "hover:border-blue-400"} ${
-          color === "orange" && "hover:border-orange-400"
-        } transition-all ${
-          state &&
-          `${color === "green" && "bg-green-400"} ${
-            color === "blue" && "bg-blue-400"
-          } ${color === "orange" && "bg-orange-400"}`
+        `w-full sm:w-fit flex justify-center gap-1 border px-2 py-1 rounded-full items-center ${color === "green" && "hover:border-green-400"
+        } ${color === "blue" && "hover:border-blue-400"} ${color === "orange" && "hover:border-orange-400"
+        } transition-all ${state &&
+        `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"
+        } ${color === "orange" && "bg-orange-400"}`
         }`,
         className,
       )}
     >
       <span
-        className={`p-1.5 rounded-full h-fit ${
-          state
-            ? "bg-white"
-            : `${color === "green" && "bg-green-400"} ${
-                color === "blue" && "bg-blue-400"
-              } ${color === "orange" && "bg-orange-400"}`
-        }`}
+        className={`p-1.5 rounded-full h-fit ${state
+          ? "bg-white"
+          : `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"
+          } ${color === "orange" && "bg-orange-400"}`
+          }`}
       ></span>
       <span
-        className={`${
-          state
-            ? "text-white"
-            : `${color === "green" && "text-green-400"} ${
-                color === "blue" && "text-blue-400"
-              } ${color === "orange" && "text-orange-400"}`
-        }`}
+        className={`${state
+          ? "text-white"
+          : `${color === "green" && "text-green-400"} ${color === "blue" && "text-blue-400"
+          } ${color === "orange" && "text-orange-400"}`
+          }`}
       >
         {text}
       </span>
@@ -67,16 +58,13 @@ const RoleBubble = (props: {
   return (
     <div className="flex gap-1 border w-fit px-2 py-1 rounded-full items-center transition-all">
       <span
-        className={`p-1.5 rounded-full h-fit ${
-          color === "green" && "bg-green-400"
-        } ${color === "gray" && "bg-gray-400"} ${
-          color === "orange" && "bg-orange-400"
-        }`}
+        className={`p-1.5 rounded-full h-fit ${color === "green" && "bg-green-400"
+          } ${color === "gray" && "bg-gray-400"} ${color === "orange" && "bg-orange-400"
+          }`}
       ></span>
       <span
-        className={`${color === "green" && "text-green-400"} ${
-          color === "gray" && "text-gray-400"
-        } ${color === "orange" && "text-orange-400"}`}
+        className={`${color === "green" && "text-green-400"} ${color === "gray" && "text-gray-400"
+          } ${color === "orange" && "text-orange-400"}`}
       >
         {text}
       </span>
@@ -90,9 +78,9 @@ export default function Page() {
   const [isReviewer, setIsReviewer] = useState(false);
   const [isKeyAllowed, setIsKeyAllowed] = useState(false);
   const limit = 10;
-  const userQuery = useInfiQuery(
-    ["users"],
-    ({ pageParam = 1 }) => {
+  const userQuery = useInfiQuery({
+    queryKey: ["users"],
+    queryFn: ({ pageParam = 1 }) => {
       const offset = (pageParam - 1) * limit;
       return API.users.list({
         search: searchString,
@@ -104,8 +92,7 @@ export default function Page() {
         allow_key: isKeyAllowed ? true : null,
       });
     },
-    {},
-  );
+  });
   const pagesList: any[] = userQuery.data?.pages || [];
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

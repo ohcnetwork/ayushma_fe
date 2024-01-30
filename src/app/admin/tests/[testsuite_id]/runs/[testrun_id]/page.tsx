@@ -24,9 +24,11 @@ export default function Page({
   const router = useRouter();
   const { testsuite_id, testrun_id } = params;
 
-  const testRunQuery = useQuery(["testrun", testrun_id], () =>
-    API.tests.runs.get(testsuite_id, testrun_id),
-  );
+  const testRunQuery = useQuery({
+    queryKey: ["testrun", testrun_id],
+    queryFn: () =>
+      API.tests.runs.get(testsuite_id, testrun_id),
+  });
   const [testRun, setTestRun] = useState<TestRun | undefined>(
     testRunQuery.data || undefined,
   );
@@ -49,17 +51,17 @@ export default function Page({
   const [avgBleu, setAvgBleu] = useState(
     testRun && testRun.test_results
       ? testRun?.test_results?.reduce(
-          (acc: number, test: TestResult) => acc + (test.bleu_score || 0),
-          0,
-        ) / (testRun?.test_results?.length || 1)
+        (acc: number, test: TestResult) => acc + (test.bleu_score || 0),
+        0,
+      ) / (testRun?.test_results?.length || 1)
       : 0,
   );
   const [avgCosineSim, setAvgcosineSim] = useState(
     testRun && testRun.test_results
       ? testRun?.test_results?.reduce(
-          (acc: number, test: TestResult) => acc + (test.cosine_sim || 0),
-          0,
-        ) / (testRun?.test_results?.length || 1)
+        (acc: number, test: TestResult) => acc + (test.cosine_sim || 0),
+        0,
+      ) / (testRun?.test_results?.length || 1)
       : 0,
   );
 
@@ -197,9 +199,9 @@ export default function Page({
   }, [testRun]);
 
   const createFeedbackMutation = useMutation(
-    (feedback: Partial<Feedback>) =>
-      API.tests.feedback.create(testsuite_id, testrun_id, feedback),
     {
+      mutationFn: (feedback: Partial<Feedback>) =>
+        API.tests.feedback.create(testsuite_id, testrun_id, feedback),
       onSuccess: () => {
         toast.success("Feedback submitted successfully");
         fetchFeedback(feedbackTestResult?.external_id || "", true);
@@ -248,9 +250,9 @@ export default function Page({
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   };
 
   const dateDifferenceInHHMMSS = (
@@ -267,14 +269,12 @@ export default function Page({
       result += `${hours} hour${hours > 1 ? "s" : ""}`;
     }
     if (minutes > 0) {
-      result += `${result ? ", " : ""}${minutes} minute${
-        minutes > 1 ? "s" : ""
-      }`;
+      result += `${result ? ", " : ""}${minutes} minute${minutes > 1 ? "s" : ""
+        }`;
     }
     if (seconds > 0) {
-      result += `${result ? " and " : ""}${seconds} second${
-        seconds > 1 ? "s" : ""
-      }`;
+      result += `${result ? " and " : ""}${seconds} second${seconds > 1 ? "s" : ""
+        }`;
     }
     return result || "N/A";
   };
@@ -338,9 +338,8 @@ export default function Page({
               <div>
                 References:{" "}
                 <span
-                  className={`font-bold ${
-                    testRun?.references ? "text-green-500" : "text-red-500"
-                  }`}
+                  className={`font-bold ${testRun?.references ? "text-green-500" : "text-red-500"
+                    }`}
                 >
                   {testRun?.references ? "ENABLED" : "DISABLED"}
                 </span>
@@ -364,9 +363,8 @@ export default function Page({
               <div>
                 Average Cosine Similarity:{" "}
                 <span
-                  className={`font-bold ${
-                    avgCosineSim < 0.5 ? "text-red-500" : "text-green-500"
-                  }`}
+                  className={`font-bold ${avgCosineSim < 0.5 ? "text-red-500" : "text-green-500"
+                    }`}
                 >
                   {avgCosineSim.toFixed(3)}
                 </span>
@@ -399,9 +397,8 @@ export default function Page({
               <div>
                 Average BLEU Score:{" "}
                 <span
-                  className={`font-bold ${
-                    avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                  }`}
+                  className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                    }`}
                 >
                   {avgBleu.toFixed(3)}
                 </span>
@@ -435,10 +432,10 @@ export default function Page({
                   {ratingOptions.map(
                     (rating: any) =>
                       rating.id ===
-                        Math.min(
-                          Math.max(Math.round(feedbackStats.average), 1),
-                          6,
-                        ) && (
+                      Math.min(
+                        Math.max(Math.round(feedbackStats.average), 1),
+                        6,
+                      ) && (
                         <span
                           key={rating.id}
                           className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
@@ -568,9 +565,8 @@ export default function Page({
                 Cosine Similarity:
               </h3>
               <p
-                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${
-                  test.cosine_sim >= 0.5 ? "text-green-500" : "text-red-500"
-                }`}
+                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${test.cosine_sim >= 0.5 ? "text-green-500" : "text-red-500"
+                  }`}
               >
                 {test.cosine_sim.toFixed(3)}
               </p>
@@ -580,9 +576,8 @@ export default function Page({
                 BLEU Score:
               </h3>
               <p
-                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${
-                  test.bleu_score >= 0.5 ? "text-green-500" : "text-red-500"
-                }`}
+                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${test.bleu_score >= 0.5 ? "text-green-500" : "text-red-500"
+                  }`}
               >
                 {test.bleu_score.toFixed(3)}
               </p>
@@ -608,13 +603,13 @@ export default function Page({
                     {ratingOptions.map(
                       (rating) =>
                         rating.id ===
-                          Math.min(
-                            Math.max(
-                              Math.round(getAverageFeedback(test.feedback)),
-                              1,
-                            ),
-                            6,
-                          ) && (
+                        Math.min(
+                          Math.max(
+                            Math.round(getAverageFeedback(test.feedback)),
+                            1,
+                          ),
+                          6,
+                        ) && (
                           <span
                             key={rating.id}
                             className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}

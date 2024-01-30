@@ -15,8 +15,8 @@ export default function Page() {
   const router = useRouter();
 
   const createTestSuiteMutation = useMutation(
-    (testSuite) => API.tests.suites.create(testSuite as any),
     {
+      mutationFn: (testSuite) => API.tests.suites.create(testSuite as any),
       onSuccess: (data) => {
         router.push(`/admin/tests/${data.external_id}`);
       },
@@ -34,7 +34,7 @@ export default function Page() {
         <TestSuiteForm
           testSuite={{}}
           onSubmit={onSubmit}
-          loading={createTestSuiteMutation.isLoading}
+          loading={createTestSuiteMutation.isPending}
           errors={(createTestSuiteMutation.error as any)?.error}
         />
       </div>

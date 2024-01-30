@@ -20,11 +20,13 @@ export default function Register() {
   });
   const router = useRouter();
 
-  const registerMutation = useMutation(() => API.user.register(creds), {
-    onSuccess: (data) => {
-      router.push("/login");
-    },
-  });
+  const registerMutation = useMutation(
+    {
+      mutationFn: () => API.user.register(creds),
+      onSuccess: (data) => {
+        router.push("/login");
+      },
+    });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -81,7 +83,7 @@ export default function Register() {
         <Errors
           errors={(registerMutation.error as any)?.error?.non_field_errors}
         />
-        <Button loading={registerMutation.isLoading}>Register</Button>
+        <Button loading={registerMutation.isPending}>Register</Button>
         <p>
           Already have an account?{" "}
           <Link href="/login" className="text-green-500 hover:text-green-600">

@@ -19,8 +19,8 @@ export default function Login() {
   const resetSuccess = sp?.get("reset_success");
 
   const loginMutation = useMutation(
-    () => API.user.login(creds.email, creds.password),
     {
+      mutationFn: () => API.user.login(creds.email, creds.password),
       onSuccess: (data) => {
         setStorage({
           ...storage,
@@ -68,7 +68,7 @@ export default function Login() {
         <Errors
           errors={(loginMutation.error as any)?.error?.non_field_errors}
         />
-        <Button loading={loginMutation.isLoading}>Login</Button>
+        <Button loading={loginMutation.isPending}>Login</Button>
         <p>
           Don&apos;t have an account?{" "}
           <Link

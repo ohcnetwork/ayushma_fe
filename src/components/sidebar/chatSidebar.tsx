@@ -22,9 +22,9 @@ export default function ChatSideBar(props: { project_id?: string }) {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const LIMIT = 10;
-  const chatsQuery = useInfiQuery(
-    ["search", debouncedSearchQuery],
-    ({ pageParam = 1 }) => {
+  const chatsQuery = useInfiQuery({
+    queryKey: ["search", debouncedSearchQuery],
+    queryFn: ({ pageParam = 1 }) => {
       const offset = (pageParam - 1) * LIMIT;
       return API.chat.list(
         project_id || "",
@@ -33,9 +33,8 @@ export default function ChatSideBar(props: { project_id?: string }) {
         debouncedSearchQuery,
       );
     },
-    {
-      enabled: !!project_id,
-    },
+    enabled: !!project_id,
+  },
   );
 
   const [storage, setStorage] = useAtom(storageAtom);
@@ -90,8 +89,8 @@ export default function ChatSideBar(props: { project_id?: string }) {
   ];
 
   const deleteChatMutation = useMutation(
-    (external_id: string) => API.chat.delete(project_id || "", external_id),
     {
+      mutationFn: (external_id: string) => API.chat.delete(project_id || "", external_id),
       onSuccess: async (data, external_id) => {
         chatsQuery.refetch();
         if (path === `/project/${project_id}/chat/${external_id}`)

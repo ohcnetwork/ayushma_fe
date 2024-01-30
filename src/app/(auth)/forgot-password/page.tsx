@@ -1,9 +1,7 @@
 "use client";
 import { Button, Errors, Input } from "@/components/ui/interactive";
-import { storageAtom } from "@/store";
 import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
-import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,11 +12,13 @@ export default function ForgotPassword() {
   });
   const router = useRouter();
 
-  const forgotMutation = useMutation(() => API.user.forgot(creds.email), {
-    onSuccess: (data) => {
-      router.push("/reset-password?email=" + creds.email);
-    },
-  });
+  const forgotMutation = useMutation(
+    {
+      mutationFn: () => API.user.forgot(creds.email),
+      onSuccess: (data) => {
+        router.push("/reset-password?email=" + creds.email);
+      },
+    });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
         <Errors
           errors={(forgotMutation.error as any)?.error?.non_field_errors}
         />
-        <Button loading={forgotMutation.isLoading}>Send OTP</Button>
+        <Button loading={forgotMutation.isPending}>Send OTP</Button>
         <p>
           <Link href="/login" className="text-green-500 hover:text-green-600">
             Go back

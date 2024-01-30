@@ -31,8 +31,8 @@ export default function DocumentForm(props: {
   };
 
   const deleteDocumentMutation = useMutation(
-    () => API.projects.documents.delete(project_id, doc.external_id ?? ""),
     {
+      mutationFn: () => API.projects.documents.delete(project_id, doc.external_id ?? ""),
       onSuccess: () => {
         router.push(`/admin/projects/${project_id}`);
       },

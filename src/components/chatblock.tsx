@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ChatFeedback, ChatMessage, ChatMessageType } from "@/types/chat";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Image from "next/image";
 import rehypeRaw from "rehype-raw";
@@ -307,10 +307,10 @@ const ChatFeedback = ({
   const { chat_id }: any = useParams();
 
   const createChatFeedbackMutation = useMutation(
-    (feedback: Partial<ChatFeedback>) => API.feedback.create(feedback),
     {
+      mutationFn: (feedback: Partial<ChatFeedback>) => API.feedback.create(feedback),
       onSuccess: async (data: ChatFeedback) => {
-        await queryClient.invalidateQueries(["chat", chat_id]);
+        await queryClient.invalidateQueries({ queryKey: ["chat", chat_id] });
         onSuccess?.(data);
       },
     },

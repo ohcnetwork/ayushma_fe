@@ -20,11 +20,13 @@ export default function ForgotPassword() {
 
   const router = useRouter();
 
-  const verifyMutation = useMutation(() => API.user.verify(otp, email || ""), {
-    onSuccess: (data) => {
-      setVerified(true);
-    },
-  });
+  const verifyMutation = useMutation(
+    {
+      mutationFn: () => API.user.verify(otp, email || ""),
+      onSuccess: (data) => {
+        setVerified(true);
+      },
+    });
 
   useEffect(() => {
     if (token && email) {
@@ -38,8 +40,8 @@ export default function ForgotPassword() {
   };
 
   const resetMutation = useMutation(
-    () => API.user.reset(otp, email || "", password.password),
     {
+      mutationFn: () => API.user.reset(otp, email || "", password.password),
       onSuccess: (data) => {
         router.push("/login?reset_success=true");
       },
@@ -93,7 +95,7 @@ export default function ForgotPassword() {
               })
             }
           />
-          <Button loading={resetMutation.isLoading}>Reset</Button>
+          <Button loading={resetMutation.isPending}>Reset</Button>
           <p>
             <Link href="/login" className="text-green-500 hover:text-green-600">
               Cancel
@@ -119,7 +121,7 @@ export default function ForgotPassword() {
         <Errors
           errors={(verifyMutation.error as any)?.error?.non_field_errors}
         />
-        <Button loading={verifyMutation.isLoading}>Verify</Button>
+        <Button loading={verifyMutation.isPending}>Verify</Button>
         <p>
           <Link href="/login" className="text-green-500 hover:text-green-600">
             Go back
