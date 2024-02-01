@@ -23,14 +23,15 @@ export default function ChatSideBar(props: { project_id?: string }) {
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const chatsQuery = useInfiQuery({
     queryKey: ["search", debouncedSearchQuery],
-    queryFn: ({ pageParam = 0 }) => {
-      return API.chat.list(
+    queryFn: async ({ pageParam = 0 }) => {
+      const res = await API.chat.list(
         project_id || "",
         {
           offset: pageParam,
           search: debouncedSearchQuery
         },
       );
+      return { ...res, offset: pageParam };
     },
     enabled: !!project_id,
   },
