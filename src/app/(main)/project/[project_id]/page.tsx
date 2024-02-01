@@ -48,6 +48,7 @@ export default function Chat(params: { params: { project_id: string } }) {
     });
     if (message.stop) setIsTyping(false);
     if (message.error) {
+      setChatMessage("");
       setIsTyping(false);
     }
   };
