@@ -6,8 +6,6 @@ import { Button, CheckBox, Input, TextArea } from "@/components/ui/interactive";
 import { Document, DocumentType, Project } from "@/types/project";
 import { API } from "@/utils/api";
 import {
-  QueryFunction,
-  useInfiniteQuery,
   useMutation,
   useQuery,
 } from "@tanstack/react-query";
@@ -22,6 +20,7 @@ import {
   TestResult,
   TestRunStatus,
 } from "@/types/test";
+import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
 
 export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
@@ -108,7 +107,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     offset: number | null;
   };
 
-  const fetchData: QueryFunction<APIResponse> = async ({ pageParam = 0 }) => {
+  const fetchData = async ({ pageParam = 0 }) => {
     const offset = pageParam ? pageParam : 0;
     const res = await API.tests.runs.list(testsuite_id, {
       ordering: "-created_at",
@@ -123,12 +122,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   };
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading, refetch } =
-    useInfiniteQuery({
+    useInfiQuery({
       queryKey: ["testruns"],
-      queryFn: fetchData,
-      getNextPageParam: (lastPage, pages) => {
-        return lastPage.results.length > 0 ? lastPage.offset : null;
-      },
+      queryFn: fetchData
     });
 
   useEffect(() => {
