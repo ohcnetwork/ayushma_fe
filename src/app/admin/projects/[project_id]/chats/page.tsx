@@ -16,9 +16,8 @@ export default function Page({ params }: { params: { project_id: string } }) {
   const [search, setSearch] = useState("");
   const chatsListQuery = useInfiQuery({
     queryKey: ["chat", project_id],
-    queryFn: ({ pageParam = 1 }) => {
-      const offset = (pageParam - 1) * limit;
-      return API.chat.chats(project_id, search, limit, offset);
+    queryFn: ({ pageParam = 0 }) => {
+      return API.chat.chats(project_id, search, limit, pageParam);
     },
   }
   );
