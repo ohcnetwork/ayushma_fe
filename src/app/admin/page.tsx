@@ -8,14 +8,11 @@ import { useEffect, useState } from "react";
 
 export default function Page() {
   const [isArchived, setIsArchived] = useState(false);
-  const limit = 10;
   const projectsQuery = useInfiQuery({
     queryKey: ["projects"],
-    queryFn: ({ pageParam = 1 }) => {
-      const offset = (pageParam - 1) * limit;
+    queryFn: ({ pageParam = 0 }) => {
       return API.projects.list({
-        limit: limit,
-        offset: offset,
+        offset: pageParam,
         ordering: "-created_at",
         archived: isArchived,
       });
@@ -88,8 +85,8 @@ export default function Page() {
       <div className="flex flex-col items-center">
         <button
           className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${projectsQuery.hasNextPage
-              ? "bg-green-400 text-white"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            ? "bg-green-400 text-white"
+            : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           onClick={() => projectsQuery.fetchNextPage()}
           disabled={!projectsQuery.hasNextPage}
