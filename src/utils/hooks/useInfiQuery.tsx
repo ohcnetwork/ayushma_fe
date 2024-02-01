@@ -20,7 +20,7 @@ export const useInfiQuery: (options: InfiQueryProps) => InfiQueryResult<any> = (
     queryKey,
     queryFn,
     initialPageParam: 0,
-    getNextPageParam: (lastPage: any) => lastPage.has_next ? lastPage.offset + (fetchLimit || 10) : undefined,
+    getNextPageParam: (lastPage: any) => lastPage.has_next ? (lastPage.offset ?? 0) + (fetchLimit ?? 10) : undefined,
   });
 
   const loadMore = () => {
