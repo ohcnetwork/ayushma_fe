@@ -46,6 +46,7 @@ export default function Chat(params: { params: { project_id: string } }) {
       const updatedChatMessage = prevChatMessage + message.delta;
       return updatedChatMessage;
     });
+    if (message.error) setChatMessage("");
     if (message.stop) setIsTyping(false);
     if (message.error) {
       setIsTyping(false);
