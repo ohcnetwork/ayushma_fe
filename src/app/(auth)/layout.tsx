@@ -4,8 +4,8 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-[url('/bg.png')] bg-cover bg-center h-screen flex items-center justify-center">
-      <div className="w-64 flex flex-col gap-4">
+    <div className="h-screen flex items-center justify-center">
+      <div className="w-[300px] flex flex-col gap-4">
         <div>
           <img
             src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg"}
@@ -13,7 +13,6 @@ export default function AuthLayout({
             className="w-full object-contain"
           />
         </div>
-        <br />
         {children}
       </div>
     </div>

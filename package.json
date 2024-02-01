@@ -19,10 +19,16 @@
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
+    "@react-spring/three": "^9.7.3",
+    "@react-three/drei": "^9.96.5",
+    "@react-three/fiber": "^8.15.15",
     "@sentry/nextjs": "^7.98.0",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-query-devtools": "^5.17.21",
+    "@tanstack/react-query-next-experimental": "^5.18.0",
+    "@types/three": "^0.160.0",
     "audio-recorder-polyfill": "^0.4.1",
+    "framer-motion": "^11.0.3",
     "jotai": "^2.0.4",
     "json2csv": "^6.0.0-alpha.2",
     "jspdf": "^2.5.1",
@@ -36,7 +42,9 @@
     "react-markdown": "^9.0.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
-    "tailwind-merge": "^2.2.1"
+    "shadergradient": "^1.2.5",
+    "tailwind-merge": "^2.2.1",
+    "three": "^0.150.0"
   },
   "devDependencies": {
     "@types/eslint": "^8",

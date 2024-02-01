@@ -53,27 +53,33 @@ const request = async (
   if (method === "GET") {
     const requestParams = data
       ? `?${Object.keys(data)
-          .filter((key) => data[key] !== null && data[key] !== undefined)
-          .map((key) => `${key}=${data[key]}`)
-          .join("&")}`
+        .filter((key) => data[key] !== null && data[key] !== undefined)
+        .map((key) => `${key}=${data[key]}`)
+        .join("&")}`
       : "";
     url += requestParams;
     payload = null;
   }
 
-  const storage =
-    isAuth === false
-      ? null
-      : JSON.parse(
-          localStorage.getItem(
-            process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage",
-          ) || "{}",
-        );
-  const localToken = storage?.auth_token;
+  let localToken: string;
+
+  if (typeof localStorage !== undefined) {
+    console.log("API Called from browser =====")
+    const storage = JSON.parse(
+      localStorage.getItem(
+        process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage",
+      ) || "{}");
+    localToken = storage?.auth_token
+  } else {
+    console.log("API Called from server =====")
+    const { cookies } = require('next/headers');
+    const cookieStore = cookies()
+    localToken = cookieStore.get('auth_token')
+  }
 
   const auth =
-    isAuth === false || typeof localToken === "undefined" || localToken === null
-      ? ""
+    isAuth === false || !localToken || typeof localToken === "undefined" || localToken === null
+      ? undefined
       : "Token " + localToken;
 
   const requestOptions = {
@@ -83,8 +89,8 @@ const request = async (
       ...(formdata === true
         ? {}
         : {
-            "Content-Type": "application/json",
-          }),
+          "Content-Type": "application/json",
+        }),
       ...(auth !== "" ? { Authorization: auth } : {}),
       ...headers,
     },
@@ -212,9 +218,9 @@ export const API = {
         offset?: number;
         archived?: boolean | null;
       } = {
-        ordering: "-created_at",
-        limit: 50,
-      },
+          ordering: "-created_at",
+          limit: 50,
+        },
     ) => request("projects", "GET", filters),
     get: (id: string) => request(`projects/${id}`),
     update: (id: string, project: Partial<Project>) =>
@@ -244,15 +250,12 @@ export const API = {
   chat: {
     list: (
       project_id: string,
-      limit: number,
-      offset: number,
-      search: string,
       filters: {
-        ordering: string;
-        limit: number;
-        offset: number;
-        search: string;
-      } = { ordering: "-created_at", limit, offset, search },
+        ordering?: string;
+        limit?: number;
+        offset?: number;
+        search?: string;
+      } = { ordering: "-created_at" },
     ) => request(`projects/${project_id}/chats`, "GET", filters),
     create: (project_id: string, title: string, openai_api_key?: string) =>
       request(
@@ -261,10 +264,10 @@ export const API = {
         { title },
         openai_api_key
           ? {
-              headers: {
-                "OpenAI-Key": openai_api_key,
-              },
-            }
+            headers: {
+              "OpenAI-Key": openai_api_key,
+            },
+          }
           : {},
       ),
     chats: (
@@ -285,8 +288,8 @@ export const API = {
       filters: {
         fetch: string;
       } = {
-        fetch: "all",
-      },
+          fetch: "all",
+        },
     ) => request(`projects/${project_id}/chats/${id}`, "GET", filters),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
       request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
@@ -310,8 +313,8 @@ export const API = {
           formdata: true,
           headers: openai_api_key
             ? {
-                "OpenAI-Key": openai_api_key,
-              }
+              "OpenAI-Key": openai_api_key,
+            }
             : {},
         },
         (e) => {

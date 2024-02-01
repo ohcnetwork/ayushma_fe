@@ -7,12 +7,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { storageAtom } from "@/store";
 import { API } from "./api";
+import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 
 const noAuthRoutes = [
   "/login",
   "/register",
   "/forgot-password",
   "/reset-password",
+  "/home"
 ];
 
 function Providers({ children }: React.PropsWithChildren) {
@@ -44,7 +46,7 @@ function Providers({ children }: React.PropsWithChildren) {
       );
       if (!storage.auth_token) {
         if (!noAuthRoutes.includes(pathname || "")) {
-          router.push("/login");
+          router.push("/home");
         }
       }
     }
@@ -71,8 +73,23 @@ function Providers({ children }: React.PropsWithChildren) {
   };
 
   useEffect(() => {
-    if (storage && storage.auth_token) {
-      getUserDetails();
+    if (storage) {
+      if (storage.auth_token) {
+
+        getUserDetails();
+        const currentHostName = window.location.hostname;
+        document.cookie = `auth_token=${storage.auth_token}; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT; domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN
+          ? process.env.NEXT_PUBLIC_COOKIE_DOMAIN
+          : currentHostName
+          }`;
+      } else {
+        // delete cookie
+        document.cookie = `auth_token=; path=/; expires=Fri, 31 Dec 1999 23:59:59 GMT;`;
+
+      }
+      if (noAuthRoutes.includes(pathname || "")) {
+        router.push("/");
+      }
     }
   }, [storage?.auth_token]);
 
@@ -82,7 +99,9 @@ function Providers({ children }: React.PropsWithChildren) {
 
   return (
     <QueryClientProvider client={client}>
-      {children}
+      <ReactQueryStreamedHydration>
+        {storage && children}
+      </ReactQueryStreamedHydration>
       <ReactQueryDevtools initialIsOpen={false} position="right" />
     </QueryClientProvider>
   );

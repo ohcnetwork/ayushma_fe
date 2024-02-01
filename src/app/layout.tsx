@@ -5,6 +5,11 @@ import { Suspense } from "react";
 
 export const metadata = {
   title: process.env.NEXT_PUBLIC_AI_NAME,
+  description: process.env.NEXT_PUBLIC_AI_DESCRIPTION || "Revolutionizing medical diagnosis through AI and Opensource",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_DOMAIN ?
+    'https://' + process.env.NEXT_PUBLIC_DOMAIN :
+    "http://localhost:3000"
+  ),
 };
 
 export default function RootLayout({
@@ -23,9 +28,7 @@ export default function RootLayout({
       </head>
       <body className="font-inter">
         <Providers>
-          <Suspense>
-            {children}
-          </Suspense>
+          {children}
         </Providers>
       </body>
     </html>

@@ -60,9 +60,8 @@ export default function AdminSideBar() {
             {links.map((link, idx) => (
               <Link
                 href={link.url}
-                className={`flex gap-4 px-4 py-2 w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden items-center ${
-                  pathname === link.url && "bg-gray-100"
-                }`}
+                className={`flex gap-4 px-4 py-2 w-full group hover:bg-gray-100 border border-gray-200 rounded-lg overflow-hidden items-center ${pathname === link.url && "bg-gray-100"
+                  }`}
                 key={idx}
               >
                 <i className={`fal fa-${link.icon}`} />

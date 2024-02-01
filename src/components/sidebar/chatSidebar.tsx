@@ -21,21 +21,22 @@ export default function ChatSideBar(props: { project_id?: string }) {
   const { project_id } = props;
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
-  const LIMIT = 10;
   const chatsQuery = useInfiQuery({
     queryKey: ["search", debouncedSearchQuery],
-    queryFn: ({ pageParam = 1 }) => {
-      const offset = (pageParam - 1) * LIMIT;
+    queryFn: ({ pageParam = 0 }) => {
       return API.chat.list(
         project_id || "",
-        LIMIT,
-        offset,
-        debouncedSearchQuery,
+        {
+          offset: pageParam,
+          search: debouncedSearchQuery
+        },
       );
     },
     enabled: !!project_id,
   },
   );
+
+  const nonChatRoutes = ["/profile"];
 
   const [storage, setStorage] = useAtom(storageAtom);
   const router = useRouter();
@@ -105,12 +106,12 @@ export default function ChatSideBar(props: { project_id?: string }) {
 
   return (
     <>
-      <div className="bg-white bg-cover bg-top w-72 shrink-0 flex flex-col border-r border-gray-300 h-screen justify-between">
+      <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col h-screen justify-between">
         <div className="flex flex-col flex-1 overflow-auto">
-          <div className="flex flex-col p-3 gap-2">
+          <div className="flex flex-col p-3">
             <Link
               href={project_id ? `/project/${project_id}` : "/"}
-              className="cursor-pointer p-3"
+              className="cursor-pointer p-4"
             >
               <div className="flex flex-col items-end justify-center">
                 <img
@@ -118,80 +119,82 @@ export default function ChatSideBar(props: { project_id?: string }) {
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />
-                <div className="text-xs text-gray-600">Beta</div>
               </div>
             </Link>
             <Link
               href={project_id ? `/project/${project_id}` : "/"}
-              className="border-gray-300 py-2 px-4 rounded-lg border-dashed border-2 hover:bg-gray-100 text-center"
+              className="bg-gray-100 py-1 px-4 rounded-lg border border-gray-200 hover:bg-gray-200 transition-all text-center mb-2"
             >
-              <i className="far fa-plus" />
+              <i className="fad fa-pen-to-square" />
               &nbsp; New Chat
             </Link>
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
               }}
-              className="border-gray-300 py-2 px-4 rounded-lg border-2 hover:bg-gray-100"
+              className="border-gray-200 py-1 px-4 rounded-lg border-2 hover:bg-gray-100 transition-all"
             />
           </div>
-          <div id="scrollableDiv" className="overflow-y-auto px-2">
-            <InfiniteScroll
-              loadMore={() => {
-                chatsQuery.fetchNextPage();
-              }}
-              hasMore={chatsQuery.hasNextPage ? true : false}
-              useWindow={false}
-              threshold={10}
-              loader={
-                <div
-                  className={`${chatsQuery.isFetching ? "" : "hidden"
-                    } flex justify-center items-center mt-2 h-full`}
-                >
+          {!nonChatRoutes.includes(path || "") && (
+
+            <div id="scrollableDiv" className="overflow-y-auto px-2 hover-scrollbar">
+              <InfiniteScroll
+                loadMore={() => {
+                  chatsQuery.fetchNextPage();
+                }}
+                hasMore={chatsQuery.hasNextPage ? true : false}
+                useWindow={false}
+                threshold={10}
+                loader={
                   <div
-                    className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                    role="status"
+                    className={`${chatsQuery.isFetching ? "" : "hidden"
+                      } flex justify-center items-center mt-2 h-full`}
                   >
-                    <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                      Loading...
-                    </span>
-                  </div>
-                </div>
-              }
-            >
-              <div className="flex flex-col gap-2">
-                {project_id && (
-                  chatsQuery.fullData?.map((chat: Chat, j: number) => (
                     <div
-                      key={j}
-                      className="w-full group hover:bg-gray-100 rounded-lg overflow-hidden flex gap-2 justify-between"
+                      className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                      role="status"
                     >
-                      <Link
-                        href={`/project/${project_id}/chat/${chat.external_id}`}
-                        className="w-full py-2 px-4 text-left truncate"
-                        title={chat.title}
-                      >
-                        {chat.title}
-                      </Link>
-                      <button
-                        className="py-2 px-2 hidden group-hover:block"
-                        onClick={() =>
-                          setDeleteModal({
-                            open: true,
-                            external_id: chat.external_id,
-                          })
-                        }
-                      >
-                        <i className="fal fa-trash-alt" />
-                      </button>
+                      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                        Loading...
+                      </span>
                     </div>
-                  )))}
-              </div>
-            </InfiniteScroll>
-          </div>
+                  </div>
+                }
+              >
+                <div className="flex flex-col">
+                  {project_id && (
+                    chatsQuery.fullData?.map((chat: Chat, j: number) => (
+                      <div
+                        key={j}
+                        className="w-full group hover:bg-gray-100 hover:border-gray-200 rounded-lg overflow-hidden flex justify-between transition-all"
+                      >
+                        <Link
+                          href={`/project/${project_id}/chat/${chat.external_id}`}
+                          className="w-full p-2 text-left truncate text-sm"
+                          title={chat.title}
+                        >
+                          {chat.title}
+                        </Link>
+                        <button
+                          className="py-2 px-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all"
+                          onClick={() =>
+                            setDeleteModal({
+                              open: true,
+                              external_id: chat.external_id,
+                            })
+                          }
+                        >
+                          <i className="fad fa-trash-alt" />
+                        </button>
+                      </div>
+                    )))}
+                </div>
+              </InfiniteScroll>
+            </div>
+          )}
         </div>
         <div className="p-2 flex justify-around">
           <div className="flex flex-1 gap-2">
@@ -199,9 +202,9 @@ export default function ChatSideBar(props: { project_id?: string }) {
               <button
                 key={i}
                 onClick={button.onclick}
-                className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center hover:bg-gray-100 border-gray-200"
+                className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center transition-all hover:bg-gray-200 border-gray-200 bg-gray-100 text-gray-500"
               >
-                <i className={`fal fa-${button.icon}`} />
+                <i className={`fad fa-${button.icon}`} />
               </button>
             ))}
           </div>

@@ -2,25 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-#scrollableDiv::-webkit-scrollbar {
-width: 0.5em;
+*::-webkit-scrollbar {
+    width: 0.5em;
 }
 
-#scrollableDiv::-webkit-scrollbar-track {
-background: #f3f4f6;
+*::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-#scrollableDiv::-webkit-scrollbar-thumb {
-background: #d1d5db;
-border-radius: 0.5em;
+*::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 0.5em;
+    transition: 0.2s;
 }
 
-#scrollableDiv::-webkit-scrollbar-thumb:hover {
-background: #bdc0c4;
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
 }
 
-#scrollableDiv::-webkit-scrollbar-corner {
-background: #f3f4f6;
+*::-webkit-scrollbar-corner {
+    background: #f3f4f6;
+}
+
+.hover-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hover-scrollbar:hover::-webkit-scrollbar {
+    display: block;
 }
 
 
@@ -173,4 +182,16 @@ input:checked+.switch-slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
+}
+
+.button-bold {
+    @apply bg-white text-black px-10 py-4 text-2xl rounded-xl transition-all font-black border-2 border-white hover:bg-white/90
+}
+
+.button-bold-hollow {
+    @apply bg-transparent text-white px-10 py-4 text-2xl rounded-xl transition-all font-black border-2 border-white hover:bg-white/40
+}
+
+.button-bold-transparent {
+    @apply bg-transparent text-white px-10 py-4 text-2xl rounded-xl transition-all font-black border-2 border-transparent hover:bg-white/15
 }
