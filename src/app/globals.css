@@ -185,13 +185,13 @@ input:checked+.switch-slider:before {
 }
 
 .button-bold {
-    @apply bg-white text-black px-10 py-4 text-2xl rounded-xl transition-all font-black border-2 border-white hover:bg-white/90
+    @apply bg-white text-black px-10 py-4 rounded-xl transition-all font-black border-2 border-white hover:bg-white/90
 }
 
 .button-bold-hollow {
-    @apply bg-transparent text-white px-10 py-4 text-2xl rounded-xl transition-all font-black border-2 border-white hover:bg-white/40
+    @apply bg-transparent text-white px-10 py-4 rounded-xl transition-all font-black border-2 border-white hover:bg-white/40
 }
 
 .button-bold-transparent {
-    @apply bg-transparent text-white px-10 py-4 text-2xl rounded-xl transition-all font-black border-2 border-transparent hover:bg-white/15
+    @apply bg-transparent text-white px-10 py-4 rounded-xl transition-all font-black border-2 border-transparent hover:bg-white/15
 }

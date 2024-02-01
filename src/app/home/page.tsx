@@ -9,7 +9,7 @@ import Link from 'next/link'
 export default function Home() {
     return (
         <div className='bg-green-950'>
-            <div className="h-screen text-white flex items-center justify-center relative z-10">
+            <div className="min-h-screen text-white flex items-center justify-center relative z-10 w-screen">
                 <ShaderGradientCanvas
                     importedFiber={{ ...fiber, ...drei, ...reactSpring }}
                     style={{
@@ -24,44 +24,44 @@ export default function Home() {
                     />
                 </ShaderGradientCanvas>
 
-                <div className="p-20">
+                <div className="p-5 md:p-20">
                     <img
                         src="/logo_pure.svg"
                         alt="Ayushma"
-                        className="w-[300px]"
+                        className="w-[250px] md:w-[300px]"
                     />
                     <br />
-                    <h1 className="text-7xl font-black">
+                    <h1 className="text-5xl md:text-7xl font-black break-words">
                         Revolutionizing medical diagnosis through AI and Opensource
                     </h1>
                     <br />
-                    <div className='flex gap-4 mt-4'>
+                    <div className='grid md:flex grid-cols-2 gap-4 mt-4'>
                         <Link
                             href="/register"
-                            className='button-bold'
+                            className='button-bold md:text-2xl text-center'
                         >
                             Get Started
                         </Link>
                         <Link
                             href="/login"
-                            className='button-bold-hollow'
+                            className='button-bold-hollow md:text-2xl text-center'
                         >
                             Login
                         </Link>
                         <Link
                             href="https://github.com/coronasafe/ayushma_fe"
-                            className='button-bold-transparent flex gap-2 items-center'
+                            className='button-bold-transparent flex gap-2 items-center md:text-2xl text-center'
                             target='_blank'
                         >
                             <i className="fab fa-github" />
                             Contribute
                         </Link>
                     </div>
-                    <div className='inset-x-0 bottom-0 absolute pb-4 px-20 opacity-80'>
-                        <div className='flex gap-4 items-end'>
+                    <div className='inset-x-0 bottom-0 absolute pb-4 px-4 md:px-20 opacity-80'>
+                        <div className='flex flex-col md:flex-row gap-4 md:items-end'>
                             <Link
                                 href="https://ohc.network?ref=ayushma"
-                                className='text-[8px]'
+                                className='text-[8px] shrink-0'
                                 target='_blank'
                             >
                                 Powered By
@@ -71,7 +71,7 @@ export default function Home() {
                                     alt="OHC logo"
                                 />
                             </Link>
-                            <div className='text-xs w-[500px]'>
+                            <div className='text-xs md:w-[500px]'>
                                 Open Healthcare Network is an open-source public utility designed by a multi-disciplinary team of innovators and volunteers. Open Healthcare Network CARE is a Digital Public Good recognised by the United Nations.
                             </div>
                         </div>
