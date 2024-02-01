@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - production
 
 
 jobs:
   build:
     name: Build & Push Staging to container registries
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
