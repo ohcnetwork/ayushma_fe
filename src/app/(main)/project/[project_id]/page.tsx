@@ -63,11 +63,11 @@ export default function Chat(params: { params: { project_id: string } }) {
         ),
       retry: false,
       onSuccess: async (data, vars) => {
+        setChatID(data.external_id);
         await converseMutation.mutateAsync({
           external_id: data.external_id,
           formdata: vars.formdata,
         });
-        setChatID(data.external_id);
       },
     },
   );
