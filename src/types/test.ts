@@ -1,7 +1,6 @@
-import { Project } from "./project";
+import { Project, Document } from "./project";
 import { BaseModelType } from "./chat";
 import { User } from "./user";
-import { Document } from "./chat";
 
 export type TestSuite = BaseModelType & {
   external_id?: string;

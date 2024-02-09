@@ -6,6 +6,7 @@ export type Project = BaseModelType & {
   is_default: boolean;
   prompt?: string;
   stt_engine: number;
+  tts_engine: number;
   model: number | string;
   archived: boolean;
   preset_questions?: string[];
@@ -25,6 +26,11 @@ export const STT_ENGINES = [
   { id: 1, label: "OpenAI Whisper" },
   { id: 2, label: "Google Speech to Text" },
   { id: 3, label: "Self Hosted Whisper" },
+];
+
+export const TTS_ENGINE = [
+  { id: 1, label: "OpenAI" },
+  { id: 2, label: "Google Text to Speech" },
 ];
 
 export const MODELS = [
