@@ -50,7 +50,7 @@ export default function Page() {
           >
             <i className="far fa-plus" /> New Project
           </Link>
-          {projects.length > 0 &&
+          {projects?.length > 0 &&
             projects.map((projectsList, index) =>
               projectsList.results.map((project: Project, i: number) => (
                 <Link

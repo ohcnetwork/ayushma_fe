@@ -5,6 +5,7 @@ import {
   MODELS,
   Project,
   STT_ENGINES,
+  TTS_ENGINE,
 } from "@/types/project";
 import { useEffect, useState } from "react";
 import { Button, Input, TextArea } from "../ui/interactive";
@@ -34,8 +35,7 @@ export default function ProjectForm(props: {
 
   const assistantListQuery = useQuery({
     queryKey: ["assistant"],
-    queryFn: () =>
-      API.projects.assistant.list(project.external_id ?? ""),
+    queryFn: () => API.projects.assistant.list(project.external_id ?? ""),
   });
   useEffect(() => {
     const assistants = assistantListQuery.data || [];
@@ -177,7 +177,7 @@ export default function ProjectForm(props: {
             </div>
           </>
         )}
-        <p className="text-sm text-gray-500">Speech to text engine</p>
+        <p className="text-sm text-gray-500">Speech to Text engine</p>
         <select
           className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.stt_engine ?? 1}
@@ -185,7 +185,21 @@ export default function ProjectForm(props: {
             setProject({ ...project, stt_engine: parseInt(e.target.value) })
           }
         >
-          {STT_ENGINES.map((engine, i) => (
+          {STT_ENGINES.map((engine) => (
+            <option key={engine.id} value={engine.id}>
+              {engine.label}
+            </option>
+          ))}
+        </select>
+        <p className="text-sm text-gray-500">Text to Speech engine</p>
+        <select
+          className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+          value={project.tts_engine ?? 1}
+          onChange={(e) =>
+            setProject({ ...project, tts_engine: parseInt(e.target.value) })
+          }
+        >
+          {TTS_ENGINE.map((engine) => (
             <option key={engine.id} value={engine.id}>
               {engine.label}
             </option>

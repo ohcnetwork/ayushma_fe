@@ -124,7 +124,7 @@ export default function Chat(params: { params: { project_id: string } }) {
   };
 
   return (
-    <div className="flex flex-col h-screen flex-1">
+    <div className="flex flex-col flex-1 h-full">
       <div className="flex-1 items-center justify-center w-full overflow-auto">
         {!chatMessage ? (
           <div className="text-center text-gray-500 w-full">
