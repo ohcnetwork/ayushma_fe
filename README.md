@@ -10,9 +10,9 @@
     Ayushma is a digital AI health and nursing assistant to help Nurses and Doctors in the most remote parts of the world. It is a part of the <a href="https://ohc.network"> Open Health Care Network</a>
 </p>
 <hr>
-<h3 align="center"><a href="https://ayushma.ohc.network" target="_blank">🚀 Staging Deployment</a></h3>
+<h3 align="center"><a href="https://ayushma-staging.ohc.network" target="_blank">🚀 Staging Deployment</a></h3>
 <p align="center"><img src="https://vercelbadge.vercel.app/api/coronasafe/ayushma_fe"></p>
-<p align="center">Auto deployed to <a href="https://ayushma.ohc.network">ayushma.ohc.in</a> for <code>master</code> branch. All pull requests have preview builds powered by <a href="https://vercel.com">Vercel</a>.</p>
+<p align="center">Auto deployed to <a href="https://ayushma.ohc.network">ayushma.ohc.in</a> for <code>production</code> branch. All pull requests have preview builds powered by <a href="https://vercel.com">Vercel</a>.</p>
 
 ## Getting started
 
@@ -85,14 +85,19 @@ Ayushma is a white label product. You can customize the app to your needs by cha
 
 ### Images
 
-- `public/logo_text.svg` - Logo with text
-- `public/logo_white.svg` - Logo with white text
-- `public/logo.svg` - Logo without text
+| Path | Description
+| --- | ---
+| `public/logo_text.svg` | Logo with text
+| `public/logo_white.svg` | Logo with white text
+| `public/logo.svg` | Logo without text
 
-### Environment Variables
+### Environment Variables (place in `.env` / `.env.local` file)
 
-- `NEXT_PUBLIC_API_URL`= Backend API URL
-- `NEXT_PUBLIC_LOCAL_STORAGE`= Local storage key name
-- `NEXT_PUBLIC_AI_NAME`= Name of the AI (default: Ayushma)
-- `NEXT_PUBLIC_AI_DESCRIPTION`= Description of the AI
-- `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` = Google Recaptcha Site Key
+| Variable | Description | Default
+| --- | --- | ---
+| `NEXT_PUBLIC_API_URL` | Backend API URL | `https://ayushma-api.ohc.network/api/`
+| `NEXT_PUBLIC_LOCAL_STORAGE` | Local storage key name | `ayushma-storage`
+| `NEXT_PUBLIC_AI_NAME`| Name of the AI | Ayushma
+| `NEXT_PUBLIC_AI_DESCRIPTION` | Description of the AI | `Revolutionizing medical diagnosis through AI and Opensource`
+| `NEXT_PUBLIC_AI_WARNING` | Warning message for accuracy | `Please be aware that Ayushma AI may generate inaccurate information; kindly report any concerns to support@ohc.network`
+| `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` | Google Recaptcha Site Key | `6Lerts4nAAAAAKyXaNZkYj4XfRO0M2R-XYIA3qv8`
