@@ -98,6 +98,6 @@ Ayushma is a white label product. You can customize the app to your needs by cha
 | `NEXT_PUBLIC_API_URL` | Backend API URL | `https://ayushma-api.ohc.network/api/`
 | `NEXT_PUBLIC_LOCAL_STORAGE` | Local storage key name | `ayushma-storage`
 | `NEXT_PUBLIC_AI_NAME`| Name of the AI | Ayushma
-| `NEXT_PUBLIC_AI_DESCRIPTION` | Description of the AI | `Revolutionizing medical diagnosis through AI and Opensource`
-| `NEXT_PUBLIC_AI_WARNING` | Warning message for accuracy | `Please be aware that Ayushma AI may generate inaccurate information; kindly report any concerns to support@ohc.network`
+| `NEXT_PUBLIC_AI_DESCRIPTION` | Description of the AI | Revolutionizing medical diagnosis through AI and Opensource
+| `NEXT_PUBLIC_AI_WARNING` | Warning message for accuracy | Please be aware that Ayushma AI may generate inaccurate information; kindly report any concerns to support@ohc.network
 | `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` | Google Recaptcha Site Key | `6Lerts4nAAAAAKyXaNZkYj4XfRO0M2R-XYIA3qv8`
