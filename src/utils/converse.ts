@@ -4,6 +4,7 @@ export const getFormData = async (
   storage: Storage,
   blobUrl?: string,
   text?: string,
+  override_language?: string,
 ) => {
   const fd = new FormData();
   if (blobUrl) {
@@ -14,7 +15,7 @@ export const getFormData = async (
   } else if (text) {
     fd.append("text", text);
   }
-  fd.append("language", storage.language || "en");
+  fd.append("language", override_language || storage.language || "en");
   fd.append("temperature", (storage.temperature || 0.1).toString());
   fd.append("top_k", (storage.top_k || 100).toString());
   return fd;
