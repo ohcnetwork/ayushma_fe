@@ -12,9 +12,11 @@ import { useAtom } from "jotai";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-export default function Chat(params: {
-  params: { project_id: string; chat_id: string };
-}) {
+export default function Chat(
+  params: Readonly<{
+    params: { project_id: string; chat_id: string };
+  }>,
+) {
   const { project_id, chat_id } = params.params;
   const searchParams = useSearchParams();
   const autoplayParam = searchParams?.get("autoplay") !== null;
@@ -24,25 +26,20 @@ export default function Chat(params: {
   const [storage] = useAtom(storageAtom);
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
-  const chatQuery = useQuery(
-    {
-      queryKey: ["chat", chat_id],
-      queryFn: () => API.chat.get(project_id, chat_id),
-      refetchOnWindowFocus: false,
-    },
-  );
+  const chatQuery = useQuery({
+    queryKey: ["chat", chat_id],
+    queryFn: () => API.chat.get(project_id, chat_id),
+    refetchOnWindowFocus: false,
+  });
 
-  const projectQuery = useQuery(
-    {
-      queryKey: ["chat", project_id],
-      queryFn: () => API.projects.get(project_id),
-      refetchOnWindowFocus: false,
-    },
-  );
+  const projectQuery = useQuery({
+    queryKey: ["chat", project_id],
+    queryFn: () => API.projects.get(project_id),
+    refetchOnWindowFocus: false,
+  });
   const project: Project | undefined = projectQuery.data;
 
   const chat: Chat | undefined = chatQuery.data;
-  const [projectData, setProjectData] = useState<Project>();
   const [autoPlayIndex, setAutoPlayIndex] = useState<number>(-1);
 
   const openai_key =
@@ -53,8 +50,7 @@ export default function Chat(params: {
   useEffect(() => {
     if (!chat?.chats) return;
     const uri = window.location.toString();
-    if (uri.indexOf("?") > 0)
-      setShouldAutoPlay(true);
+    if (uri.indexOf("?") > 0) setShouldAutoPlay(true);
     window.history.replaceState(
       {},
       document.title,
@@ -91,34 +87,34 @@ export default function Chat(params: {
     }
   };
 
-  const converseMutation = useMutation(
-    {
-      mutationFn: (params: { formdata: FormData }) =>
-        API.chat.converse(
-          project_id,
-          chat_id,
-          params.formdata,
-          openai_key,
-          streamChatMessage,
-          20,
-          !project?.assistant_id,
-        ),
-      retry: false,
-      onSuccess: async (data, vars) => {
-        setAutoPlayIndex((chat?.chats?.length || 0) + 1);
-        if (!project?.assistant_id) await chatQuery.refetch();
-      },
-      onError: async (error, vars) => {
-        converseMutation.error = error;
-        setIsTyping(false);
-      },
+  const converseMutation = useMutation({
+    mutationFn: (params: { formdata: FormData }) =>
+      API.chat.converse(
+        project_id,
+        chat_id,
+        params.formdata,
+        openai_key,
+        streamChatMessage,
+        20,
+        !project?.assistant_id,
+      ),
+    retry: false,
+    onSuccess: async (data, vars) => {
+      setAutoPlayIndex((chat?.chats?.length || 0) + 1);
+      if (!project?.assistant_id) await chatQuery.refetch();
     },
-  );
+    onError: async (error, vars) => {
+      converseMutation.error = error;
+      setIsTyping(false);
+    },
+  });
+
+  const chat_language = chat?.chats?.[0]?.language || "en";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsTyping(true);
-    const fd = await getFormData(storage, undefined, newChat);
+    const fd = await getFormData(storage, undefined, newChat, chat_language);
     converseMutation.mutate({ formdata: fd });
   };
 
@@ -152,10 +148,7 @@ export default function Chat(params: {
           <ChatBlock
             message={message}
             key={message.external_id}
-            autoplay={
-              (shouldAutoPlay && i === 1) ||
-              i === autoPlayIndex
-            }
+            autoplay={(shouldAutoPlay && i === 1) || i === autoPlayIndex}
           />
         ))}
 
@@ -166,7 +159,7 @@ export default function Chat(params: {
                 messageType: ChatMessageType.USER,
                 message: newChat,
                 original_message: newChat,
-                language: storage.language || "en",
+                language: chat_language,
                 created_at: "",
                 external_id: "",
                 modified_at: "",
@@ -178,7 +171,7 @@ export default function Chat(params: {
                 messageType: ChatMessageType.AYUSHMA,
                 message: chatMessage,
                 original_message: chatMessage,
-                language: storage.language || "en",
+                language: chat_language,
                 created_at: "",
                 external_id: "",
                 modified_at: "",
@@ -196,6 +189,7 @@ export default function Chat(params: {
           errors={[(converseMutation.error as any)?.error?.error]}
           loading={converseMutation.isPending || isTyping}
           projectId={project_id}
+          forceLanguage={chat_language}
         />
         <p className="text-xs pl-0.5 text-center text-gray-500">
           {" "}

@@ -8,17 +8,28 @@ import Modal from "./modal";
 import { useAudioRecorder } from "./recorder";
 import { useRouter } from "next/navigation";
 
-export default function ChatBar(props: {
-  chat: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  onAudio: (blobUrl: string) => void;
-  errors: string[];
-  loading?: boolean;
-  projectId: string;
-}) {
-  const { chat, onChange, onSubmit, errors, loading, onAudio, projectId } =
-    props;
+export default function ChatBar(
+  props: Readonly<{
+    chat: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    onAudio: (blobUrl: string) => void;
+    errors: string[];
+    loading?: boolean;
+    projectId: string;
+    forceLanguage?: string;
+  }>,
+) {
+  const {
+    chat,
+    onChange,
+    onSubmit,
+    errors,
+    loading,
+    onAudio,
+    projectId,
+    forceLanguage,
+  } = props;
   const router = useRouter();
 
   const [storage, setStorage] = useAtom(storageAtom);
@@ -26,11 +37,14 @@ export default function ChatBar(props: {
 
   const [langDialogOpen, setLangDialogOpen] = useState<boolean>(false);
 
+  const language = forceLanguage || storage?.language || "en";
+
   return (
     <>
       <div
-        className={`fixed inset-0 flex items-center justify-center transition-all ${status === "recording" ? "visible opacity-100" : "invisible opacity-0"
-          }`}
+        className={`fixed inset-0 flex items-center justify-center transition-all ${
+          status === "recording" ? "visible opacity-100" : "invisible opacity-0"
+        }`}
       >
         <div className="bg-black/40 absolute inset-0 -z-10" />
         <div className="md:min-w-[300px] md:min-h-[300px] bg-white rounded-xl p-4 flex items-center flex-col gap-4">
@@ -38,20 +52,14 @@ export default function ChatBar(props: {
             <i className="fa-regular fa-language"></i>&nbsp;
             <strong>
               {
-                supportedLanguages.find(
-                  (l) => l.value === (storage?.language || "en"),
-                )?.nativeLabel
+                supportedLanguages.find((l) => l.value === language)
+                  ?.nativeLabel
               }
             </strong>
             <span className="text-sm text-gray-500">
               {storage?.language !== "en" && (
                 <>
-                  (
-                  {
-                    supportedLanguages.find(
-                      (l) => l.value === (storage?.language || "en"),
-                    )?.label
-                  }
+                  ({supportedLanguages.find((l) => l.value === language)?.label}
                   )
                 </>
               )}
@@ -78,11 +86,12 @@ export default function ChatBar(props: {
         </h1>
         <br />
         <select
-          value={storage?.language || "en"}
+          value={language}
           onChange={(e) => {
             setStorage({ ...storage, language: e.target.value });
             router.push(`/project/${projectId}`);
           }}
+          disabled={forceLanguage !== undefined}
           className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline-blue focus:border-green-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
         >
           {supportedLanguages.map((language) => (
@@ -91,6 +100,13 @@ export default function ChatBar(props: {
             </option>
           ))}
         </select>
+        {forceLanguage !== undefined && (
+          <p className="text-xs text-gray-500 mt-2">
+            Language cannot be changed after the conversation has started.
+            <br />
+            Start a new conversation to change the language.
+          </p>
+        )}
       </Modal>
       <form onSubmit={onSubmit}>
         <Input
@@ -120,8 +136,9 @@ export default function ChatBar(props: {
                   <button
                     title="Search by Voice"
                     type="button"
-                    className={`w-12 h-12 p-1 ml-2 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition ${status === "recording" ? "text-green-500" : ""
-                      }`}
+                    className={`w-12 h-12 p-1 ml-2 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition ${
+                      status === "recording" ? "text-green-500" : ""
+                    }`}
                     onClick={
                       status === "recording" ? stopRecording : startRecording
                     }
