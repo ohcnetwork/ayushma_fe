@@ -20,6 +20,7 @@ export default function Chat(params: { params: { project_id: string } }) {
   const [chatMessage, setChatMessage] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [chatID, setChatID] = useState<string>("");
+  const [apiError, setApiError] = useState<undefined | string>(undefined);
 
   const openai_key =
     !storage?.user?.allow_key || storage?.override_api_key
@@ -106,33 +107,41 @@ export default function Chat(params: { params: { project_id: string } }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsTyping(true);
     e.preventDefault();
-    const {external_id} = await newChatMutation.mutateAsync();
-    if(external_id === "") return;
-    setChatID(external_id);
 
-    const fd = await getFormData(undefined, chat);
-    converseMutation.mutate({ external_id, formdata: fd });
+    try{
+      const {external_id} = await newChatMutation.mutateAsync();
+      setChatID(external_id);
+  
+      const fd = await getFormData(undefined, chat);
+      converseMutation.mutate({ external_id, formdata: fd });
+    }catch(e: any){
+      setApiError(e.message);
+    }
 
   };
 
   const handleAudio = async (blobUrl: string) => {
     setIsTyping(true);
-    const {external_id} =  await newChatMutation.mutateAsync();
-    if(external_id === "") return;
-    setChatID(external_id);
+    try{
+      const {external_id} =  await newChatMutation.mutateAsync();
+      setChatID(external_id);
 
-    const sttFormData = await getFormData(blobUrl);
-    const {transcript, stats} = await API.chat.speechToText(
-      project_id,
-      external_id,
-      sttFormData,
-    )
-    setChat(transcript);
+      const sttFormData = await getFormData(blobUrl);
+      const {transcript, stats} = await API.chat.speechToText(
+        project_id,
+        external_id,
+        sttFormData,
+      )
+      setChat(transcript);
 
-    const fd = await getFormData(undefined, transcript);
-    fd.append("transcript_start_time", stats.transcript_start_time.toString());
-    fd.append("transcript_end_time", stats.transcript_end_time.toString());
-    converseMutation.mutate({ external_id, formdata: fd });
+      const fd = await getFormData(undefined, transcript);
+      fd.append("transcript_start_time", stats.transcript_start_time.toString());
+      fd.append("transcript_end_time", stats.transcript_end_time.toString());
+      converseMutation.mutate({ external_id, formdata: fd });
+    }
+    catch(e: any){
+      setApiError(e.message);
+    }
   };
 
   return (
@@ -222,6 +231,7 @@ export default function Chat(params: { params: { project_id: string } }) {
           errors={[
             (newChatMutation.error as any)?.error?.error,
             (newChatMutation.error as any)?.error?.non_field_errors,
+            apiError,
           ]}
           loading={
             newChatMutation.isPending || converseMutation.isPending || isTyping

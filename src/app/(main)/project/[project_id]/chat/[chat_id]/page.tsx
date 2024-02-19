@@ -25,6 +25,7 @@ export default function Chat(
   const [chatMessage, setChatMessage] = useState<string>("");
   const [storage] = useAtom(storageAtom);
   const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [apiError, setApiError] = useState<undefined | string>(undefined);
 
   const chatQuery = useQuery({
     queryKey: ["chat", chat_id],
@@ -121,17 +122,22 @@ export default function Chat(
   const handleAudio = async (blobUrl: string) => {
     setIsTyping(true);
     const sttFormData = await getFormData(storage, blobUrl)
-    const {transcript, stats} = await API.chat.speechToText(
-      project_id,
-      chat_id,
-      sttFormData,
-    )
-    setNewChat(transcript);
+    try{
+      const {transcript, stats} = await API.chat.speechToText(
+        project_id,
+        chat_id,
+        sttFormData,
+      )
+      setNewChat(transcript);
 
-    const fd = await getFormData(storage, undefined, transcript);
-    fd.append("transcript_start_time", stats.transcript_start_time.toString());
-    fd.append("transcript_end_time", stats.transcript_end_time.toString());
-    converseMutation.mutate({ formdata: fd });
+      const fd = await getFormData(storage, undefined, transcript);
+      fd.append("transcript_start_time", stats.transcript_start_time.toString());
+      fd.append("transcript_end_time", stats.transcript_end_time.toString());
+      converseMutation.mutate({ formdata: fd });
+    }
+    catch(e: any){
+      setApiError(e.message);
+    }
   };
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -196,7 +202,7 @@ export default function Chat(
           onChange={(e) => setNewChat(e.target.value)}
           onSubmit={handleSubmit}
           onAudio={handleAudio}
-          errors={[(converseMutation.error as any)?.error?.error]}
+          errors={[(converseMutation.error as any)?.error?.error, apiError]}
           loading={converseMutation.isPending || isTyping}
           projectId={project_id}
           forceLanguage={chat_language}
