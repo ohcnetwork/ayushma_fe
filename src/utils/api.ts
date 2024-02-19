@@ -295,6 +295,15 @@ export const API = {
       request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
     delete: (project_id: string, id: string) =>
       request(`projects/${project_id}/chats/${id}`, "DELETE"),
+    speechToText: (project_id: string, chat_id: string, formdata: FormData) =>
+    request(
+      `projects/${project_id}/chats/${chat_id}/speech_to_text`,
+      "POST",
+      formdata,
+      {
+        formdata: true,
+      },
+    ),
     converse: (
       project_id: string,
       chat_id: string,

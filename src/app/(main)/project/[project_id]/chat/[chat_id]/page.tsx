@@ -120,7 +120,17 @@ export default function Chat(
 
   const handleAudio = async (blobUrl: string) => {
     setIsTyping(true);
-    const fd = await getFormData(storage, blobUrl);
+    const sttFormData = await getFormData(storage, blobUrl)
+    const {transcript, stats} = await API.chat.speechToText(
+      project_id,
+      chat_id,
+      sttFormData,
+    )
+    setNewChat(transcript);
+
+    const fd = await getFormData(storage, undefined, transcript);
+    fd.append("transcript_start_time", stats.transcript_start_time.toString());
+    fd.append("transcript_end_time", stats.transcript_end_time.toString());
     converseMutation.mutate({ formdata: fd });
   };
 
