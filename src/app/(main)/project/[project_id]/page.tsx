@@ -128,17 +128,17 @@ export default function Chat(params: { params: { project_id: string } }) {
       setChatID(external_id);
 
       const sttFormData = await getFormData(blobUrl);
-      const speechToTextRes = await API.chat.speechToText(
+      const {transcript, stats} = await API.chat.speechToText(
         project_id,
         external_id,
         sttFormData,
       )
       
-      setChat(speechToTextRes.transcript);
+      setChat(transcript);
 
-      const fd = await getFormData(undefined, speechToTextRes.transcript);
-      fd.append("transcript_start_time", speechToTextRes.stats.transcript_start_time.toString());
-      fd.append("transcript_end_time", speechToTextRes.stats.transcript_end_time.toString());
+      const fd = await getFormData(undefined, transcript);
+      fd.append("transcript_start_time", stats.transcript_start_time.toString());
+      fd.append("transcript_end_time", stats.transcript_end_time.toString());
       converseMutation.mutate({ external_id, formdata: fd });
     }
     catch(e: any){
