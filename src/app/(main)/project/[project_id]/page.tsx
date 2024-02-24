@@ -115,7 +115,8 @@ export default function Chat(params: { params: { project_id: string } }) {
       const fd = await getFormData(undefined, chat);
       converseMutation.mutate({ external_id, formdata: fd });
     }catch(e: any){
-      setApiError(e.message);
+      setIsTyping(false);
+      setApiError(e?.error?.error);
     }
 
   };
@@ -132,6 +133,7 @@ export default function Chat(params: { params: { project_id: string } }) {
         external_id,
         sttFormData,
       )
+      
       setChat(transcript);
 
       const fd = await getFormData(undefined, transcript);
@@ -140,7 +142,8 @@ export default function Chat(params: { params: { project_id: string } }) {
       converseMutation.mutate({ external_id, formdata: fd });
     }
     catch(e: any){
-      setApiError(e.message);
+      setIsTyping(false);
+      setApiError(e?.error?.error);
     }
   };
 

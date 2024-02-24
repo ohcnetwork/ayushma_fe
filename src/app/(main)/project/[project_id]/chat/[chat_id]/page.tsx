@@ -136,7 +136,8 @@ export default function Chat(
       converseMutation.mutate({ formdata: fd });
     }
     catch(e: any){
-      setApiError(e.message);
+      setIsTyping(false);
+      setApiError(e?.error?.error);
     }
   };
 
