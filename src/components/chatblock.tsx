@@ -278,6 +278,7 @@ export default function ChatBlock(props: {
         <ChatFeedback
           message_id={message.external_id}
           feedback={message?.feedback ?? null}
+          contentLoading={message?.audio}
         />
       )}
     </div>
@@ -288,10 +289,12 @@ const ChatFeedback = ({
   feedback,
   message_id,
   onSuccess,
+  contentLoading
 }: {
   message_id: string;
   feedback: ChatFeedback;
   onSuccess?: (data: ChatFeedback) => void;
+  contentLoading?: string
 }) => {
   const queryClient = useQueryClient();
   const [liked, setLiked] = useState<boolean | null>(null);
@@ -316,8 +319,12 @@ const ChatFeedback = ({
     },
   );
 
+  if (!contentLoading) {
+    return;
+  }
+
   return feedback ? (
-    <div className="relative text-right group">
+    <div className="flex flex-wrap gap-2 pl-16 items-center pb-4 max-w-4xl mx-auto w-full">
       {feedback.message && (
         <div className="hidden group-hover:block absolute bottom-6 right-6 text-center bg-gray-100 text-gray-900 p-2 px-4 rounded shadow">
           {feedback.message}
@@ -401,7 +408,7 @@ const ChatFeedback = ({
         </div>
       </Modal>
 
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex flex-wrap gap-2 pl-16 items-center pb-4 max-w-4xl mx-auto w-full">
         <i
           onClick={() => setLiked(true)}
           className="far fa-thumbs-up cursor-pointer p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100"
