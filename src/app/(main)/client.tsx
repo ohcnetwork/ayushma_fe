@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 export default function Client() {
     const projectsQuery = useQuery<paginatedResponse<Project>>({
-        queryKey: ["app:projects"],
+        queryKey: ["projects", "app"],
         queryFn: () => API.projects.list()
     });
     const router = useRouter();
