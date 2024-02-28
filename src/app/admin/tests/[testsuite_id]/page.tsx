@@ -5,10 +5,7 @@ import Modal from "@/components/modal";
 import { Button, CheckBox, Input, TextArea } from "@/components/ui/interactive";
 import { Document, DocumentType, Project } from "@/types/project";
 import { API } from "@/utils/api";
-import {
-  useMutation,
-  useQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -26,77 +23,72 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
   const { testsuite_id } = params;
 
-  const testSuiteQuery = useQuery(
-    {
-      queryKey: ["testsuite", testsuite_id],
-      queryFn: () => API.tests.suites.get(testsuite_id),
-      refetchOnWindowFocus: false,
-    },
-  );
+  const testSuiteQuery = useQuery({
+    queryKey: ["testsuite", testsuite_id],
+    queryFn: () => API.tests.suites.get(testsuite_id),
+    refetchOnWindowFocus: false,
+  });
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
 
-  const TestQuestionsQuery = useQuery(
-    {
-      queryKey: ["testsuitequestion", testsuite_id],
-      queryFn: () =>
-        API.tests.questions.list(testsuite_id, {
-          ordering: "created_at",
-          limit: 100,
-        }),
-      refetchOnWindowFocus: false
+  const TestQuestionsQuery = useInfiQuery({
+    queryKey: ["testsuitequestion", testsuite_id],
+    fetchLimit: 30,
+    queryFn: ({ pageParam = 0 }) => {
+      return API.tests.questions.list(testsuite_id, {
+        ordering: "created_at",
+        limit: 30,
+        offset: pageParam,
+      });
     },
-  );
-  const testQuestions: TestQuestion[] | undefined =
-    TestQuestionsQuery.data?.results || undefined;
+  });
+
+  const testQuestions: TestQuestion[] =
+    TestQuestionsQuery?.data?.pages?.flatMap((page) => page.results) ?? [];
 
   const ProjectListQuery = useQuery({
     queryKey: ["projects"],
-    queryFn: () => API.projects.list()
+    queryFn: () => API.projects.list(),
   });
   const projects: Project[] = ProjectListQuery.data?.results || [];
 
-  const createDocumentMutation = useMutation(
-    {
-      mutationFn: async (args: { question_id: string; formData: any }) => {
-        const { question_id, formData } = args;
-        await API.tests.questions.documents.create(
-          testsuite_id,
-          question_id,
-          formData,
-        );
-      },
-      onSuccess: () => {
-        toast.success("Document Attached!");
-        TestQuestionsQuery.refetch();
-        setDocument(undefined);
-      },
-      onError: (error) => {
-        toast.error("Error attaching document");
-        console.log(error);
-      },
+  const createDocumentMutation = useMutation({
+    mutationFn: async (args: { question_id: string; formData: any }) => {
+      const { question_id, formData } = args;
+      await API.tests.questions.documents.create(
+        testsuite_id,
+        question_id,
+        formData,
+      );
     },
-  );
+    onSuccess: () => {
+      toast.success("Document Attached!");
+      TestQuestionsQuery.refetch();
+      setDocument(undefined);
+    },
+    onError: (error) => {
+      toast.error("Error attaching document");
+      console.log(error);
+    },
+  });
 
-  const deleteDocumentMutation = useMutation(
-    {
-      mutationFn: async (args: { question_id: string; document_id: string }) => {
-        const { question_id, document_id } = args;
-        await API.tests.questions.documents.delete(
-          testsuite_id,
-          question_id,
-          document_id,
-        );
-      },
-      onSuccess: () => {
-        toast.success("Document Deleted");
-        TestQuestionsQuery.refetch();
-      },
-      onError: (error) => {
-        toast.error("Error deleting document");
-        console.log(error);
-      },
+  const deleteDocumentMutation = useMutation({
+    mutationFn: async (args: { question_id: string; document_id: string }) => {
+      const { question_id, document_id } = args;
+      await API.tests.questions.documents.delete(
+        testsuite_id,
+        question_id,
+        document_id,
+      );
     },
-  );
+    onSuccess: () => {
+      toast.success("Document Deleted");
+      TestQuestionsQuery.refetch();
+    },
+    onError: (error) => {
+      toast.error("Error deleting document");
+      console.log(error);
+    },
+  });
 
   const [document, setDocument] = useState<
     { question_id: string; file: File; state: string } | undefined
@@ -124,7 +116,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading, refetch } =
     useInfiQuery({
       queryKey: ["testruns"],
-      queryFn: fetchData
+      queryFn: fetchData,
     });
 
   useEffect(() => {
@@ -159,37 +151,32 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     [isLoading, hasNextPage, fetchNextPage, isFetching],
   );
 
-  const TestQuestionsAddMutation = useMutation(
-    {
-      mutationFn: (question: Partial<TestQuestion>) =>
-        API.tests.questions.create(testsuite_id, question),
-      onSuccess: () => {
-        toast.success("Test Question Added");
-        TestQuestionsQuery.refetch();
-      },
+  const TestQuestionsAddMutation = useMutation({
+    mutationFn: (question: Partial<TestQuestion>) =>
+      API.tests.questions.create(testsuite_id, question),
+    onSuccess: () => {
+      toast.success("Test Question Added");
+      TestQuestionsQuery.refetch();
     },
-  );
+  });
 
-  const TestQuestionDeleteMutation = useMutation(
-    {
-      mutationFn: (question_id: string) =>
-        API.tests.questions.delete(testsuite_id, question_id),
-      onSuccess: () => {
-        toast.success("Test Question Deleted");
-        TestQuestionsQuery.refetch();
-      },
+  const TestQuestionDeleteMutation = useMutation({
+    mutationFn: (question_id: string) =>
+      API.tests.questions.delete(testsuite_id, question_id),
+    onSuccess: () => {
+      toast.success("Test Question Deleted");
+      TestQuestionsQuery.refetch();
     },
-  );
+  });
 
-  const TestRunCreateMutation = useMutation(
-    {
-      mutationFn: (testRun: Partial<TestRun>) => API.tests.runs.create(testsuite_id, testRun),
-      onSuccess: (testRun) => {
-        toast.success("Test Started");
-        refetch();
-      },
+  const TestRunCreateMutation = useMutation({
+    mutationFn: (testRun: Partial<TestRun>) =>
+      API.tests.runs.create(testsuite_id, testRun),
+    onSuccess: (testRun) => {
+      toast.success("Test Started");
+      refetch();
     },
-  );
+  });
 
   const [currentQuestions, setCurrentQuestions] = useState<TestQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Partial<TestQuestion>>(
@@ -212,7 +199,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         }),
       );
     }
-  }, [testQuestions]);
+  }, [TestQuestionsQuery.data]);
 
   useEffect(() => {
     if (projects && projects.length > 0) {
@@ -341,9 +328,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -444,8 +431,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         {currentQuestions && currentQuestions.length > 0 && (
           <div className="grid">
             {currentQuestions.map((question, index) => {
+              if (!question) return null;
               const has_new_document =
-                document?.question_id === question.external_id;
+                document?.question_id === question?.external_id;
               return (
                 <div
                   key={question.external_id}
@@ -522,52 +510,55 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <label className="block font-medium text-gray-700 mb-2">
                       Attachments
                     </label>
-                    {question?.documents?.map((document) => (
-                      <div
-                        className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
-                        key={document.external_id}
-                      >
-                        <Link
-                          href={document.file}
-                          target="_blank"
-                          key={document.external_id}
-                          className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md justify-between"
+                    {question?.documents?.map((document) => {
+                      if (!document) return null;
+                      return (
+                        <div
+                          className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
+                          key={document?.external_id}
                         >
-                          <div className="flex items-center justify-center">
-                            <i className="fas fa-paperclip mr-2 text-gray-600"></i>
-                            <div className="text-gray-700">
-                              {document.title}
+                          <Link
+                            href={document?.file}
+                            target="_blank"
+                            key={document?.external_id}
+                            className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md justify-between"
+                          >
+                            <div className="flex items-center justify-center">
+                              <i className="fas fa-paperclip mr-2 text-gray-600"></i>
+                              <div className="text-gray-700">
+                                {document?.title}
+                              </div>
                             </div>
-                          </div>
-                          <div className="w-1/2">
-                            <img
-                              src={document.file}
-                              alt="File"
-                              className="w-full"
-                            />
-                          </div>
-                        </Link>
+                            <div className="w-1/2">
+                              <img
+                                src={document?.file}
+                                alt="File"
+                                className="w-full"
+                              />
+                            </div>
+                          </Link>
 
-                        <Button
-                          className="h-8 w-8 text-red-600 hover:bg-slate-200"
-                          variant="secondary"
-                          onClick={async () =>
-                            await handleDelete(
-                              question.external_id,
-                              document.external_id,
-                            )
-                          }
-                        >
-                          <i className="fas fa-trash"></i>
-                        </Button>
-                      </div>
-                    ))}
+                          <Button
+                            className="h-8 w-8 text-red-600 hover:bg-slate-200"
+                            variant="secondary"
+                            onClick={async () =>
+                              await handleDelete(
+                                question.external_id,
+                                document?.external_id,
+                              )
+                            }
+                          >
+                            <i className="fas fa-trash"></i>
+                          </Button>
+                        </div>
+                      );
+                    })}
 
                     {has_new_document && (
                       <div className="flex items-center mb-2 border border-gray-300 rounded-lg bg-slate-200">
                         <i className="fas fa-paperclip mx-2 text-gray-600"></i>{" "}
                         <span className="flex-grow text-gray-700">
-                          {document.file.name}
+                          {document?.file?.name}
                         </span>{" "}
                         <Button
                           className="rounded-full h-8 w-8 text-red-600 bg-slate-200"
@@ -603,24 +594,25 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${document.state === "selected"
-                            ? "cursor-pointer"
-                            : "cursor-not-allowed"
-                            }`}
+                          className={`text-sm text-gray-700 flex justify-center items-center ${
+                            document?.state === "selected"
+                              ? "cursor-pointer"
+                              : "cursor-not-allowed"
+                          }`}
                           onClick={async () => {
-                            if (document.state === "uploading") return;
+                            if (document?.state === "uploading") return;
                             setDocument({
                               ...document,
                               state: "uploading",
                             });
                             await onSubmit(question.external_id, {
-                              title: document?.file.name,
+                              title: document?.file?.name,
                               raw_file: document?.file,
                               document_type: DocumentType.FILE,
                             });
                           }}
                         >
-                          {document.state === "selected" ? (
+                          {document?.state === "selected" ? (
                             <>
                               <i className="fas fa-upload mr-2 flex items-center"></i>{" "}
                               <>Upload File</>
@@ -645,6 +637,19 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             })}
           </div>
         )}
+        <div className="flex flex-col items-center mb-4">
+          <button
+            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${
+              TestQuestionsQuery.hasNextPage
+                ? "bg-green-400 text-white"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
+            onClick={() => TestQuestionsQuery.fetchNextPage()}
+            disabled={!TestQuestionsQuery.hasNextPage}
+          >
+            Load More Questions
+          </button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-between mb-6 mx-4 md:mx-0">
           <Button
             variant="secondary"
@@ -688,18 +693,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.bleu_score || 0),
-                  0,
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.bleu_score || 0),
+                    0,
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.cosine_sim || 0),
-                  0,
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.cosine_sim || 0),
+                    0,
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -741,10 +746,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgCosineSim < 0.5
-                            ? "text-red-500"
-                            : "text-green-500"
-                            }`}
+                          className={`font-bold ${
+                            avgCosineSim < 0.5
+                              ? "text-red-500"
+                              : "text-green-500"
+                          }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -758,8 +764,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                            }`}
+                          className={`font-bold ${
+                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                          }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -771,9 +778,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
-                      )} ${testRun.status === TestRunStatus.RUNNING &&
-                      "animate-pulse"
-                        }`}
+                      )} ${
+                        testRun.status === TestRunStatus.RUNNING &&
+                        "animate-pulse"
+                      }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED

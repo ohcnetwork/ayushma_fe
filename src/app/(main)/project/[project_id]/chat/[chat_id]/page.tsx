@@ -159,7 +159,7 @@ export default function Chat(
   }, [autoPlayIndex]);
 
   return (
-    <div className="h-screen flex flex-col flex-1">
+    <div className="h-full flex flex-col flex-1">
       <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
         {chat?.chats?.map((message, i) => (
           <ChatBlock

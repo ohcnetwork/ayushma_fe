@@ -33,7 +33,7 @@ export default function TestSuiteForm(props: {
         <Slider
           left="More Factual"
           right="More Creative"
-          value={testSuite.temperature || 0.5}
+          value={testSuite.temperature ?? 0.5}
           step={0.1}
           max={1}
           onChange={(val) => setTestSuite({ ...testSuite, temperature: val })}
@@ -44,7 +44,7 @@ export default function TestSuiteForm(props: {
         <Slider
           left="Short and Crisp"
           right="Long and Detailed"
-          value={testSuite.topk || 50}
+          value={testSuite.topk ?? 50}
           step={1}
           max={100}
           onChange={(val) => setTestSuite({ ...testSuite, topk: val })}
