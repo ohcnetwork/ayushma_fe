@@ -194,26 +194,37 @@ export default function ChatBlock(props: {
               )}
               {message?.messageType === ChatMessageType.AYUSHMA &&
                 message?.audio && (
-                  <div className="inline-flex gap-1 mt-2">
-                    <button
-                      onClick={togglePlay}
-                      className="flex items-center justify-center text-gray-500 rounded-lg transition bg-gray-100 hover:text-gray-700 hover:bg-gray-300 p-2"
-                    >
-                      {audioStatus === "playing" ? (
-                        <i className="fa-regular fa-circle-pause text-xl"></i>
-                      ) : (
-                        <i className="fa-regular fa-circle-play text-xl"></i>
-                      )}
-                    </button>
-                    {(audioStatus === "paused" ||
-                      audioStatus === "playing") && (
-                        <button
-                          onClick={stopAudio}
-                          className="flex items-center justify-center text-red-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 p-2 "
-                        >
-                          <i className="fa-regular fa-circle-stop text-xl"></i>
-                        </button>
-                      )}
+                  <div className="flex flex-wrap justify-between items-center">
+                    <div className="inline-flex gap-1 mt-2">
+                      <button
+                        onClick={togglePlay}
+                        className="flex items-center justify-center text-gray-500 rounded-lg transition bg-gray-100 hover:text-gray-700 hover:bg-gray-300 p-2"
+                      >
+                        {audioStatus === "playing" ? (
+                          <i className="fa-regular fa-circle-pause text-xl"></i>
+                        ) : (
+                          <i className="fa-regular fa-circle-play text-xl"></i>
+                        )}
+                      </button>
+                      {(audioStatus === "paused" ||
+                        audioStatus === "playing") && (
+                          <button
+                            onClick={stopAudio}
+                            className="flex items-center justify-center text-red-500 rounded-lg transition bg-gray-200 hover:text-gray-700 hover:bg-gray-300 p-2 "
+                          >
+                            <i className="fa-regular fa-circle-stop text-xl"></i>
+                          </button>
+                        )}
+                    </div>
+                    <div className="inline-flex gap-1 mt-2">
+                    {message?.messageType === ChatMessageType.AYUSHMA && (
+                      <ChatFeedback
+                        message_id={message.external_id}
+                        feedback={message?.feedback ?? null}
+                        contentLoading={message?.audio}
+                      />
+                    )}
+                    </div>
                   </div>
                 )}
               {storage?.show_english &&
@@ -274,12 +285,6 @@ export default function ChatBlock(props: {
             })}
           </div>
         )}
-      {message?.messageType === ChatMessageType.AYUSHMA && (
-        <ChatFeedback
-          message_id={message.external_id}
-          feedback={message?.feedback ?? null}
-        />
-      )}
     </div>
   );
 }
@@ -288,10 +293,12 @@ const ChatFeedback = ({
   feedback,
   message_id,
   onSuccess,
+  contentLoading
 }: {
   message_id: string;
   feedback: ChatFeedback;
   onSuccess?: (data: ChatFeedback) => void;
+  contentLoading?: string
 }) => {
   const queryClient = useQueryClient();
   const [liked, setLiked] = useState<boolean | null>(null);
@@ -316,8 +323,12 @@ const ChatFeedback = ({
     },
   );
 
+  if (!contentLoading) {
+    return;
+  }
+
   return feedback ? (
-    <div className="relative text-right group">
+    <div className="inline-flex gap-1 mt-2">
       {feedback.message && (
         <div className="hidden group-hover:block absolute bottom-6 right-6 text-center bg-gray-100 text-gray-900 p-2 px-4 rounded shadow">
           {feedback.message}
@@ -401,7 +412,7 @@ const ChatFeedback = ({
         </div>
       </Modal>
 
-      <div className="flex items-center justify-end gap-2">
+      <div className="inline-flex gap-1 mt-2">
         <i
           onClick={() => setLiked(true)}
           className="far fa-thumbs-up cursor-pointer p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-gray-100"
