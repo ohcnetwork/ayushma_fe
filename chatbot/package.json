@@ -22,7 +22,7 @@
     "jotai": "^2.3.1",
     "ncp": "^2.0.0",
     "node-sass": "^7.0.1",
-    "postcss": "^8.4.27",
+    "postcss": "^8.4.31",
     "rollup": "^2.77.5",
     "rollup-plugin-esbuild": "^5.0.0",
     "rollup-plugin-postcss": "^4.0.2",
