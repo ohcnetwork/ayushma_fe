@@ -53,9 +53,9 @@ const request = async (
   if (method === "GET") {
     const requestParams = data
       ? `?${Object.keys(data)
-        .filter((key) => data[key] !== null && data[key] !== undefined)
-        .map((key) => `${key}=${data[key]}`)
-        .join("&")}`
+          .filter((key) => data[key] !== null && data[key] !== undefined)
+          .map((key) => `${key}=${data[key]}`)
+          .join("&")}`
       : "";
     url += requestParams;
     payload = null;
@@ -63,22 +63,24 @@ const request = async (
 
   let localToken: string;
 
-  if (typeof localStorage !== undefined) {
-    console.log("API Called from browser =====")
+  if (typeof localStorage !== 'undefined') {
     const storage = JSON.parse(
       localStorage.getItem(
-        process.env.NEXT_PUBLIC_LOCAL_STORAGE || "ayushma-storage",
-      ) || "{}");
-    localToken = storage?.auth_token
+        process.env.NEXT_PUBLIC_LOCAL_STORAGE ?? "ayushma-storage",
+      ) ?? "{}",
+    );
+    localToken = storage?.auth_token;
   } else {
-    console.log("API Called from server =====")
-    const { cookies } = require('next/headers');
-    const cookieStore = cookies()
-    localToken = cookieStore.get('auth_token')
+    const { cookies } = require("next/headers");
+    const cookieStore = cookies();
+    localToken = cookieStore.get("auth_token");
   }
 
   const auth =
-    isAuth === false || !localToken || typeof localToken === "undefined" || localToken === null
+    isAuth === false ||
+    !localToken ||
+    typeof localToken === "undefined" ||
+    localToken === null
       ? undefined
       : "Token " + localToken;
 
@@ -89,8 +91,8 @@ const request = async (
       ...(formdata === true
         ? {}
         : {
-          "Content-Type": "application/json",
-        }),
+            "Content-Type": "application/json",
+          }),
       ...(auth !== "" ? { Authorization: auth } : {}),
       ...headers,
     },
@@ -218,9 +220,9 @@ export const API = {
         offset?: number;
         archived?: boolean | null;
       } = {
-          ordering: "-created_at",
-          limit: 50,
-        },
+        ordering: "-created_at",
+        limit: 50,
+      },
     ) => request("projects", "GET", filters),
     get: (id: string) => request(`projects/${id}`),
     update: (id: string, project: Partial<Project>) =>
@@ -264,10 +266,10 @@ export const API = {
         { title },
         openai_api_key
           ? {
-            headers: {
-              "OpenAI-Key": openai_api_key,
-            },
-          }
+              headers: {
+                "OpenAI-Key": openai_api_key,
+              },
+            }
           : {},
       ),
     chats: (
@@ -288,22 +290,22 @@ export const API = {
       filters: {
         fetch: string;
       } = {
-          fetch: "all",
-        },
+        fetch: "all",
+      },
     ) => request(`projects/${project_id}/chats/${id}`, "GET", filters),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
       request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
     delete: (project_id: string, id: string) =>
       request(`projects/${project_id}/chats/${id}`, "DELETE"),
     speechToText: (project_id: string, chat_id: string, formdata: FormData) =>
-    request(
-      `projects/${project_id}/chats/${chat_id}/speech_to_text`,
-      "POST",
-      formdata,
-      {
-        formdata: true,
-      },
-    ),
+      request(
+        `projects/${project_id}/chats/${chat_id}/speech_to_text`,
+        "POST",
+        formdata,
+        {
+          formdata: true,
+        },
+      ),
     converse: (
       project_id: string,
       chat_id: string,
@@ -322,8 +324,8 @@ export const API = {
           formdata: true,
           headers: openai_api_key
             ? {
-              "OpenAI-Key": openai_api_key,
-            }
+                "OpenAI-Key": openai_api_key,
+              }
             : {},
         },
         (e) => {
@@ -348,9 +350,9 @@ export const API = {
     questions: {
       list: (
         suite_id: string,
-        filters: { ordering: string; limit: number } = {
+        filters: { ordering: string; offset?: number; limit?: number } = {
           ordering: "-created_at",
-          limit: 100,
+          limit: 30,
         },
       ) => request(`tests/suites/${suite_id}/questions`, "GET", filters),
       create: (suite_id: string, question: Partial<TestQuestion>) =>
