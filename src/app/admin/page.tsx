@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const [isArchived, setIsArchived] = useState(false);
   const projectsQuery = useInfiQuery({
-    queryKey: ["admin:projects"],
+    queryKey: ["projects", "admin"],
     queryFn: ({ pageParam = 0 }) => {
       return API.projects.list({
         offset: pageParam,
