@@ -32,14 +32,14 @@ const RoleButton = (
     >
       <span
         className={`p-1.5 rounded-full h-fit ${state
-          ? "bg-white"
+          ? "bg-primary"
           : `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"
           } ${color === "orange" && "bg-orange-400"}`
           }`}
       ></span>
       <span
         className={`${state
-          ? "text-white"
+          ? "text-primary"
           : `${color === "green" && "text-green-400"} ${color === "blue" && "text-blue-400"
           } ${color === "orange" && "text-orange-400"}`
           }`}
@@ -140,7 +140,7 @@ export default function Page() {
           useWindow={false}
         >
           <table className="w-full text-sm text-left ">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 border border-gray-300 rounded-lg">
+            <thead className="text-xs text-gray-700 uppercase bg-secondary border border-gray-300 rounded-lg">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   User
@@ -163,7 +163,7 @@ export default function Page() {
                     return (
                       <tr
                         key={user.external_id}
-                        className="bg-white border-b border-x hover:bg-gray-50"
+                        className="bg-primary border-b border-x hover:bg-secondary"
                       >
                         <td
                           scope="row"
@@ -215,7 +215,7 @@ export default function Page() {
               ))
             ) : (
               <tbody>
-                <tr className="bg-white border-b border-x hover:bg-gray-50 w-full">
+                <tr className="bg-primary border-b border-x hover:bg-secondary w-full">
                   <td colSpan={100} className="p-4 text-center text-gray-400">
                     No users found
                   </td>

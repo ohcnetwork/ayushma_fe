@@ -103,15 +103,14 @@ export default function Chatbot(props: AyushmaProps) {
         <img src="https://ayushma.ohc.network/logo.svg" alt="Ayushma" />
       </button>
       <div
-        className={`bg-gray-100 w-[300px] h-[400px] bottom-14 transition-all absolute shadow rounded-lg right-0 overflow-hidden flex items-center flex-col justify-between ${
-          show
-            ? "visible opacity-100 translate-y-0"
-            : "invisible opacity-0 translate-y-5"
-        }`}
+        className={`bg-secondary w-[300px] h-[400px] bottom-14 transition-all absolute shadow rounded-lg right-0 overflow-hidden flex items-center flex-col justify-between ${show
+          ? "visible opacity-100 translate-y-0"
+          : "invisible opacity-0 translate-y-5"
+          }`}
       >
         {chat ? (
           <>
-            <div className="bg-white p-2 w-full border-b border-b-gray-200">
+            <div className="bg-white p-2 w-full border-b border-b-secondaryActive">
               <button
                 onClick={() => {
                   setChat(undefined);
@@ -137,7 +136,7 @@ export default function Chatbot(props: AyushmaProps) {
             />
           </div>
         )}
-        <div className="p-2 w-full bg-white border-t border-gray-200">
+        <div className="p-2 w-full bg-white border-t border-secondaryActive">
           <ChatBar
             value={value}
             onChange={(value) => setValue(value)}

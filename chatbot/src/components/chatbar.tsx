@@ -11,7 +11,7 @@ export default function ChatBar(props: {
 
   return (
     <form
-      className="bg-gray-100 border border-gray-200 text-sm rounded w-full flex items-center justify-between"
+      className="bg-secondary border border-secondaryActive text-sm rounded w-full flex items-center justify-between"
       onSubmit={onSubmit}
     >
       <input

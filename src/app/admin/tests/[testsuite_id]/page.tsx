@@ -328,9 +328,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -495,7 +495,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                             e.target.value,
                           )
                         }
-                        className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                        className="block w-full bg-primary border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                       >
                         {supportedLanguages.map((language) => (
                           <option key={language.value} value={language.value}>
@@ -514,7 +514,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                       if (!document) return null;
                       return (
                         <div
-                          className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
+                          className="flex items-center mb-2 border border-gray-300 rounded-lg bg-primary"
                           key={document?.external_id}
                         >
                           <Link
@@ -590,15 +590,14 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                           ? `file-upload-${question.external_id}`
                           : ""
                       }
-                      className="cursor-pointer rounded-md px-4 py-2 border border-gray-300 w-full block bg-white hover:bg-slate-200"
+                      className="cursor-pointer rounded-md px-4 py-2 border border-gray-300 w-full block bg-primary hover:bg-slate-200"
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${
-                            document?.state === "selected"
-                              ? "cursor-pointer"
-                              : "cursor-not-allowed"
-                          }`}
+                          className={`text-sm text-gray-700 flex justify-center items-center ${document?.state === "selected"
+                            ? "cursor-pointer"
+                            : "cursor-not-allowed"
+                            }`}
                           onClick={async () => {
                             if (document?.state === "uploading") return;
                             setDocument({
@@ -639,11 +638,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         )}
         <div className="flex flex-col items-center mb-4">
           <button
-            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${
-              TestQuestionsQuery.hasNextPage
-                ? "bg-green-400 text-white"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
+            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${TestQuestionsQuery.hasNextPage
+              ? "bg-green-400 text-primary"
+              : "bg-secondaryActive text-gray-400 cursor-not-allowed"
+              }`}
             onClick={() => TestQuestionsQuery.fetchNextPage()}
             disabled={!TestQuestionsQuery.hasNextPage}
           >
@@ -693,18 +691,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.bleu_score || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.bleu_score || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.cosine_sim || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.cosine_sim || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -730,7 +728,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                   }
                 }}
               >
-                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-8 justify-between items-center my-2 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-100">
+                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-8 justify-between items-center my-2 p-4 bg-primary rounded-lg shadow-sm border border-secondaryActive hover:bg-secondary">
                   <div className="flex col-span-3 items-baseline gap-1">
                     <span className="text-gray-700 font-bold">
                       {testRun.project_object.title}
@@ -746,11 +744,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgCosineSim < 0.5
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgCosineSim < 0.5
+                            ? "text-red-500"
+                            : "text-green-500"
+                            }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -764,9 +761,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                            }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -778,10 +774,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
-                      )} ${
-                        testRun.status === TestRunStatus.RUNNING &&
-                        "animate-pulse"
-                      }`}
+                      )} ${testRun.status === TestRunStatus.RUNNING &&
+                      "animate-pulse"
+                        }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED
@@ -819,7 +814,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
               Cancel
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              className="bg-red-500 hover:bg-red-700 px-4 text-primary p-2 rounded-lg"
               onClick={() => {
                 deleteTest();
                 setShowDeleteModal(false);
@@ -881,7 +876,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 language: e.target.value,
               })
             }
-            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            className="block w-full bg-primary border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           >
             {supportedLanguages.map((language) => (
               <option key={language.value} value={language.value}>
@@ -930,7 +925,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           <select
             value={testSuiteProject || projects[0]?.external_id}
             onChange={(e) => setTestSuiteProject(e.target.value)}
-            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            className="block w-full bg-primary border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           >
             {projects.map((project) => (
               <option key={project.external_id} value={project.external_id}>

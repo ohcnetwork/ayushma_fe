@@ -12,4 +12,6 @@ export type Storage = {
   top_k?: number;
   chatbot_token?: string;
   tts_autoplay?: boolean;
+  theme?: number;
+  preferedTheme?: number;
 };

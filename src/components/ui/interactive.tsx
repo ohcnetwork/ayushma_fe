@@ -24,7 +24,7 @@ export function Input(
 
   return (
     <div className={parentDivClassName}>
-      <div className="border border-gray-200 w-full p-0.5 bg-white rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
+      <div className="border border-secondaryActive w-full p-0.5 bg-primary rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 ring-offset-primary outline-0 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         {left}
         <input
@@ -54,7 +54,7 @@ export function TextArea(
 
   return (
     <>
-      <div className="border border-gray-200 w-full p-0.5 bg-white rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
+      <div className="border border-secondaryActive w-full p-0.5 bg-primary rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         {left}
         <textarea
@@ -83,11 +83,11 @@ export function Button(
 
   const baseClasses = "rounded-lg p-2 px-4 flex items-center justify-center";
   const primaryClasses =
-    "bg-green-500 enabled:hover:bg-green-600 transition-all text-white disabled:cursor-not-allowed";
+    "bg-green-500 enabled:hover:bg-green-600 transition-all text-primary disabled:cursor-not-allowed";
   const secondaryClasses =
-    "bg-white enabled:hover:bg-slate-200 transition-all text-gray-700 disabled:cursor-not-allowed";
+    "bg-primary enabled:hover:bg-slate-200 transition-all text-gray-700 disabled:cursor-not-allowed";
   const dangerClasses =
-    "bg-red-500 enabled:hover:bg-red-600 transition-all text-white disabled:cursor-not-allowed";
+    "bg-red-500 enabled:hover:bg-red-600 transition-all text-primary disabled:cursor-not-allowed";
   const classes = twMerge(
     baseClasses,
     props.variant === "secondary"
@@ -100,7 +100,7 @@ export function Button(
   return (
     <button {...rest} className={classes}>
       {loading ? (
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block"></div>
+        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary inline-block"></div>
       ) : (
         children
       )}
@@ -151,7 +151,7 @@ export function Dropdown(
 
   return (
     <div>
-      <div className="border border-gray-200 w-full p-0.5 bg-white rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
+      <div className="border border-secondaryActive w-full p-0.5 bg-primary rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         <select
           {...rest}

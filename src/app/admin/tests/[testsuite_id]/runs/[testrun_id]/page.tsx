@@ -316,7 +316,7 @@ export default function Page({
           </Button>
           <Button
             variant="secondary"
-            className="bg-gray-100"
+            className="bg-secondary"
             onClick={() => {
               router.push(`/admin/tests/${testsuite_id}/`);
             }}
@@ -325,7 +325,7 @@ export default function Page({
           </Button>
         </div>
       </div>
-      <div className="border border-gray-300 bg-white p-4 rounded-lg my-4">
+      <div className="border border-gray-300 bg-primary p-4 rounded-lg my-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <div className="flex flex-col justify-end">
@@ -414,7 +414,7 @@ export default function Page({
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-gray-300 bg-white p-3 rounded-lg my-4">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-gray-300 bg-primary p-3 rounded-lg my-4">
         {feedbackStats.total !== -1 ? (
           <>
             {" "}
@@ -438,7 +438,7 @@ export default function Page({
                       ) && (
                         <span
                           key={rating.id}
-                          className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
+                          className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
                         >
                           {rating.label}
                         </span>
@@ -475,12 +475,12 @@ export default function Page({
       {testRun?.test_results?.map((test: TestResult, index) => (
         <div
           key={test.external_id}
-          className="bg-white rounded-lg border-gray-200 border p-6 my-4"
+          className="bg-primary rounded-lg border-secondaryActive border p-6 my-4"
         >
           <h3 className="text-lg font-bold text-center mb-2">
             Q{index + 1}. {test.question}
           </h3>
-          <div className="border-b border-gray-200 my-4"></div>
+          <div className="border-b border-secondaryActive my-4"></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <h3 className="text-md font-bold mb-2 text-center sm:text-left">
@@ -511,14 +511,14 @@ export default function Page({
                           }
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                          className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
                         >
                           {doc.title}
                         </a>
                       );
                     else if (doc.document_type === DocumentType.TEXT)
                       return (
-                        <div className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
+                        <div className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
                           {doc.title}
                         </div>
                       );
@@ -528,10 +528,10 @@ export default function Page({
               )}
             </div>
           </div>
-          <div className="border-b border-gray-200 my-4"></div>
+          <div className="border-b border-secondaryActive my-4"></div>
           {test.test_question?.documents?.map((document) => (
             <div
-              className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
+              className="flex items-center mb-2 border border-gray-300 rounded-lg bg-primary"
               key={document.external_id}
             >
               <Link
@@ -558,7 +558,7 @@ export default function Page({
               </Link>
             </div>
           ))}
-          <div className="border-b border-gray-200 my-4"></div>
+          <div className="border-b border-secondaryActive my-4"></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
             <div>
               <h3 className="text-md font-bold mb-2 text-center sm:text-left">
@@ -612,7 +612,7 @@ export default function Page({
                         ) && (
                           <span
                             key={rating.id}
-                            className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
+                            className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
                           >
                             {rating.label}
                           </span>
@@ -639,7 +639,7 @@ export default function Page({
           <div className="mt-4">
             {test.feedback &&
               test.feedback.map((feedback, i) => (
-                <div key={i} className="p-4 border border-gray-200 rounded-lg">
+                <div key={i} className="p-4 border border-secondaryActive rounded-lg">
                   <b>{feedback.user_object.username}</b>{" "}
                   <RatingLabel
                     rating={feedback.rating}
@@ -674,7 +674,7 @@ export default function Page({
                   <h3 className="text-md font-bold mb-2">AI Answer:</h3>
                   <p className="text-gray-700">{feedbackTestResult.answer}</p>
                 </div>
-                <hr className="my-2 bg-gray-200" />
+                <hr className="my-2 bg-secondaryActive" />
                 <div>
                   <h3 className="text-md font-bold mb-2">Human Answer:</h3>
                   <p className="text-gray-700">
@@ -685,7 +685,7 @@ export default function Page({
             )}
             {!showAddFeedbackSection && (
               <>
-                <hr className="my-4 bg-gray-200" />
+                <hr className="my-4 bg-secondaryActive" />
                 <div className="max-h-[600px] overflow-y-auto [&::-webkit-scrollbar]:hidden">
                   {feedbackItemsLoading && (
                     <div className="flex justify-center items-center">
@@ -697,7 +697,7 @@ export default function Page({
                     feedbackItems.map((feedback: Feedback) => (
                       <div
                         key={feedback.external_id}
-                        className="mb-4 border border-gray-200 rounded-lg p-3"
+                        className="mb-4 border border-secondaryActive rounded-lg p-3"
                       >
                         <div className="flex justify-between items-center">
                           <h3 className="text-md font-bold mb-2">
@@ -719,7 +719,7 @@ export default function Page({
                                 rating.id === feedback.rating && (
                                   <span
                                     key={rating.id}
-                                    className={`inline-block rounded-full px-3 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
+                                    className={`inline-block rounded-full px-3 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
                                   >
                                     {rating.label}
                                   </span>
@@ -740,7 +740,7 @@ export default function Page({
                 </div>
               </>
             )}
-            <hr className="my-4 bg-gray-200" />
+            <hr className="my-4 bg-secondaryActive" />
             {showAddFeedbackSection && (
               <>
                 <span className="text-black font-semibold mb-4">
@@ -773,7 +773,7 @@ export default function Page({
               {showAddFeedbackSection && (
                 <>
                   <Button
-                    className="mr-2 bg-gray-200"
+                    className="mr-2 bg-secondaryActive"
                     variant="secondary"
                     onClick={() => {
                       setShowAddFeedbackSection(false);

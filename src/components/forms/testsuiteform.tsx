@@ -52,7 +52,7 @@ export default function TestSuiteForm(props: {
         />
         <div className="grid grid-cols-2 gap-4 mt-4">
           <Button
-            className="w-full bg-gray-50"
+            className="w-full bg-secondary"
             variant="secondary"
             onClick={() => {
               router.push(`/admin`);

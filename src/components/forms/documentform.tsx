@@ -112,7 +112,7 @@ export default function DocumentForm(props: {
               <iframe src={doc.file as any} className="w-full h-96" />
             </div>
           ) : doc.text_content ? (
-            <div className="flex flex-col gap-2 bg-[#fbfffd] h-full border border-gray-200 rounded-md p-4 ">
+            <div className="flex flex-col gap-2 bg-[#fbfffd] h-full border border-secondaryActive rounded-md p-4 ">
               {doc.document_type && (
                 <div className="flex gap-2 items-center">
                   <i
@@ -235,7 +235,7 @@ export default function DocumentForm(props: {
               Cancel
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              className="bg-red-500 hover:bg-red-700 px-4 text-primary p-2 rounded-lg"
               onClick={() => {
                 handleDelete();
                 setShowDeleteModal(false);

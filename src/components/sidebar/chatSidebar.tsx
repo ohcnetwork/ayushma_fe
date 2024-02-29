@@ -106,7 +106,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
 
   return (
     <>
-      <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col h-screen justify-between">
+      <div className="bg-primary bg-cover bg-top w-64 shrink-0 flex flex-col h-screen justify-between">
         <div className="flex flex-col flex-1 overflow-auto">
           <div className="flex flex-col p-3">
             <Link
@@ -123,7 +123,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             </Link>
             <Link
               href={project_id ? `/project/${project_id}` : "/"}
-              className="bg-gray-100 py-1 px-4 rounded-lg border border-gray-200 hover:bg-gray-200 transition-all text-center mb-2"
+              className="bg-secondary py-1 px-4 rounded-lg border border-secondaryActive hover:bg-secondaryActive transition-all text-center mb-2"
             >
               <i className="fad fa-pen-to-square" />
               &nbsp; New Chat
@@ -135,7 +135,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
               onChange={(e) => {
                 setSearchQuery(e.target.value);
               }}
-              className="border-gray-200 py-1 px-4 rounded-lg border-2 hover:bg-gray-100 transition-all"
+              className="border-secondaryActive py-1 px-4 rounded-lg border-2 hover:bg-secondary bg-primary transition-all outline-none"
             />
           </div>
           {!nonChatRoutes.includes(path || "") && (
@@ -169,7 +169,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                     chatsQuery.fullData?.map((chat: Chat, j: number) => (
                       <div
                         key={j}
-                        className="w-full group hover:bg-gray-100 hover:border-gray-200 rounded-lg overflow-hidden flex justify-between transition-all"
+                        className="w-full group hover:bg-secondary hover:border-secondaryActive rounded-lg overflow-hidden flex justify-between transition-all"
                       >
                         <Link
                           href={`/project/${project_id}/chat/${chat.external_id}`}
@@ -202,7 +202,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
               <button
                 key={i}
                 onClick={button.onclick}
-                className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center transition-all hover:bg-gray-200 border-gray-200 bg-gray-100 text-gray-500"
+                className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center transition-all hover:bg-secondaryActive border-secondaryActive bg-secondary text-gray-500"
               >
                 <i className={`fad fa-${button.icon}`} />
               </button>
@@ -225,7 +225,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
               Cancel
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              className="bg-red-500 hover:bg-red-700 px-4 text-primary p-2 rounded-lg"
               onClick={() => {
                 deleteChat(deleteModal.external_id);
                 onDeleteClose();
@@ -347,6 +347,20 @@ export default function ChatSideBar(props: { project_id?: string }) {
               })
             }
           />
+          <br />
+          Theme
+          <br />
+          <select
+            value={storage.theme}
+            onChange={(e) => {
+              setStorage({ ...storage, theme: Number(e.target.value) === 2 ? undefined : Number(e.target.value) });
+            }}
+            className="border border-secondary rounded-lg bg-primary p-2 px-4"
+          >
+            <option value={2}>System</option>
+            <option value={0}>Light</option>
+            <option value={1}>Dark</option>
+          </select>
         </div>
       </Modal>
     </>
