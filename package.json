@@ -28,6 +28,7 @@
     "@tanstack/react-query-next-experimental": "^5.18.0",
     "@types/three": "^0.160.0",
     "audio-recorder-polyfill": "^0.4.1",
+    "csv-parse": "^5.5.5",
     "framer-motion": "^11.0.3",
     "jotai": "^2.0.4",
     "json2csv": "^6.0.0-alpha.2",

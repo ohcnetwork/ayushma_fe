@@ -261,8 +261,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       human_answer: "",
       language: "en",
     });
-    TestQuestionsAddMutation.mutate({ question, human_answer, language });
-    setShowAddQuestion(false);
+   TestQuestionsAddMutation.mutate({ question, human_answer, language });
+    setShowAddQuestion(false);  
   };
   const handleQuestionDelete = (index: number): void => {
     TestQuestionDeleteMutation.mutate(
@@ -695,7 +695,26 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             Load More Questions
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-between mb-6 mx-4 md:mx-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-between mb-6 mx-4 md:mx-0">
+        <Button
+              onClick={() => {
+                handleSave(true);
+                setShowAddQuestion(true);
+              }}
+              className="w-full"
+            >
+              Add Question
+            </Button>
+            <div className="flex md:flex-row flex-col items-center gap-8">
+            <h1>OR</h1>
+            <CSVReader
+              cssClass="bg-[#22C55E] w-full h-[40px] rounded-[8px]"
+              onFileLoaded={handleCSVFileData}
+              parserOptions={papaparseOptions}
+              inputId="Upload Question from CSV"
+              inputName="Upload Question from CSV"
+            />
+            </div>
           <Button
             variant="secondary"
             className="text-gray-700"
@@ -705,24 +724,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           >
             Back
           </Button>
-          <div className="flex flex-col items-center">
-            <Button
-              onClick={() => {
-                handleSave(true);
-                setShowAddQuestion(true);
-              }}
-              className="w-full"
-            >
-              Add Question
-            </Button>
-            <h1>OR</h1>
-            <CSVReader
-              cssClass="w-[200px]"
-              onFileLoaded={handleCSVFileData}
-              parserOptions={papaparseOptions}
-              inputName="Upload Question from CSV"
-            />
-          </div>
           <Button
             onClick={() => {
               handleSave();
