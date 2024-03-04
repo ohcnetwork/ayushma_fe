@@ -3,16 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:all": "npm-run-all --parallel dev:next",
     "dev": "next dev",
-    "build": "yarn build:next",
-    "build:next": "next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "yarn format:next",
-    "format:next": "prettier ./src --write",
-    "prepare": "husky install",
-    "i-all": "yarn"
+    "format": "yarn prettier ./src --write",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
