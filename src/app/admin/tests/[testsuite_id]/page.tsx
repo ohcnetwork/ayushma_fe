@@ -18,6 +18,7 @@ import {
   TestRunStatus,
 } from "@/types/test";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
+import CSVReader from "react-csv-reader";
 
 export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
@@ -190,6 +191,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   >();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [fetchReferences, setFetchReferences] = useState(true);
+  const [csvFileData, setCSVFileData] = useState<any>([]);
 
   useEffect(() => {
     if (testQuestions && testQuestions.length > 0) {
@@ -262,7 +264,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     TestQuestionsAddMutation.mutate({ question, human_answer, language });
     setShowAddQuestion(false);
   };
-
   const handleQuestionDelete = (index: number): void => {
     TestQuestionDeleteMutation.mutate(
       currentQuestions[index].external_id || "",
@@ -328,9 +329,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -388,6 +389,52 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       formData: formData,
     });
   };
+
+  const papaparseOptions = {
+    header: true,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    transformHeader: (header: any) => header.toLowerCase().replace(/\W/g, "_"),
+  };
+
+  const handleCSVFileData = (data: any, fileInfo: any) => {
+    setCSVFileData(data);
+    if (data.length === 0) {
+      return toast.error("CSV File is Empty");
+    }
+  };
+  const generateQuestionsFromCSV = () => {
+    var error: Boolean = false;
+    if (csvFileData.length > 0) {
+      const objectKeys = csvFileData[0];
+      if (
+        !objectKeys.hasOwnProperty("question") ||
+        !objectKeys.hasOwnProperty("human_answer") ||
+        !objectKeys.hasOwnProperty("language")
+      ) {
+        error = true;
+      } else {
+        csvFileData.length > 0 &&
+          csvFileData.map((value: any, key: any) => {
+            if (value?.question != null && value?.human_answer != null && value?.language != null) {
+              handleAddQuestion(
+                value.question,
+                value.human_answer,
+                value.language,
+              );
+            }
+          });
+      }
+      if (error)
+        return toast.error("Upload Correct CSV File / CSV File is Empty");
+      else return toast.success("Questions uploaded successfully");
+    }
+    return;
+  };
+
+  useEffect(() => {
+    generateQuestionsFromCSV();
+  }, [csvFileData]);
 
   return (
     <div className="mx-4 md:mx-0">
@@ -594,11 +641,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${
-                            document?.state === "selected"
+                          className={`text-sm text-gray-700 flex justify-center items-center ${document?.state === "selected"
                               ? "cursor-pointer"
                               : "cursor-not-allowed"
-                          }`}
+                            }`}
                           onClick={async () => {
                             if (document?.state === "uploading") return;
                             setDocument({
@@ -639,11 +685,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         )}
         <div className="flex flex-col items-center mb-4">
           <button
-            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${
-              TestQuestionsQuery.hasNextPage
+            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${TestQuestionsQuery.hasNextPage
                 ? "bg-green-400 text-white"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             onClick={() => TestQuestionsQuery.fetchNextPage()}
             disabled={!TestQuestionsQuery.hasNextPage}
           >
@@ -660,14 +705,24 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           >
             Back
           </Button>
-          <Button
-            onClick={() => {
-              handleSave(true);
-              setShowAddQuestion(true);
-            }}
-          >
-            Add Question
-          </Button>
+          <div className="flex flex-col items-center">
+            <Button
+              onClick={() => {
+                handleSave(true);
+                setShowAddQuestion(true);
+              }}
+              className="w-full"
+            >
+              Add Question
+            </Button>
+            <h1>OR</h1>
+            <CSVReader
+              cssClass="w-[200px]"
+              onFileLoaded={handleCSVFileData}
+              parserOptions={papaparseOptions}
+              inputName="Upload Question from CSV"
+            />
+          </div>
           <Button
             onClick={() => {
               handleSave();
@@ -693,18 +748,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.bleu_score || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.bleu_score || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.cosine_sim || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.cosine_sim || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -746,11 +801,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgCosineSim < 0.5
+                          className={`font-bold ${avgCosineSim < 0.5
                               ? "text-red-500"
                               : "text-green-500"
-                          }`}
+                            }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -764,9 +818,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                            }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -778,10 +831,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
-                      )} ${
-                        testRun.status === TestRunStatus.RUNNING &&
+                      )} ${testRun.status === TestRunStatus.RUNNING &&
                         "animate-pulse"
-                      }`}
+                        }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED

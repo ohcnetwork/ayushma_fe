@@ -1,6 +1,6 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
+// @ts-ignore
 import { ChatFeedback, ChatMessage, ChatMessageType } from "@/types/chat";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
