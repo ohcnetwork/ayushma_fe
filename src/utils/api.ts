@@ -77,6 +77,7 @@ const request = async (
         )
         ?.replace((process.env.NEXT_PUBLIC_COOKIE_STORAGE || "storage") + "=", "") || "{}"
     );
+    console.log("client");
   } else {
     const { cookies } = require("next/headers");
     const cookieStore = cookies();
@@ -84,7 +85,9 @@ const request = async (
       process.env.NEXT_PUBLIC_COOKIE_STORAGE || "storage"
     );
     storage = JSON.parse(cookie?.value || "{}");
+    console.log("server");
   }
+  console.log("storage", storage);
   const localToken = storage.auth_token;
   const auth =
     isAuth === false ||

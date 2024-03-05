@@ -115,7 +115,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             >
               <div className="flex flex-col items-end justify-center">
                 <img
-                  src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg"}
+                  src={(storage.theme || storage.preferedTheme) === 0 ? (process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg") : (process.env.NEXT_PUBLIC_LOGO_DARK_URL || "/logo_white.svg")}
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />

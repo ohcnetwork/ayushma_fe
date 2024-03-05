@@ -29,6 +29,7 @@ function Providers(props: {
   ])
 
   useEffect(() => {
+    console.log("s", storage)
     const currentHostName = window.location.hostname;
     document.cookie = `${process.env.NEXT_PUBLIC_COOKIE_STORAGE}=${JSON.stringify(
       storage

@@ -83,7 +83,7 @@
 }
 
 .markdown-render pre {
-    background-color: #e7e7e7;
+    background-color: var(--w-secondaryActive);
     border-radius: 10px;
     padding: 1em;
     overflow-x: auto;
@@ -91,7 +91,7 @@
 }
 
 .markdown-render code {
-    background-color: #e7e7e7;
+    background-color: var(--w-secondaryActive);
     border-radius: 5px;
     padding: 0.2em;
 }

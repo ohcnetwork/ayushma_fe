@@ -270,14 +270,14 @@ export default function ChatBlock(props: {
                     }
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                    className="text-xs bg-secondaryActive text-gray-500 px-2 py-0.5 rounded-md hover:bg-primary"
                   >
                     {doc.title}
                   </a>
                 );
               else if (doc.document_type === DocumentType.TEXT)
                 return (
-                  <div className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
+                  <div className="text-xs bg-secondaryActive text-gray-500 px-2 py-0.5 rounded-md hover:bg-primary">
                     {doc.title}
                   </div>
                 );
@@ -387,7 +387,7 @@ const ChatFeedback = ({
                       ],
                     });
                   }}
-                  className="text-sm p-2 px-4 text-primary bg-gray-400 rounded-2xl cursor-pointer hover:bg-gray-500"
+                  className="text-sm p-2 px-4 text-primary bg-gray-500 rounded-2xl cursor-pointer hover:bg-secondary"
                 >
                   {suggestion}
                 </p>

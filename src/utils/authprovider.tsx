@@ -31,7 +31,7 @@ export default function AuthProvider(props: {
             setStorage((st) => ({ ...st, user: data }))
         },
         onError: () => {
-            setStorage((st) => ({ ...st, auth_token: undefined }))
+            setStorage((st) => ({ ...st, auth_token: undefined, user: undefined }))
         }
     })
 
