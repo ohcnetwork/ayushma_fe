@@ -38,19 +38,19 @@ export default function Home() {
                     <div className='grid md:flex grid-cols-2 gap-4 mt-4'>
                         <Link
                             href="/register"
-                            className='button-bold md:text-2xl text-center'
+                            className='button-bold md:text-2xl text-center !bg-white'
                         >
                             Get Started
                         </Link>
                         <Link
                             href="/login"
-                            className='button-bold-hollow md:text-2xl text-center'
+                            className='button-bold-hollow md:text-2xl text-center !text-white !border-white'
                         >
                             Login
                         </Link>
                         <Link
                             href="https://github.com/coronasafe/ayushma_fe"
-                            className='button-bold-transparent flex gap-2 items-center md:text-2xl text-center'
+                            className='button-bold-transparent flex gap-2 items-center md:text-2xl text-center !text-white'
                             target='_blank'
                         >
                             <i className="fab fa-github" />

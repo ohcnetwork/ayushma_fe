@@ -9,12 +9,15 @@ const getDefaultProject = async () => {
 }
 
 export default async function Page() {
+  let defaultProject;
   try {
-    const defaultProject = await getDefaultProject();
-    if (defaultProject) redirect(`/project/${defaultProject.external_id}`);
+    defaultProject = await getDefaultProject();
+
   } catch (error) {
     console.log(error);
   }
+
+  if (defaultProject) redirect(`/project/${defaultProject.external_id}`);
 
   return <Client />
 }

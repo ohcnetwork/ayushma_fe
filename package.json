@@ -3,19 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:all": "npm-run-all --parallel dev:next dev:chatbot",
     "dev": "next dev",
-    "dev:chatbot": "cd chatbot && yarn build-watch",
-    "build": "yarn build:chatbot && yarn build:next",
-    "build:next": "next build",
-    "build:chatbot": "cd chatbot && yarn build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "yarn format:next && yarn format:chatbot",
-    "format:next": "prettier ./src --write",
-    "format:chatbot": "prettier ./chatbot --write",
-    "prepare": "husky install",
-    "i-all": "yarn && cd chatbot && yarn"
+    "format": "yarn prettier ./src --write",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
@@ -36,6 +29,7 @@
     "next": "^14.0.4",
     "npm-run-all": "^4.1.5",
     "path": "^0.12.7",
+    "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-csv-reader": "^4.0.0",
     "react-dom": "^18.2.0",

@@ -21,7 +21,7 @@ export default function Page() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
           <Link
             href={`/admin/tests/new`}
-            className="border border-dashed border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4"
+            className="border border-dashed border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4"
           >
             <i className="far fa-plus" /> New Test Suite
           </Link>
@@ -29,7 +29,7 @@ export default function Page() {
             <Link
               href={`/admin/tests/${testSuite.external_id}`}
               key={i}
-              className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4"
+              className="border border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4"
             >
               {testSuite.name}
             </Link>

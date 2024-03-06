@@ -53,18 +53,18 @@ export default function Page({
                 chats?.chats.map((chat: any, i: number) => (
                   <div key={i}>
                     {chat.messageType === 1 ? (
-                      <div className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4">
+                      <div className="border border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4">
                         {chat.message}
                       </div>
                     ) : (
-                      <div className="border border-gray-300 hover:bg-gray-100 bg-gray-200 rounded-lg p-4">
+                      <div className="border border-gray-300 hover:bg-secondary bg-secondaryActive rounded-lg p-4">
                         {chat.message}
                       </div>
                     )}
                   </div>
                 ))
               ) : (
-                <div className="flex justify-center bg-white rounded-xl p-3">
+                <div className="flex justify-center bg-primary rounded-xl p-3">
                   No Chats Found
                 </div>
               )}

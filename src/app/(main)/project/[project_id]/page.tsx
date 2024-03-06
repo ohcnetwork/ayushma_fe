@@ -108,13 +108,13 @@ export default function Chat(params: { params: { project_id: string } }) {
     setIsTyping(true);
     e.preventDefault();
 
-    try{
-      const {external_id} = await newChatMutation.mutateAsync();
+    try {
+      const { external_id } = await newChatMutation.mutateAsync();
       setChatID(external_id);
-  
+
       const fd = await getFormData(undefined, chat);
       converseMutation.mutate({ external_id, formdata: fd });
-    }catch(e: any){
+    } catch (e: any) {
       setIsTyping(false);
       setApiError(e?.error?.error);
     }
@@ -123,17 +123,17 @@ export default function Chat(params: { params: { project_id: string } }) {
 
   const handleAudio = async (blobUrl: string) => {
     setIsTyping(true);
-    try{
-      const {external_id} =  await newChatMutation.mutateAsync();
+    try {
+      const { external_id } = await newChatMutation.mutateAsync();
       setChatID(external_id);
 
       const sttFormData = await getFormData(blobUrl);
-      const {transcript, stats} = await API.chat.speechToText(
+      const { transcript, stats } = await API.chat.speechToText(
         project_id,
         external_id,
         sttFormData,
       )
-      
+
       setChat(transcript);
 
       const fd = await getFormData(undefined, transcript);
@@ -141,7 +141,7 @@ export default function Chat(params: { params: { project_id: string } }) {
       fd.append("transcript_end_time", stats.transcript_end_time.toString());
       converseMutation.mutate({ external_id, formdata: fd });
     }
-    catch(e: any){
+    catch (e: any) {
       setIsTyping(false);
       setApiError(e?.error?.error);
     }
@@ -168,8 +168,8 @@ export default function Chat(params: { params: { project_id: string } }) {
                           setChat(prompt);
                           setIsTyping(true);
                           const fd = await getFormData(undefined, prompt);
-                          const {external_id} = await newChatMutation.mutateAsync();
-                          if(external_id === "") return;
+                          const { external_id } = await newChatMutation.mutateAsync();
+                          if (external_id === "") return;
                           setChatID(external_id);
 
                           converseMutation.mutate({
@@ -178,7 +178,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                           });
                         }}
                         disabled={newChatMutation.isPending}
-                        className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
+                        className="bg-primary hover:shadow-lg hover:bg-secondary hover:text-indigo-500 text-left border border-secondaryActive rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
                         key={i}
                       >
                         {prompt}

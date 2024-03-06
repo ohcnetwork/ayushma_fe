@@ -179,7 +179,7 @@ export default function ProjectForm(props: {
         )}
         <p className="text-sm text-gray-500">Speech to Text engine</p>
         <select
-          className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+          className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.stt_engine ?? 1}
           onChange={(e) =>
             setProject({ ...project, stt_engine: parseInt(e.target.value) })
@@ -193,7 +193,7 @@ export default function ProjectForm(props: {
         </select>
         <p className="text-sm text-gray-500">Text to Speech engine</p>
         <select
-          className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+          className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.tts_engine ?? 1}
           onChange={(e) =>
             setProject({ ...project, tts_engine: parseInt(e.target.value) })
@@ -215,7 +215,7 @@ export default function ProjectForm(props: {
             )}
           </div>
           <select
-            className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+            className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
             value={model ?? ""}
             onChange={(e) => {
               project.assistant_id
@@ -235,7 +235,7 @@ export default function ProjectForm(props: {
         <p className="text-sm text-gray-500">Assistant</p>
         <div className="flex gap-3">
           <select
-            className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+            className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
             value={project.assistant_id ?? ""}
             onChange={(e) =>
               setProject({ ...project, assistant_id: e.target.value })
@@ -299,7 +299,7 @@ export default function ProjectForm(props: {
                   name: e.target.value,
                 })
               }
-              className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+              className="block w-full bg-primary border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
             />
 
             <label className="block font-medium text-gray-700 mb-2 mt-4">
@@ -313,14 +313,14 @@ export default function ProjectForm(props: {
                 })
               }
               placeholder={project.prompt}
-              className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+              className="block w-full bg-primary border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
             />
 
             <label className="block font-medium text-gray-700 mb-2 mt-4">
               Model
             </label>
             <select
-              className="border border-gray-200 w-full bg-white rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+              className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
               value={addAssistantDetails.model}
               onChange={(e) =>
                 setAddAssistantDetails({

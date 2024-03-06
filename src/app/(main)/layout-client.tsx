@@ -32,7 +32,7 @@ export default function LayoutClient() {
                 onClick={toggleSidebar}
                 type="button"
                 className={`${isSidebarExpanded ? "hidden" : "block"
-                    } absolute h-12 md:hidden items-center p-1 px-3 z-10 ml-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-200 dark:focus:ring-gray-200`}
+                    } absolute h-12 md:hidden items-center p-1 px-3 z-10 ml-3 text-sm text-gray-500 rounded-lg hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-secondaryActive dark:text-gray-400 dark:hover:bg-secondaryActive dark:focus:ring-secondaryActive`}
             >
                 <span className="sr-only">Open sidebar</span>
                 <div className="space-y-1">

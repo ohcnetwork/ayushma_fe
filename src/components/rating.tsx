@@ -83,8 +83,7 @@ export function RatingLabel(props: {
   return (
     <button
       className={twMerge(
-        `mt-2 sm:mt-0 inline-block rounded-full px-3 py-1 mr-2 font-semibold ${option?.hovercolor} hover:text-white cursor-pointer ${option?.bgcolor} text-white ${
-          deselected ? "opacity-20" : ""
+        `mt-2 sm:mt-0 inline-block rounded-full px-3 py-1 mr-2 font-semibold ${option?.hovercolor} hover:text-primary cursor-pointer ${option?.bgcolor} text-primary ${deselected ? "opacity-20" : ""
         }`,
         className,
       )}
