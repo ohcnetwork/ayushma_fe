@@ -2,7 +2,7 @@
 
 import { supportedLanguages } from "@/utils/constants";
 import Modal from "@/components/modal";
-import { Button, CheckBox, Input, TextArea } from "@/components/ui/interactive";
+import { Button, CheckBox, TextArea } from "@/components/ui/interactive";
 import { Document, DocumentType, Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -42,7 +42,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       });
     },
   });
-
+  const [questionsCsv,setQuestionsCsv] = useState<any>([]);
   const testQuestions: TestQuestion[] =
     TestQuestionsQuery?.data?.pages?.flatMap((page) => page.results) ?? [];
 
@@ -396,7 +396,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     skipEmptyLines: true,
     transformHeader: (header: any) => header.toLowerCase().replace(/\W/g, "_"),
   };
-
   const handleCSVFileData = (data: any, fileInfo: any) => {
     setCSVFileData(data);
     if (data.length === 0) {
@@ -426,10 +425,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           });
       }
       if (error)
-        return toast.error("Upload Correct CSV File / CSV File is Empty");
+        return toast.error("Upload Correct CSV File");
       else return toast.success("Questions uploaded successfully");
     }
-    return;
+    return ;
   };
 
   useEffect(() => {
