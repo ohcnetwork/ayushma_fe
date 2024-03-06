@@ -24,6 +24,7 @@ export default function Page({
   });
   const project: Project = projectQuery.data;
   const chats: any | undefined = chatQuery.data;
+
   return (
     <div>
       <h1 className="text-3xl font-bold">{project?.title}</h1>

@@ -23,7 +23,6 @@ import CSVReader from "react-csv-reader";
 export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
   const { testsuite_id } = params;
-
   const testSuiteQuery = useQuery({
     queryKey: ["testsuite", testsuite_id],
     queryFn: () => API.tests.suites.get(testsuite_id),
@@ -390,7 +389,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     });
   };
 
-  const papaparseOptions = {
+  const csvparseOptions = {
     header: true,
     dynamicTyping: true,
     skipEmptyLines: true,
@@ -709,7 +708,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             <CSVReader
               cssClass="bg-[#22C55E] w-full h-[40px] rounded-[8px]"
               onFileLoaded={handleCSVFileData}
-              parserOptions={papaparseOptions}
+              parserOptions={csvparseOptions}
               inputId="Upload Question from CSV"
               inputName="Upload Question from CSV"
             />
