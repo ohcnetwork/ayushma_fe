@@ -41,7 +41,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       });
     },
   });
-  const [questionsCsv,setQuestionsCsv] = useState<any>([]);
+  const [questionsCsv, setQuestionsCsv] = useState<any>([]);
   const testQuestions: TestQuestion[] =
     TestQuestionsQuery?.data?.pages?.flatMap((page) => page.results) ?? [];
 
@@ -260,8 +260,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       human_answer: "",
       language: "en",
     });
-   TestQuestionsAddMutation.mutate({ question, human_answer, language });
-    setShowAddQuestion(false);  
+    TestQuestionsAddMutation.mutate({ question, human_answer, language });
+    setShowAddQuestion(false);
   };
   const handleQuestionDelete = (index: number): void => {
     TestQuestionDeleteMutation.mutate(
@@ -328,9 +328,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -414,7 +414,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       } else {
         csvFileData.length > 0 &&
           csvFileData.map((value: any, key: any) => {
-            if (value?.question != null && value?.human_answer != null && value?.language != null) {
+            if (
+              value?.question != null &&
+              value?.human_answer != null &&
+              value?.language != null
+            ) {
               handleAddQuestion(
                 value.question,
                 value.human_answer,
@@ -423,17 +427,15 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             }
           });
       }
-      if (error)
-        return toast.error("Upload Correct CSV File");
+      if (error) return toast.error("Upload Correct CSV File");
       else return toast.success("Questions uploaded successfully");
     }
-    return ;
+    return;
   };
-
+  console.log(__dirname)
   useEffect(() => {
     generateQuestionsFromCSV();
   }, [csvFileData]);
-
   return (
     <div className="mx-4 md:mx-0">
       <div className="flex flex-col sm:flex-row">
@@ -639,10 +641,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${document?.state === "selected"
+                          className={`text-sm text-gray-700 flex justify-center items-center ${
+                            document?.state === "selected"
                               ? "cursor-pointer"
                               : "cursor-not-allowed"
-                            }`}
+                          }`}
                           onClick={async () => {
                             if (document?.state === "uploading") return;
                             setDocument({
@@ -683,36 +686,39 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         )}
         <div className="flex flex-col items-center mb-4">
           <button
-            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${TestQuestionsQuery.hasNextPage
+            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${
+              TestQuestionsQuery.hasNextPage
                 ? "bg-green-400 text-white"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
+            }`}
             onClick={() => TestQuestionsQuery.fetchNextPage()}
             disabled={!TestQuestionsQuery.hasNextPage}
           >
             Load More Questions
           </button>
         </div>
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            onClick={() => {
+              handleSave(true);
+              setShowAddQuestion(true);
+            }}
+            className="w-[400px]"
+          >
+            Add Question
+          </Button>
+          <h1>OR</h1>
+          <CSVReader
+            cssClass="h-[45px] w-[400px] mb-2 bg-black hover:bg-green flex flex-col justify-center text-center rounded-[5px]"
+            cssInputClass="w-[400px] ml-[100px]"
+            cssLabelClass="hidden"
+            inputStyle={{ color: 'red' }}
+            label="Upload Questions from CSV"
+            onFileLoaded={handleCSVFileData}
+            parserOptions={csvparseOptions}
+          />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-between mb-6 mx-4 md:mx-0">
-        <Button
-              onClick={() => {
-                handleSave(true);
-                setShowAddQuestion(true);
-              }}
-              className="w-full"
-            >
-              Add Question
-            </Button>
-            <div className="flex md:flex-row flex-col items-center gap-8">
-            <h1>OR</h1>
-            <CSVReader
-              cssClass="bg-[#22C55E] w-full h-[40px] rounded-[8px]"
-              onFileLoaded={handleCSVFileData}
-              parserOptions={csvparseOptions}
-              inputId="Upload Question from CSV"
-              inputName="Upload Question from CSV"
-            />
-            </div>
           <Button
             variant="secondary"
             className="text-gray-700"
@@ -747,18 +753,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.bleu_score || 0),
-                  0,
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.bleu_score || 0),
+                    0,
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.cosine_sim || 0),
-                  0,
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.cosine_sim || 0),
+                    0,
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -800,10 +806,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgCosineSim < 0.5
+                          className={`font-bold ${
+                            avgCosineSim < 0.5
                               ? "text-red-500"
                               : "text-green-500"
-                            }`}
+                          }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -817,8 +824,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                            }`}
+                          className={`font-bold ${
+                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                          }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -830,9 +838,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
-                      )} ${testRun.status === TestRunStatus.RUNNING &&
+                      )} ${
+                        testRun.status === TestRunStatus.RUNNING &&
                         "animate-pulse"
-                        }`}
+                      }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED
