@@ -18,8 +18,8 @@ import {
   TestRunStatus,
 } from "@/types/test";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
-import CSVReader from "react-csv-reader";
-
+// import CSVReader from "react-csv-reader";
+import CSVReader from "../../../../components/csvReader";
 export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
   const { testsuite_id } = params;
@@ -191,7 +191,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [fetchReferences, setFetchReferences] = useState(true);
   const [csvFileData, setCSVFileData] = useState<any>([]);
-
+  const fileInputRef = useRef<File>()
   useEffect(() => {
     if (testQuestions && testQuestions.length > 0) {
       setCurrentQuestions(
@@ -388,19 +388,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       formData: formData,
     });
   };
-
-  const csvparseOptions = {
-    header: true,
-    dynamicTyping: true,
-    skipEmptyLines: true,
-    transformHeader: (header: any) => header.toLowerCase().replace(/\W/g, "_"),
-  };
-  const handleCSVFileData = (data: any, fileInfo: any) => {
-    setCSVFileData(data);
-    if (data.length === 0) {
-      return toast.error("CSV File is Empty");
-    }
-  };
   const generateQuestionsFromCSV = () => {
     var error: Boolean = false;
     if (csvFileData.length > 0) {
@@ -415,9 +402,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         csvFileData.length > 0 &&
           csvFileData.map((value: any, key: any) => {
             if (
-              value?.question != null &&
-              value?.human_answer != null &&
-              value?.language != null
+              value?.question != '' &&
+              value?.human_answer != '' &&
+              value?.language != ''
             ) {
               handleAddQuestion(
                 value.question,
@@ -432,7 +419,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     }
     return;
   };
-  console.log(__dirname)
   useEffect(() => {
     generateQuestionsFromCSV();
   }, [csvFileData]);
@@ -697,28 +683,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             Load More Questions
           </button>
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <Button
-            onClick={() => {
-              handleSave(true);
-              setShowAddQuestion(true);
-            }}
-            className="w-[400px]"
-          >
-            Add Question
-          </Button>
-          <h1>OR</h1>
-          <CSVReader
-            cssClass="h-[45px] w-[400px] mb-2 bg-black hover:bg-green flex flex-col justify-center text-center rounded-[5px]"
-            cssInputClass="w-[400px] ml-[100px]"
-            cssLabelClass="hidden"
-            inputStyle={{ color: 'red' }}
-            label="Upload Questions from CSV"
-            onFileLoaded={handleCSVFileData}
-            parserOptions={csvparseOptions}
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-between mb-6 mx-4 md:mx-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 justify-between mb-6 mx-4 md:mx-0">
           <Button
             variant="secondary"
             className="text-gray-700"
@@ -728,6 +693,15 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           >
             Back
           </Button>
+          <Button
+            onClick={() => {
+              handleSave(true);
+              setShowAddQuestion(true);
+            }}
+          >
+            Add Question
+          </Button>
+          <CSVReader setCSVFileData={setCSVFileData}/>
           <Button
             onClick={() => {
               handleSave();
