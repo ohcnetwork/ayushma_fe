@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useCSVReader } from "react-papaparse";
-
+import { Button } from "./ui/interactive";
 export default function CSVReader(props: any) {
   const { CSVReader } = useCSVReader();
   const [rawData, setRawData] = useState<Array<any>>([]);
@@ -41,11 +41,9 @@ export default function CSVReader(props: any) {
     >
       {({ getRootProps }: any) => (
         <>
-          <div className="flex justify-center text-white dark:text-black h-[40px] bg-[#22C55E] rounded-[10px] items-center">
-            <button type="button" {...getRootProps()}>
+            <Button type="button" {...getRootProps()} disabled={props.disable}>
               Import from CSV
-            </button>
-          </div>
+            </Button>
         </>
       )}
     </CSVReader>

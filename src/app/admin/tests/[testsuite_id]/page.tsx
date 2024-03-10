@@ -191,7 +191,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [fetchReferences, setFetchReferences] = useState(true);
   const [csvFileData, setCSVFileData] = useState<any>([]);
-  const fileInputRef = useRef<File>()
+  const [csvDisable,setCSVDisable] = useState<Boolean>(false);
   useEffect(() => {
     if (testQuestions && testQuestions.length > 0) {
       setCurrentQuestions(
@@ -262,6 +262,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     });
     TestQuestionsAddMutation.mutate({ question, human_answer, language });
     setShowAddQuestion(false);
+    setCSVDisable(false);
   };
   const handleQuestionDelete = (index: number): void => {
     TestQuestionDeleteMutation.mutate(
@@ -391,6 +392,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const generateQuestionsFromCSV = () => {
     var error: Boolean = false;
     if (csvFileData.length > 0) {
+      setCSVDisable(true);
       const objectKeys = csvFileData[0];
       if (
         !objectKeys.hasOwnProperty("question") ||
@@ -701,7 +703,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           >
             Add Question
           </Button>
-          <CSVReader setCSVFileData={setCSVFileData}/>
+          <CSVReader setCSVFileData={setCSVFileData} disable={csvDisable}/>
           <Button
             onClick={() => {
               handleSave();
