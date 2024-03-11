@@ -12,7 +12,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   function toggleSidebar() {
     setSidebarExpanded(!isSidebarExpanded);
   }
-
   if (!storage?.user?.is_staff)
     return (
       <div className="flex justify-center items-center w-full font-bold text-3xl p-4">
