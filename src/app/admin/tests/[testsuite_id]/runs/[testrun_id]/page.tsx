@@ -325,7 +325,7 @@ export default function Page({
           </Button>
         </div>
       </div>
-      <div className="border border-gray-300 bg-primary p-4 rounded-lg my-4">
+      <div className="border border-tertiaryBorderColor bg-primary p-4 rounded-lg my-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <div className="flex flex-col justify-end">
@@ -407,27 +407,27 @@ export default function Page({
           </div>
         </div>
         <div className="mt-4">
-          <b className="text-xs text-gray-500">Prompt:</b>
+          <b className="text-xs text-tertiaryTextColor">Prompt:</b>
           <br />
           <div className="whitespace-pre-line">
             {testRun?.project_object.prompt}
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-gray-300 bg-primary p-3 rounded-lg my-4">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-tertiaryBorderColor bg-primary p-3 rounded-lg my-4">
         {feedbackStats.total !== -1 ? (
           <>
             {" "}
             <div className="flex flex-col items-center">
               <div className="text-md font-bold mb-2">Total Feedback</div>
-              <div className="text-2xl font-bold text-gray-700 mb-1">
+              <div className="text-2xl font-bold text-tertiaryTextColor mb-1">
                 {feedbackStats.total}
               </div>
             </div>
             <div className="flex flex-col items-center">
               <div className="text-md font-bold mb-2">Average Feedback</div>
-              <div className="text-sm font-bold text-gray-700 mb-1">
-                <p className="text-gray-700">
+              <div className="text-sm font-bold text-tertiaryTextColor mb-1">
+                <p className="text-tertiaryTextColor">
                   {feedbackStats.total === 0 ? "-" : ""}
                   {ratingOptions.map(
                     (rating: any) =>
@@ -455,7 +455,7 @@ export default function Page({
             </div>
             <div className="flex flex-col items-center">
               <div className="text-md font-bold mb-2">Neutral Feedback</div>
-              <div className="text-2xl font-bold text-gray-500 mb-1">
+              <div className="text-2xl font-bold text-tertiaryTextColor mb-1">
                 {feedbackStats.neutral}
               </div>
             </div>
@@ -492,7 +492,7 @@ export default function Page({
               <h3 className="text-md font-bold mb-2 text-center sm:text-left">
                 AI Answer:
               </h3>
-              <p className="text-gray-700">{test.answer}</p>
+              <p className="text-tertiaryTextColor">{test.answer}</p>
               {test?.references && test?.references.length > 0 && (
                 <div className="flex gap-2 mt-3 items-center pb-4">
                   <p className="mr-1 text-sm italic">References:</p>
@@ -511,14 +511,14 @@ export default function Page({
                           }
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                          className="text-xs bg-secondaryActive text-tertiaryTextColor px-2 py-0.5 rounded-md hover:bg-gray-300"
                         >
                           {doc.title}
                         </a>
                       );
                     else if (doc.document_type === DocumentType.TEXT)
                       return (
-                        <div className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
+                        <div className="text-xs bg-secondaryActive text-tertiaryTextColor px-2 py-0.5 rounded-md hover:bg-gray-300">
                           {doc.title}
                         </div>
                       );
@@ -531,7 +531,7 @@ export default function Page({
           <div className="border-b border-secondaryActive my-4"></div>
           {test.test_question?.documents?.map((document) => (
             <div
-              className="flex items-center mb-2 border border-gray-300 rounded-lg bg-primary"
+              className="flex items-center mb-2 border border-tertiaryBorderColor rounded-lg bg-primary"
               key={document.external_id}
             >
               <Link
@@ -541,8 +541,8 @@ export default function Page({
                 className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md justify-between"
               >
                 <div className="flex items-center justify-center">
-                  <i className="fas fa-paperclip mr-2 text-gray-600"></i>
-                  <div className="text-gray-700">{document.title}</div>
+                  <i className="fas fa-paperclip mr-2 text-tertiaryTextColor"></i>
+                  <div className="text-tertiaryTextColor">{document.title}</div>
                 </div>
                 <div className="w-1/2 h-1/2">
                   <img
@@ -565,7 +565,7 @@ export default function Page({
                 Cosine Similarity:
               </h3>
               <p
-                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${test.cosine_sim >= 0.5 ? "text-green-500" : "text-red-500"
+                className={`font-bold text-center sm:text-left text-xl text-tertiaryTextColor ${test.cosine_sim >= 0.5 ? "text-green-500" : "text-red-500"
                   }`}
               >
                 {test.cosine_sim.toFixed(3)}
@@ -576,7 +576,7 @@ export default function Page({
                 BLEU Score:
               </h3>
               <p
-                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${test.bleu_score >= 0.5 ? "text-green-500" : "text-red-500"
+                className={`font-bold text-center sm:text-left text-xl text-tertiaryTextColor ${test.bleu_score >= 0.5 ? "text-green-500" : "text-red-500"
                   }`}
               >
                 {test.bleu_score.toFixed(3)}
@@ -588,7 +588,7 @@ export default function Page({
               <h3 className="text-md text-center sm:text-left font-bold mb-2">
                 Total Feedback:
               </h3>
-              <p className="font-bold text-center sm:text-left text-xl text-gray-700">
+              <p className="font-bold text-center sm:text-left text-xl text-tertiaryTextColor">
                 {test.feedback?.length || "-"}
               </p>
             </div>
@@ -597,8 +597,8 @@ export default function Page({
                 <h3 className="text-md font-bold mb-2 text-center sm:text-left">
                   Average Feedback:
                 </h3>
-                <div className="text-sm font-bold text-gray-700 mb-1 flex justify-center sm:block">
-                  <p className="text-gray-700">
+                <div className="text-sm font-bold text-tertiaryTextColor mb-1 flex justify-center sm:block">
+                  <p className="text-tertiaryTextColor">
                     {test.feedback?.length === 0 ? "-" : ""}
                     {ratingOptions.map(
                       (rating) =>
@@ -672,12 +672,12 @@ export default function Page({
               <>
                 <div>
                   <h3 className="text-md font-bold mb-2">AI Answer:</h3>
-                  <p className="text-gray-700">{feedbackTestResult.answer}</p>
+                  <p className="text-tertiaryTextColor">{feedbackTestResult.answer}</p>
                 </div>
                 <hr className="my-2 bg-secondaryActive" />
                 <div>
                   <h3 className="text-md font-bold mb-2">Human Answer:</h3>
-                  <p className="text-gray-700">
+                  <p className="text-tertiaryTextColor">
                     {feedbackTestResult.human_answer}
                   </p>
                 </div>
@@ -707,13 +707,13 @@ export default function Page({
                             <div className="mr-2">
                               <i className="fa-regular fa-clock"></i>
                             </div>
-                            <div className="text-gray-700">
+                            <div className="text-tertiaryTextColor">
                               {formatDate(feedback.created_at)}
                             </div>
                           </div>
                         </div>
                         <div className="flex items-center">
-                          <p className="text-gray-700">
+                          <p className="text-tertiaryTextColor">
                             {ratingOptions.map(
                               (rating) =>
                                 rating.id === feedback.rating && (
@@ -726,14 +726,14 @@ export default function Page({
                                 ),
                             )}
                           </p>
-                          <p className="text-gray-700">{feedback.notes}</p>
+                          <p className="text-tertiaryTextColor">{feedback.notes}</p>
                         </div>
                       </div>
                     ))}
                   {!feedbackItemsLoading &&
                     feedbackItems &&
                     feedbackItems.length == 0 && (
-                      <div className="text-center text-gray-700">
+                      <div className="text-center text-tertiaryTextColor">
                         No feedback yet
                       </div>
                     )}
@@ -751,14 +751,14 @@ export default function Page({
                     <div className="mr-2">
                       <i className="fa-duotone fa-star"></i>
                     </div>
-                    <div className="text-gray-700">Rating</div>
+                    <div className="text-tertiaryTextColor">Rating</div>
                   </div>
                   <Rating setRating={setFeedbackRating} />
                   <div className="flex items-center">
                     <div className="mr-2">
                       <i className="fa-duotone fa-comment"></i>
                     </div>
-                    <div className="text-gray-700">Note</div>
+                    <div className="text-tertiaryTextColor">Note</div>
                   </div>
                   <div className="flex items-center my-2 ml-2 justify-center">
                     <TextArea

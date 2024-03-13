@@ -41,13 +41,13 @@ function Providers(props: {
 
   return (
     <QueryClientProvider client={client}>
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <ThemeProvider>
           <ReactQueryStreamedHydration>
             {storage && children}
           </ReactQueryStreamedHydration>
         </ThemeProvider>
-      </AuthProvider>
+      {/* </AuthProvider> */}
       <ReactQueryDevtools initialIsOpen={false} position="right" />
     </QueryClientProvider>
   );

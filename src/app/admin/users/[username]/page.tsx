@@ -76,7 +76,7 @@ const Page = ({ params }: { params: { username: string } }) => {
       >
         <div>
           <div className="flex gap-4 items-center">
-            <p className="mb-2 text-sm text-gray-500">Full name</p>
+            <p className="mb-2 text-sm text-tertiaryTextColor">Full name</p>
             {updateError && updateError.error.full_name && (
               <p className="text text-sm text-red-500 mb-2">
                 ({updateError.error.full_name})
@@ -96,7 +96,7 @@ const Page = ({ params }: { params: { username: string } }) => {
         </div>
         <div>
           <div className="flex gap-4 items-center">
-            <p className="mb-2 text-sm text-gray-500">Email</p>
+            <p className="mb-2 text-sm text-tertiaryTextColor">Email</p>
             {updateError && updateError.error.email && (
               <p className="text text-sm text-red-500 mb-2">
                 ({updateError.error.email})
@@ -114,7 +114,7 @@ const Page = ({ params }: { params: { username: string } }) => {
           />
         </div>
         <div>
-          <p className="mb-2 text-sm text-gray-500">Roles</p>
+          <p className="mb-2 text-sm text-tertiaryTextColor">Roles</p>
           <div className="flex flex-col md:flex-row gap-6 md:items-center">
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -125,8 +125,9 @@ const Page = ({ params }: { params: { username: string } }) => {
                 checked={userState.is_staff}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-secondaryActive peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-primary after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-              <span className="ml-3 text-sm font-medium text-gray-900">
+              <div className="w-11 h-6 bg-secondaryActive peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-primary after:border-tertiaryBorderColor after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+              <span className="ml-3 text-sm font-medium text-tertiaryTextColor"
+              >
                 Is Admin
               </span>
             </label>
@@ -142,8 +143,8 @@ const Page = ({ params }: { params: { username: string } }) => {
                 checked={userState.is_reviewer}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-secondaryActive peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-primary after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-              <span className="ml-3 text-sm font-medium text-gray-900">
+              <div className="w-11 h-6 bg-secondaryActive peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-primary after:border-tertiaryBorderColor after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+              <span className="ml-3 text-sm font-medium text-tertiaryTextColor">
                 Is Reviewer
               </span>
             </label>
@@ -159,8 +160,8 @@ const Page = ({ params }: { params: { username: string } }) => {
                 checked={userState.allow_key}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-secondaryActive peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-primary after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-              <span className="ml-3 text-sm font-medium text-gray-900">
+              <div className="w-11 h-6 bg-secondaryActive peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-primary after:border-tertiaryBorderColor after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+              <span className="ml-3 text-sm font-medium text-tertiaryTextColor">
                 Allow key
               </span>
             </label>

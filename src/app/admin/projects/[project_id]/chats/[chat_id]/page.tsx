@@ -40,7 +40,7 @@ export default function Page({
               {chats?.username && (
                 <Link
                   href={`/admin/users/${chats?.username}`}
-                  className="bg-slate-200 flex items-center gap-2 justify-center hover:bg-slate-300 m-2 p-2 rounded-xl px-6"
+                  className="bg-primary flex items-center gap-2 justify-center hover:bg-slate-300 m-2 p-2 rounded-xl px-6"
                 >
                   <i className="fa fa-user"></i>
                   {chats?.username}
@@ -54,11 +54,11 @@ export default function Page({
                 chats?.chats.map((chat: any, i: number) => (
                   <div key={i}>
                     {chat.messageType === 1 ? (
-                      <div className="border border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4">
+                      <div className="border border-tertiaryBorderColor hover:bg-secondary bg-primary rounded-lg p-4">
                         {chat.message}
                       </div>
                     ) : (
-                      <div className="border border-gray-300 hover:bg-secondary bg-secondaryActive rounded-lg p-4">
+                      <div className="border border-tertiaryBorderColor hover:bg-secondary bg-secondaryActive rounded-lg p-4">
                         {chat.message}
                       </div>
                     )}
@@ -73,7 +73,7 @@ export default function Page({
           </div>
         </div>
       ) : (
-        <div className="flex justify-center text-gray-500 text-2xl font-medium mt-6">
+        <div className="flex justify-center text-tertiaryTextColor text-2xl font-medium mt-6">
           Chat not found
         </div>
       )}

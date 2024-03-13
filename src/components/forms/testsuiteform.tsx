@@ -1,4 +1,3 @@
-import { Project } from "@/types/project";
 import { useState } from "react";
 import { Button, Input, TextArea } from "../ui/interactive";
 import { useRouter } from "next/navigation";

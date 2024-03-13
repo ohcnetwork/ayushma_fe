@@ -87,7 +87,7 @@ const request = async (
     storage = JSON.parse(cookie?.value || "{}");
     console.log("server");
   }
-  console.log("storage", storage);
+  console.log("storage", storage.preferedTheme);
   const localToken = storage.auth_token;
   const auth =
     isAuth === false ||
