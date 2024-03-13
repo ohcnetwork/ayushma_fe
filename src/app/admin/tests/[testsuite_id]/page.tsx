@@ -19,7 +19,6 @@ import {
 } from "@/types/test";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
 import CSVReader from "../../../../components/csvReader";
-
 export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
   const { testsuite_id } = params;
@@ -29,6 +28,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     refetchOnWindowFocus: false,
   });
   const testSuite: TestSuite | undefined = testSuiteQuery.data || undefined;
+
   const TestQuestionsQuery = useInfiQuery({
     queryKey: ["testsuitequestion", testsuite_id],
     fetchLimit: 30,
@@ -40,7 +40,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       });
     },
   });
-  const [questionsCsv, setQuestionsCsv] = useState<any>([]);
   const testQuestions: TestQuestion[] =
     TestQuestionsQuery?.data?.pages?.flatMap((page) => page.results) ?? [];
 
@@ -471,7 +470,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
               return (
                 <div
                   key={question.external_id}
-                  className="mb-4 flex flex-col border border-tertiaryBorderColor rounded-lg p-3"
+                  className="mb-4 flex flex-col border border-gray-400 rounded-lg p-3"
                 >
                   <div className="flex flex-col md:flex-row mb-2">
                     <label className="block text-gray-700 w-1/2 font-semibold">
@@ -484,7 +483,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                   <div className="flex flex-col md:flex-row gap-2">
                     <TextArea
                       rows={2}
-                      className="border-tertiaryBorderColor rounded-md shadow-sm w-full p-2 h-full"
+                      className="border-gray-300 rounded-md shadow-sm w-full p-2 h-full"
                       value={question.question}
                       onChange={(e) =>
                         handleQuestionChange(
@@ -498,7 +497,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     </label>
                     <TextArea
                       rows={2}
-                      className="border-tertiaryBorderColor rounded-md shadow-sm w-full p-2 col-span-2 h-full"
+                      className="border-gray-300 rounded-md shadow-sm w-full p-2 col-span-2 h-full"
                       value={question.human_answer}
                       onChange={(e) =>
                         handleAnswerChange(question.external_id, e.target.value)
@@ -529,7 +528,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                             e.target.value,
                           )
                         }
-                        className="block w-full bg-primary border border-tertiaryBorderColor hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                        className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                       >
                         {supportedLanguages.map((language) => (
                           <option key={language.value} value={language.value}>
@@ -548,7 +547,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                       if (!document) return null;
                       return (
                         <div
-                          className="flex items-center mb-2 border border-tertiaryBorderColor rounded-lg bg-white"
+                          className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
                           key={document?.external_id}
                         >
                           <Link
@@ -589,7 +588,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     })}
 
                     {has_new_document && (
-                      <div className="flex items-center mb-2 border border-tertiaryBorderColor rounded-lg bg-slate-200">
+                      <div className="flex items-center mb-2 border border-gray-300 rounded-lg bg-slate-200">
                         <i className="fas fa-paperclip mx-2 text-gray-600"></i>{" "}
                         <span className="flex-grow text-gray-700">
                           {document?.file?.name}
@@ -624,7 +623,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                           ? `file-upload-${question.external_id}`
                           : ""
                       }
-                      className="cursor-pointer rounded-md px-4 py-2 border border-tertiaryBorderColor w-full block bg-white hover:bg-slate-200"
+                      className="cursor-pointer rounded-md px-4 py-2 border border-gray-300 w-full block bg-white hover:bg-slate-200"
                     >
                       {has_new_document ? (
                         <div
@@ -713,10 +712,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         </div>
       </div>
 
-      <hr className="text-tertiaryTextColor my-6" />
+      <hr className="text-gray-300 my-6" />
 
       <h1 className="text-3xl font-black mb-6">Runs for {testSuite?.name}</h1>
-      <div className="text-tertiaryTextColor justify-center my-4">
+      <div className="text-gray-500 justify-center my-4">
         {testRuns.length === 0 && (
           <p className="text-center">Test has not been run yet.</p>
         )}
@@ -765,17 +764,17 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                   }
                 }}
               >
-                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-8 justify-between items-center my-2 p-4 bg-white rounded-lg shadow-sm border border-tertiaryBorderColor hover:bg-gray-100">
+                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-8 justify-between items-center my-2 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-100">
                   <div className="flex col-span-3 items-baseline gap-1">
-                    <span className="text-tertiaryTextColor font-bold">
+                    <span className="text-gray-700 font-bold">
                       {testRun.project_object.title}
                     </span>
-                    <span className="text-tertiaryTextColor ml-2">
+                    <span className="text-gray-500 ml-2">
                       ({formattedDate})
                     </span>
                   </div>
                   <div className="flex col-span-2 items-baseline gap-1">
-                    <span className="text-tertiaryTextColor">Avg Cosine Sim: </span>
+                    <span className="text-gray-500">Avg Cosine Sim: </span>
                     <span className="text-black font-bold">
                       {testRun.status == TestRunStatus.RUNNING ? (
                         <span className="font-bold">-</span>
@@ -793,7 +792,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     </span>
                   </div>
                   <div className="flex col-span-2 items-baseline gap-1">
-                    <span className="text-tertiaryTextColor">Avg BLEU: </span>
+                    <span className="text-gray-500">Avg BLEU: </span>
                     <span className="text-black font-bold">
                       {testRun.status == TestRunStatus.RUNNING ? (
                         <span className="font-bold">-</span>
@@ -809,7 +808,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     </span>
                   </div>
                   <div className="flex col-span-1 items-baseline gap-1">
-                    <span className="text-tertiaryTextColor">Status: </span>
+                    <span className="text-gray-500">Status: </span>
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
@@ -875,12 +874,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           <h1 className="block font-medium text-lg">Add Question</h1>
         </div>
         <div className="p-3">
-          <label className="block text-tertiaryTextColor font-medium text-gray-700 mb-2">
+          <label className="block font-medium text-gray-700 mb-2">
             Question
           </label>
           <TextArea
             rows={2}
-            className="text-tertiaryTextColor rounded-md w-full p-2"
+            className="border-gray-300 rounded-md shadow-sm w-full p-2"
             value={currentQuestion.question}
             onChange={(e) =>
               setCurrentQuestion({
@@ -889,12 +888,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
               })
             }
           />
-          <label className="block font-medium text-tertiaryTextColor mt-4 mb-2">
+          <label className="block font-medium text-gray-700 mt-4 mb-2">
             Human Answer
           </label>
           <TextArea
             rows={3}
-            className="rounded-md w-full p-2"
+            className="border-gray-300 rounded-md shadow-sm w-full p-2"
             value={currentQuestion.human_answer}
             onChange={(e) =>
               setCurrentQuestion({
@@ -903,7 +902,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
               })
             }
           />
-          <label className="block font-medium text-tertiaryTextColor mt-4 mb-2">
+          <label className="block font-medium text-gray-700 mt-4 mb-2">
             Language
           </label>
           <select
@@ -916,7 +915,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 language: e.target.value,
               })
             }
-            className="bg-primary block w-full border border-tertiaryBorderColor text-tertiaryTextColor hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           >
             {supportedLanguages.map((language) => (
               <option key={language.value} value={language.value}>
@@ -959,13 +958,13 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           <h1 className="block font-medium text-lg">Run {testSuite?.name}</h1>
         </div>
         <div className="p-3">
-          <label className="block font-medium text-tertiaryTextColor mb-2">
+          <label className="block font-medium text-gray-700 mb-2">
             Project
           </label>
           <select
             value={testSuiteProject || projects[0]?.external_id}
             onChange={(e) => setTestSuiteProject(e.target.value)}
-            className="block w-full bg-white border border-tertiaryBorderColor hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           >
             {projects.map((project) => (
               <option key={project.external_id} value={project.external_id}>
