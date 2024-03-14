@@ -24,7 +24,7 @@ export function Input(
 
   return (
     <div className={parentDivClassName}>
-      <div className="border border-tertiaryBorderColor bg-primary w-full p-0.5 rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 ring-offset-primary outline-0 focus-within:ring-2 focus-within:ring-offset-1">
+      <div className="border border-secondaryActive bg-primary w-full p-0.5 rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 ring-offset-primary outline-0 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         {left}
         <input
@@ -54,7 +54,7 @@ export function TextArea(
 
   return (
     <>
-      <div className="border bg-primary border-tertiaryBorderColor w-full p-0.5  rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
+      <div className="border bg-primary border-secondaryActive w-full p-0.5  rounded-lg overflow-hidden relative transition ring-0 ring-indigo-500 focus-within:ring-2 focus-within:ring-offset-1">
         {loading && <div className="absolute inset-0 bg-black/10" />}
         {left}
         <textarea

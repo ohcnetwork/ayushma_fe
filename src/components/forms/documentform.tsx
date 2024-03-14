@@ -210,7 +210,7 @@ export default function DocumentForm(props: {
                 </>
               )}
               {!document.document_type && (
-                <div className="bg-primary border-2 h-full flex justify-center items-center border-tertiaryBorderColor rounded-md text-tertiaryTextColor">
+                <div className="bg-primary border-2 h-full flex justify-center items-center border-secondaryActive rounded-md text-secondaryActive">
                   <span className="text-xl font-medium">
                     Select a document type
                   </span>

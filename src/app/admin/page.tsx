@@ -46,7 +46,7 @@ export default function Page() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
           <Link
             href={`/admin/projects/new`}
-            className="border border-dashed border-tertiaryBorderColor hover:bg-secondary bg-primary rounded-lg p-4"
+            className="border border-dashed border-secondaryActive hover:bg-secondary bg-primary rounded-lg p-4"
           >
             <i className="far fa-plus" /> New Project
           </Link>
@@ -56,11 +56,11 @@ export default function Page() {
                 <Link
                   href={`/admin/projects/${project.external_id}`}
                   key={i}
-                  className="border border-tertiaryBorderColor hover:bg-secondary bg-primary rounded-lg p-4"
+                  className="border border-secondaryActive hover:bg-secondary bg-primary rounded-lg p-4"
                 >
                   {project.title}
                   {project.is_default && (
-                    <span className="text-xs ml-2 bg-secondaryActive text-tertiaryBorderColor px-2 py-1 rounded-full">
+                    <span className="text-xs ml-2 bg-secondaryActive text-secondaryActive px-2 py-1 rounded-full">
                       Default
                     </span>
                   )}
@@ -86,7 +86,7 @@ export default function Page() {
         <button
           className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${projectsQuery.hasNextPage
             ? "bg-green-400 text-primary"
-            : "bg-secondaryActive text-tertiaryBorderColor cursor-not-allowed"
+            : "bg-secondaryActive text-secondaryActive cursor-not-allowed"
             }`}
           onClick={() => projectsQuery.fetchNextPage()}
           disabled={!projectsQuery.hasNextPage}

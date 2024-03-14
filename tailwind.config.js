@@ -51,8 +51,6 @@ module.exports = {
         lightOpaque: "var(--w-lightOpaque)",
         opaque: "var(--w-opaque)",
         opaqueActive: "var(--w-opaqueActive)",
-        tertiaryBorderColor:"var(--w-tertiaryBorderColor)",
-        tertiaryTextColor:"var(--w-tertiaryTextColor)"
       },
     },
   },

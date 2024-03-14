@@ -17,7 +17,7 @@ export default function Slider(props: {
 
   return (
     <div>
-      <div className="grid grid-cols-3 items-center text-xs text-tertiaryTextColor">
+      <div className="grid grid-cols-3 items-center text-xs text-primaryLightfont">
         <div>{props.left}</div>
         <div className="text-center text-base text-green-500">{value}</div>
         <div className="text-right">{props.right}</div>

@@ -38,8 +38,6 @@ export const THEMES: Theme[] = [
       lightOpaque: "rgba(0, 0, 0, 0.05)",
       opaque: "rgba(0, 0, 0, 0.2)",
       opaqueActive: "rgba(0, 0, 0, 0.3)",
-      tertiaryBorderColor:"#9E9E9E",
-      tertiaryTextColor:"5C5C5C"
     },
     lowHardware: {
       backdropFilter: "none",
@@ -61,8 +59,6 @@ export const THEMES: Theme[] = [
       lightOpaque: "rgba(255, 255, 255, 0.05)",
       opaque: "rgba(255, 255, 255, 0.200)",
       opaqueActive: "rgba(255, 255, 255, 0.300)",
-      tertiaryBorderColor:"white",
-      tertiaryTextColor:"5C5C5C"
     },
     lowHardware: {
       backdropFilter: "none",

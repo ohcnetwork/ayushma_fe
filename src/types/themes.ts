@@ -11,8 +11,6 @@ export type Theme = {
         lightOpaque: string;
         opaque: string;
         opaqueActive: string;
-        tertiaryBorderColor:string;
-        tertiaryTextColor:string;
     };
     lowHardware: {
         backdropFilter: string;

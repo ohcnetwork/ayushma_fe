@@ -100,15 +100,15 @@ export default function ProjectForm(props: {
         className="flex flex-col gap-2"
         encType="multipart/form-data"
       >
-        <p className="text-sm text-tertiaryTextColor">Title</p>
+        <p className="text-sm text-primaryLightfont">Title</p>
         <Input
           placeholder="Title"
           value={project.title}
           onChange={(e) => setProject({ ...project, title: e.target.value })}
           errors={errors?.title}
-          className="text-tertiaryTextColor bg-primary border border-tertiaryBorderColor"
+          className="text-primaryLightfont bg-primary border border-secondaryActive"
         />
-        <p className="text-sm text-tertiaryTextColor">Description</p>
+        <p className="text-sm text-primaryLightfont">Description</p>
         <TextArea
           placeholder="Description"
           value={project.description}
@@ -120,7 +120,7 @@ export default function ProjectForm(props: {
         />
 
         <div className="flex gap-1">
-          <p className="text-sm text-tertiaryTextColor">Prompt</p>
+          <p className="text-sm text-primaryLightfont">Prompt</p>
           {project.assistant_id && (
             <p className="text-sm text-red-500">(Currently set by assistant)</p>
           )}
@@ -136,7 +136,7 @@ export default function ProjectForm(props: {
         {project.assistant_id ? (
           <>
             <div className="flex gap-1">
-              <p className="text-sm text-tertiaryTextColor">OpenAI Key</p>
+              <p className="text-sm text-primaryLightfont">OpenAI Key</p>
               <p className="text-sm text-red-500">
                 (Assistant uses the global key)
               </p>
@@ -149,7 +149,7 @@ export default function ProjectForm(props: {
           </>
         ) : !project.key_set ? (
           <>
-            <p className="text-sm text-tertiaryTextColor">OpenAI Key</p>
+            <p className="text-sm text-primaryLightfont">OpenAI Key</p>
             <Input
               placeholder="OpenAI Key"
               value={project.open_ai_key ?? ""}
@@ -161,7 +161,7 @@ export default function ProjectForm(props: {
           </>
         ) : (
           <>
-            <p className="text-sm text-tertiaryTextColor">OpenAI Key</p>
+            <p className="text-sm text-primaryLightfont">OpenAI Key</p>
             <div className="flex w-full items-center">
               <Input
                 disabled={true}
@@ -179,9 +179,9 @@ export default function ProjectForm(props: {
             </div>
           </>
         )}
-        <p className="text-sm text-tertiaryTextColor">Speech to Text engine</p>
+        <p className="text-sm text-primaryLightfont">Speech to Text engine</p>
         <select
-          className="border border-tertiaryBorderColor w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+          className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.stt_engine ?? 1}
           onChange={(e) =>
             setProject({ ...project, stt_engine: parseInt(e.target.value) })
@@ -193,9 +193,9 @@ export default function ProjectForm(props: {
             </option>
           ))}
         </select>
-        <p className="text-sm text-tertiaryTextColor">Text to Speech engine</p>
+        <p className="text-sm text-primaryLightfont">Text to Speech engine</p>
         <select
-          className="border border-tertiaryBorderColor w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+          className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
           value={project.tts_engine ?? 1}
           onChange={(e) =>
             setProject({ ...project, tts_engine: parseInt(e.target.value) })
@@ -209,7 +209,7 @@ export default function ProjectForm(props: {
         </select>
         <div>
           <div className="flex gap-1">
-            <p className="text-sm text-tertiaryTextColor">Model</p>
+            <p className="text-sm text-primaryLightfont">Model</p>
             {project.assistant_id && (
               <p className="text-sm text-red-500">
                 (Currently set by assistant)
@@ -217,7 +217,7 @@ export default function ProjectForm(props: {
             )}
           </div>
           <select
-            className="border border-tertiaryBorderColor w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+            className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
             value={model ?? ""}
             onChange={(e) => {
               project.assistant_id
@@ -234,10 +234,10 @@ export default function ProjectForm(props: {
             )}
           </select>
         </div>
-        <p className="text-sm text-tertiaryTextColor">Assistant</p>
+        <p className="text-sm text-primaryLightfont">Assistant</p>
         <div className="flex gap-3">
           <select
-            className="border border-tertiaryBorderColor w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+            className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
             value={project.assistant_id ?? ""}
             onChange={(e) =>
               setProject({ ...project, assistant_id: e.target.value })
@@ -277,9 +277,9 @@ export default function ProjectForm(props: {
             </Button>
           )}
         </div>
-        <p className="text-sm text-tertiaryTextColor">Preset Questions</p>
+        <p className="text-sm text-primaryLightfont">Preset Questions</p>
         {project.preset_questions?.length === 0 && (
-          <p className="text-sm text-tertiaryTextColor">
+          <p className="text-sm text-primaryLightfont">
             No preset questions. Add some below.
           </p>
         )}
@@ -292,7 +292,7 @@ export default function ProjectForm(props: {
             <h1 className="block font-medium text-lg">Add New Assistant</h1>
           </div>
           <div className="p-3">
-            <label className="block font-medium text-tertiaryTextColor mb-2">Name</label>
+            <label className="block font-medium text-primaryLightfont mb-2">Name</label>
             <input
               type="text"
               onChange={(e) =>
@@ -301,10 +301,10 @@ export default function ProjectForm(props: {
                   name: e.target.value,
                 })
               }
-              className="block w-full bg-primary border border-tertiaryBorderColor hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+              className="block w-full bg-primary border border-secondaryActive hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
             />
 
-            <label className="block font-medium text-tertiaryTextColor mb-2 mt-4">
+            <label className="block font-medium text-primaryLightfont mb-2 mt-4">
               Instructions
             </label>
             <textarea
@@ -315,14 +315,14 @@ export default function ProjectForm(props: {
                 })
               }
               placeholder={project.prompt}
-              className="block w-full bg-primary border border-tertiaryBorderColor hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+              className="block w-full bg-primary border border-secondaryActive hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
             />
 
-            <label className="block font-medium text-tertiaryTextColor mb-2 mt-4">
+            <label className="block font-medium text-primaryLightfont mb-2 mt-4">
               Model
             </label>
             <select
-              className="border border-tertiaryBorderColor w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
+              className="border border-secondaryActive w-full bg-primary rounded-lg relative transition-all flex ring-0 ring-green-500 focus-within:ring-2 focus-within:ring-offset-1 p-3"
               value={addAssistantDetails.model}
               onChange={(e) =>
                 setAddAssistantDetails({

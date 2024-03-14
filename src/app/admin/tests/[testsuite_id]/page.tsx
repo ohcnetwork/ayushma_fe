@@ -915,7 +915,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 language: e.target.value,
               })
             }
-            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            className="block w-full bg-primary border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           >
             {supportedLanguages.map((language) => (
               <option key={language.value} value={language.value}>

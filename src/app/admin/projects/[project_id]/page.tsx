@@ -98,7 +98,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         <div className="flex gap-2 items-center">
           <h1 className="text-3xl font-black">{project?.title}</h1>
           {project?.is_default && (
-            <span className="text-xs ml-2 bg-secondaryActive text-tertiaryTextColor px-2 py-1 rounded-full">
+            <span className="text-xs ml-2 bg-secondaryActive text-primaryLightfont px-2 py-1 rounded-full">
               Default
             </span>
           )}
@@ -123,7 +123,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
                 : `/admin/projects/${project_id}/documents/${document.external_id}`
             }
             key={i}
-            className="border border-tertiaryBorderColor hover:bg-secondary bg-primary rounded-lg p-4 flex items-center gap-2 justify-between"
+            className="border border-secondaryActive hover:bg-secondary bg-primary rounded-lg p-4 flex items-center gap-2 justify-between"
           >
             <div className="flex items-center gap-2">
               <i
@@ -133,7 +133,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
               {document.title}
             </div>
             {document.uploading && (
-              <div className="text-xs text-tertiaryTextColor inline-flex items-center gap-2">
+              <div className="text-xs text-primaryLightfont inline-flex items-center gap-2">
                 <i className="fa fa-spinner-third fa-spin"></i>
                 Uploading...
               </div>
@@ -143,7 +143,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         {!project?.archived && (
           <Link
             href={`/admin/projects/${project_id}/documents/new`}
-            className="border border-dashed border-tertiaryBorderColor hover:bg-secondary bg-primary rounded-lg p-4"
+            className="border border-dashed border-secondaryActive hover:bg-secondary bg-primary rounded-lg p-4"
           >
             <i className="far fa-plus" /> New Document
           </Link>
