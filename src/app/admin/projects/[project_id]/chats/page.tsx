@@ -36,7 +36,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
   const chatTableBody = () => {
     if (chatsList.length > 0 && chatsList[0].count !== 0) {
       return (
-        <tbody className="bg-primary divide-y divide-secondaryActive text-gray-700">
+        <tbody className="bg-primary divide-y divide-secondaryActive text-primaryLightfont">
           {chatsList.map((chats) => {
             return chats.results.map((chat: any, index: number) => {
               return (
@@ -59,9 +59,9 @@ export default function Page({ params }: { params: { project_id: string } }) {
       );
     } else {
       return (
-        <tbody className="bg-primary divide-y divide-secondaryActive text-sm text-gray-700">
+        <tbody className="bg-primary divide-y divide-secondaryActive text-sm text-primaryLightfont">
           <tr className="bg-primary border-b border-x hover:bg-secondary w-full">
-            <td colSpan={100} className="p-4 text-center text-gray-400">
+            <td colSpan={100} className="p-4 text-center text-primaryLightfont">
               No chats found
             </td>
           </tr>

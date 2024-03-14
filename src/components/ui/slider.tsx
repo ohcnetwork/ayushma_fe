@@ -1,4 +1,6 @@
+import { backIn } from "framer-motion";
 import { Errors } from "./interactive";
+import { BackgroundControls } from "shadergradient/controls";
 
 export default function Slider(props: {
   max: number;
@@ -15,7 +17,7 @@ export default function Slider(props: {
 
   return (
     <div>
-      <div className="grid grid-cols-3 items-center text-xs text-gray-500">
+      <div className="grid grid-cols-3 items-center text-xs text-primaryLightfont">
         <div>{props.left}</div>
         <div className="text-center text-base text-green-500">{value}</div>
         <div className="text-right">{props.right}</div>
@@ -28,7 +30,8 @@ export default function Slider(props: {
         onChange={(e) => onChange(parseFloat(e.target.value))}
         step={step}
         disabled={disabled}
-        className="w-full slider"
+        className="w-full"
+        style={{backgroundColor:"green"}}
       />
       <Errors errors={props.errors} />
     </div>

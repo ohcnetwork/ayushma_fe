@@ -98,7 +98,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         <div className="flex gap-2 items-center">
           <h1 className="text-3xl font-black">{project?.title}</h1>
           {project?.is_default && (
-            <span className="text-xs ml-2 bg-secondaryActive text-gray-500 px-2 py-1 rounded-full">
+            <span className="text-xs ml-2 bg-secondaryActive text-primaryLightfont px-2 py-1 rounded-full">
               Default
             </span>
           )}
@@ -106,7 +106,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         <div className="flex justify-center items-center">
           <Link
             href={`/admin/projects/${project_id}/chats`}
-            className="bg-slate-200 flex items-center gap-2 justify-center hover:bg-slate-300 m-2 p-2 rounded-xl px-6"
+            className="bg-primary flex items-center gap-2 justify-center hover:bg-slate-300 m-2 p-2 rounded-xl px-6"
           >
             <i className="fa fa-comments"></i>
             Chats
@@ -123,7 +123,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
                 : `/admin/projects/${project_id}/documents/${document.external_id}`
             }
             key={i}
-            className="border border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4 flex items-center gap-2 justify-between"
+            className="border border-secondaryActive hover:bg-secondary bg-primary rounded-lg p-4 flex items-center gap-2 justify-between"
           >
             <div className="flex items-center gap-2">
               <i
@@ -133,7 +133,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
               {document.title}
             </div>
             {document.uploading && (
-              <div className="text-xs text-gray-600 inline-flex items-center gap-2">
+              <div className="text-xs text-primaryLightfont inline-flex items-center gap-2">
                 <i className="fa fa-spinner-third fa-spin"></i>
                 Uploading...
               </div>
@@ -143,7 +143,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         {!project?.archived && (
           <Link
             href={`/admin/projects/${project_id}/documents/new`}
-            className="border border-dashed border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4"
+            className="border border-dashed border-secondaryActive hover:bg-secondary bg-primary rounded-lg p-4"
           >
             <i className="far fa-plus" /> New Document
           </Link>
@@ -177,7 +177,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         </Button>
         <Button
           variant="secondary"
-          className="w-full bg-slate-200 enabled:hover:bg-slate-300"
+          className="w-full bg-primary enabled:hover:bg-slate-300"
           onClick={() => setShowSetDefaultModal(true)}
           disabled={project?.is_default}
         >
@@ -193,7 +193,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
           <p>Are you sure you want to delete this project?</p>
           <div className="flex flex-col md:flex-row gap-2 justify-end">
             <button
-              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              className="bg-primary hover:bg-gray-400 px-4 p-2 rounded-lg"
               onClick={() => setShowDeleteModel(false)}
             >
               Cancel
@@ -222,7 +222,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
           </p>
           <div className="flex flex-col md:flex-row gap-2 justify-end">
             <button
-              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              className="bg-primary hover:bg-gray-400 px-4 p-2 rounded-lg"
               onClick={() => setShowArchiveModal(false)}
             >
               Cancel
@@ -248,7 +248,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
           <p>Are you sure you want to set this project as default?</p>
           <div className="flex flex-col md:flex-row gap-2 justify-end">
             <button
-              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              className="bg-primary hover:bg-gray-400 px-4 p-2 rounded-lg"
               onClick={() => setShowSetDefaultModal(false)}
             >
               Cancel

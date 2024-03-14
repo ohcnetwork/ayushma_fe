@@ -4,7 +4,7 @@ import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-
+// import x from "../../../public/device-laptop"
 export default function AdminSideBar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -43,7 +43,6 @@ export default function AdminSideBar() {
         setStorage({ ...storage, user: undefined, auth_token: undefined }),
     },
   ];
-
   return (
     <>
       <div className="bg-primary bg-cover bg-top w-64 shrink-0 flex flex-col justify-between border-r border-gray-300 h-screen">
@@ -60,8 +59,9 @@ export default function AdminSideBar() {
             {links.map((link, idx) => (
               <Link
                 href={link.url}
-                className={`flex gap-4 px-4 py-2 w-full group hover:bg-secondary border border-secondaryActive rounded-lg overflow-hidden items-center ${pathname === link.url && "bg-secondary"
-                  }`}
+                className={`flex gap-4 px-4 py-2 w-full group hover:bg-secondary border border-secondaryActive rounded-lg overflow-hidden items-center ${
+                  pathname === link.url && "bg-secondary"
+                }`}
                 key={idx}
               >
                 <i className={`fal fa-${link.icon}`} />
@@ -81,6 +81,25 @@ export default function AdminSideBar() {
                 <i className={`fal fa-${button.icon}`} />
               </button>
             ))}
+              <select
+                value={storage.theme}
+                onChange={(e) => {
+                  setStorage({
+                    ...storage,
+                    theme:
+                      Number(e.target.value) === 2
+                        ? undefined
+                        : Number(e.target.value),
+                  });
+                }}
+                className="border border-secondary rounded-lg bg-primary p-2 px-4"
+              >
+                <option value={2}>System</option>
+                <option value={0}>
+                  Light
+                </option>
+                <option value={1}>Dark</option>
+              </select>
           </div>
         </div>
       </div>

@@ -112,7 +112,7 @@ export default function DocumentForm(props: {
               <iframe src={doc.file as any} className="w-full h-96" />
             </div>
           ) : doc.text_content ? (
-            <div className="flex flex-col gap-2 bg-[#fbfffd] h-full border border-secondaryActive rounded-md p-4 ">
+            <div className="flex flex-col gap-2 bg-primary h-full border border-secondaryActive rounded-md p-4 ">
               {doc.document_type && (
                 <div className="flex gap-2 items-center">
                   <i
@@ -137,7 +137,7 @@ export default function DocumentForm(props: {
             <>
               {document.document_type === DocumentType.FILE && (
                 <>
-                  <div className="bg-[#f4fef8] rounded-md border-2 border-green-500 h-full">
+                  <div className="bg-primary rounded-md border-2 border-green-500 h-full">
                     <label
                       htmlFor="file-picker"
                       className="text-green-600 text-center flex gap-2 items-center justify-center h-full cursor-pointer outline-none"
@@ -181,7 +181,7 @@ export default function DocumentForm(props: {
                   <TextArea
                     rows={7}
                     placeholder="Corpus text"
-                    className="bg-[#fbfffd] rounded-md text-black"
+                    className="bg-primary rounded-md text-black"
                     value={document.text_content}
                     onChange={(e) =>
                       setDocument({ ...document, text_content: e.target.value })
@@ -199,7 +199,7 @@ export default function DocumentForm(props: {
                   </div>
                   <Input
                     placeholder="Corpus URL"
-                    className="bg-[#fbfffd] rounded-md text-black"
+                    className="bg-primary rounded-md text-black"
                     value={document.text_content}
                     onChange={(e) =>
                       setDocument({ ...document, text_content: e.target.value })
@@ -210,7 +210,7 @@ export default function DocumentForm(props: {
                 </>
               )}
               {!document.document_type && (
-                <div className="bg-[#fbfffd] border-2 h-full flex justify-center items-center border-gray-300 rounded-md text-gray-500">
+                <div className="bg-primary border-2 h-full flex justify-center items-center border-secondaryActive rounded-md text-secondaryActive">
                   <span className="text-xl font-medium">
                     Select a document type
                   </span>
@@ -229,7 +229,7 @@ export default function DocumentForm(props: {
           <p>Are you sure you want to delete this document?</p>
           <div className="flex flex-col md:flex-row gap-2 justify-end">
             <button
-              className="bg-gray-300 hover:bg-gray-400 px-4 p-2 rounded-lg"
+              className="bg-primary hover:bg-gray-400 px-4 p-2 rounded-lg"
               onClick={() => setShowDeleteModal(false)}
             >
               Cancel

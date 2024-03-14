@@ -23,9 +23,9 @@ export default function Client() {
         <div className="flex flex-col justify-center items-center h-screen">
             {projectsQuery.isLoading && (
                 <div className="flex items-center">
-                    <div className="w-4 h-4 mr-2 rounded-full bg-gray-900 animate-pulse"></div>
-                    <div className="w-4 h-4 mr-2 rounded-full bg-gray-900 animate-pulse"></div>
-                    <div className="w-4 h-4 rounded-full bg-gray-900 animate-pulse"></div>
+                    <div className="w-4 h-4 mr-2 rounded-full bg-primary animate-pulse"></div>
+                    <div className="w-4 h-4 mr-2 rounded-full bg-primary animate-pulse"></div>
+                    <div className="w-4 h-4 rounded-full bg-primary animate-pulse"></div>
                 </div>
             )}
 

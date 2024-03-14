@@ -21,7 +21,7 @@ const RoleButton = (
     <button
       {...rest}
       className={twMerge(
-        `w-full sm:w-fit flex justify-center gap-1 border px-2 py-1 rounded-full items-center ${color === "green" && "hover:border-green-400"
+        `w-full sm:w-fit flex justify-center gap-1 border border-secondaryActive px-2 py-1 rounded-full items-center ${color === "green" && "hover:border-green-400"
         } ${color === "blue" && "hover:border-blue-400"} ${color === "orange" && "hover:border-orange-400"
         } transition-all ${state &&
         `${color === "green" && "bg-green-400"} ${color === "blue" && "bg-blue-400"
@@ -139,8 +139,8 @@ export default function Page() {
           hasMore={userQuery.hasNextPage ? true : false}
           useWindow={false}
         >
-          <table className="w-full text-sm text-left ">
-            <thead className="text-xs text-gray-700 uppercase bg-secondary border border-gray-300 rounded-lg">
+          <table className="w-full text-sm text-left mt-4">
+            <thead className="text-xs text-primaryLightfont uppercase bg-secondary border border-secondaryActive rounded-lg">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   User
@@ -167,7 +167,7 @@ export default function Page() {
                       >
                         <td
                           scope="row"
-                          className="px-6 py-2 font-medium text-gray-900 "
+                          className="px-6 py-2 font-medium text-primaryLightfont"
                         >
                           <div className="flex flex-col">
                             <div className="flex gap-2 items-center">
@@ -176,7 +176,7 @@ export default function Page() {
                               </span>
                               {user.allow_key && (
                                 <i
-                                  className="fa fa-key text-xs text-gray-400"
+                                  className="fa fa-key text-xs text-primaryLightfont"
                                   aria-hidden="true"
                                 />
                               )}
@@ -216,7 +216,7 @@ export default function Page() {
             ) : (
               <tbody>
                 <tr className="bg-primary border-b border-x hover:bg-secondary w-full">
-                  <td colSpan={100} className="p-4 text-center text-gray-400">
+                  <td colSpan={100} className="p-4 text-center text-primaryLightfont">
                     No users found
                   </td>
                 </tr>

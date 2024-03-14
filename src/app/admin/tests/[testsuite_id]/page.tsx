@@ -18,7 +18,6 @@ import {
   TestRunStatus,
 } from "@/types/test";
 import { useInfiQuery } from "@/utils/hooks/useInfiQuery";
-// import CSVReader from "react-csv-reader";
 import CSVReader from "../../../../components/csvReader";
 export default function Page({ params }: { params: { testsuite_id: string } }) {
   const router = useRouter();
@@ -41,7 +40,6 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
       });
     },
   });
-  const [questionsCsv, setQuestionsCsv] = useState<any>([]);
   const testQuestions: TestQuestion[] =
     TestQuestionsQuery?.data?.pages?.flatMap((page) => page.results) ?? [];
 
@@ -917,7 +915,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                 language: e.target.value,
               })
             }
-            className="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            className="block w-full bg-primary border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
           >
             {supportedLanguages.map((language) => (
               <option key={language.value} value={language.value}>
