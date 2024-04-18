@@ -16,7 +16,7 @@ export default function AuthLayout({
       <div className="w-[300px] flex flex-col gap-4">
         <div>
           <img
-            src={(storage.theme || storage.preferedTheme) === 0 ? (process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg") : (process.env.NEXT_PUBLIC_LOGO_DARK_URL || "/logo_white.svg")}
+            src={(storage.theme || storage.preferredTheme) === 0 ? (process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg") : (process.env.NEXT_PUBLIC_LOGO_DARK_URL || "/logo_white.svg")}
             alt="Logo"
             className="w-full object-contain"
           />

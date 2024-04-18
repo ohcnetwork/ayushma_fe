@@ -5,17 +5,15 @@ import { User, UserUpdate } from "@/types/user";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Page = ({ params }: { params: { username: string } }) => {
   const { username } = params;
   const router = useRouter();
-  const userQuery = useQuery(
-    {
-      queryKey: ["user", username],
-      queryFn: () => API.users.get(username),
-    },
-  );
+  const userQuery = useQuery({
+    queryKey: ["user", username],
+    queryFn: () => API.users.get(username),
+  });
   const userData: User | undefined = userQuery.data;
 
   const [updatingUser, setUpdatingUser] = useState(false);
@@ -23,19 +21,24 @@ const Page = ({ params }: { params: { username: string } }) => {
 
   const [userState, setUserState] = useState<UserUpdate>(userQuery.data || {});
 
+  useEffect(() => {
+    if (userQuery?.data) {
+      setUserState(userQuery.data);
+    }
+  }, [userQuery.data]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setUpdatingUser(true);
     e.preventDefault();
     updateUserMutation.mutate();
   };
 
-  const updateUserMutation = useMutation(
-    {
-      mutationFn: () => API.users.update(userData ? userData.username : "", userState),
-      onSuccess: () => setUpdatingUser(false),
-      onError: () => setUpdatingUser(false),
-    },
-  );
+  const updateUserMutation = useMutation({
+    mutationFn: () =>
+      API.users.update(userData ? userData.username : "", userState),
+    onSuccess: () => setUpdatingUser(false),
+    onError: () => setUpdatingUser(false),
+  });
 
   const updateError = updateUserMutation.error as any;
 
@@ -56,15 +59,14 @@ const Page = ({ params }: { params: { username: string } }) => {
     }
   };
 
-  const deleteUserMutation = useMutation(
-    {
-      mutationFn: (params: { username: string }) => API.users.delete(params.username),
-      onError: () => {
-        alert("Cannot delete account that is currently being used");
-        setDeletingUser(false);
-      },
+  const deleteUserMutation = useMutation({
+    mutationFn: (params: { username: string }) =>
+      API.users.delete(params.username),
+    onError: () => {
+      alert("Cannot delete account that is currently being used");
+      setDeletingUser(false);
     },
-  );
+  });
 
   return (
     <div>
@@ -77,7 +79,7 @@ const Page = ({ params }: { params: { username: string } }) => {
         <div>
           <div className="flex gap-4 items-center">
             <p className="mb-2 text-sm text-gray-500">Full name</p>
-            {updateError && updateError.error.full_name && (
+            {updateError?.error?.full_name && (
               <p className="text text-sm text-red-500 mb-2">
                 ({updateError.error.full_name})
               </p>

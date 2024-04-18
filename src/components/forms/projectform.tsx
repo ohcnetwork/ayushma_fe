@@ -400,7 +400,7 @@ export default function ProjectForm(props: {
           {pro.external_id ? "Save" : "Create"}
         </Button>
       </form>
-      <Toaster />
+      <Toaster position="top-right" />
     </div>
   );
 }

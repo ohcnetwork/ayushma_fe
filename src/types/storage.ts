@@ -13,5 +13,5 @@ export type Storage = {
   chatbot_token?: string;
   tts_autoplay?: boolean;
   theme?: number;
-  preferedTheme?: number;
+  preferredTheme?: number;
 };

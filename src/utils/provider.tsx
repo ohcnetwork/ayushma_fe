@@ -11,11 +11,12 @@ import { Storage } from "@/types/storage";
 import { useHydrateAtoms } from "jotai/utils";
 import ThemeProvider from "./themeprovider";
 
-function Providers(props: {
-  children: React.ReactNode;
-  initialStorage: Storage;
-}) {
-
+function Providers(
+  props: Readonly<{
+    children: React.ReactNode;
+    initialStorage: Storage;
+  }>,
+) {
   const { children, initialStorage } = props;
 
   const [client] = React.useState(
@@ -24,19 +25,12 @@ function Providers(props: {
 
   const [storage, setStorage] = useAtom(storageAtom);
 
-  useHydrateAtoms([
-    [storageAtom, initialStorage || {}]
-  ])
+  useHydrateAtoms([[storageAtom, initialStorage || {}]]);
 
   useEffect(() => {
-    console.log("s", storage)
-    const currentHostName = window.location.hostname;
-    document.cookie = `${process.env.NEXT_PUBLIC_COOKIE_STORAGE}=${JSON.stringify(
-      storage
-    )}; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT; domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN
-      ? process.env.NEXT_PUBLIC_COOKIE_DOMAIN
-      : currentHostName
-      }`;
+    if (JSON.stringify(storage) != "{}") {
+      localStorage.setItem("preferences", JSON.stringify(storage));
+    }
   }, [storage]);
 
   return (

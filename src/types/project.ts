@@ -24,22 +24,22 @@ export enum DocumentType {
 
 export const STT_ENGINES = [
   { id: 1, label: "OpenAI Whisper" },
-  { id: 2, label: "Google Speech to Text" },
+  { id: 2, label: "Google" },
   { id: 3, label: "Self Hosted Whisper" },
 ];
 
 export const TTS_ENGINE = [
   { id: 1, label: "OpenAI" },
-  { id: 2, label: "Google Text to Speech" },
+  { id: 2, label: "Google" },
 ];
 
 export const MODELS = [
-  { id: 1, label: "GPT-3.5" },
-  { id: 2, label: "GPT-3.5-16k" },
-  { id: 3, label: "GPT-4" },
-  { id: 4, label: "GPT-4-32k" },
-  { id: 5, label: "GPT-4-VISUAL" },
-  { id: 6, label: "GPT-4-TURBO" },
+  { id: 1, label: "GPT-3.5", friendly_name: "GPT 3.5" },
+  { id: 2, label: "GPT-3.5-16k", friendly_name: "GPT 3.5 16k" },
+  { id: 3, label: "GPT-4", friendly_name: "GPT 4" },
+  { id: 4, label: "GPT-4-32k", friendly_name: "GPT 4 32k" },
+  { id: 5, label: "GPT-4-VISUAL", friendly_name: "GPT 4 Vision" },
+  { id: 6, label: "GPT-4-TURBO", friendly_name: "GPT 4 Turbo" },
 ];
 export const ASSISTANT_MODELS = [
   { id: "gpt-3.5-turbo-1106", label: "gpt-3.5-turbo-1106" },
@@ -54,4 +54,5 @@ export type Document = BaseModelType & {
   text_content: string;
   document_type: DocumentType;
   uploading: boolean;
+  failed: boolean;
 };

@@ -24,17 +24,13 @@ export default function ChatSideBar(props: { project_id?: string }) {
   const chatsQuery = useInfiQuery({
     queryKey: ["search", debouncedSearchQuery],
     queryFn: ({ pageParam = 0 }) => {
-      return API.chat.list(
-        project_id || "",
-        {
-          offset: pageParam,
-          search: debouncedSearchQuery
-        },
-      );
+      return API.chat.list(project_id || "", {
+        offset: pageParam,
+        search: debouncedSearchQuery,
+      });
     },
     enabled: !!project_id,
-  },
-  );
+  });
 
   const nonChatRoutes = ["/profile"];
 
@@ -72,14 +68,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
     ...(storage?.user?.is_staff
       ? [
-        {
-          icon: "user-shield",
-          text: "Admin",
-          onclick: () => {
-            router.push("/admin");
+          {
+            icon: "user-shield",
+            text: "Admin",
+            onclick: () => {
+              router.push("/admin");
+            },
           },
-        },
-      ]
+        ]
       : []),
     {
       icon: "sign-out-alt",
@@ -89,16 +85,15 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
   ];
 
-  const deleteChatMutation = useMutation(
-    {
-      mutationFn: (external_id: string) => API.chat.delete(project_id || "", external_id),
-      onSuccess: async (data, external_id) => {
-        chatsQuery.refetch();
-        if (path === `/project/${project_id}/chat/${external_id}`)
-          router.push(`/project/${project_id}`);
-      },
+  const deleteChatMutation = useMutation({
+    mutationFn: (external_id: string) =>
+      API.chat.delete(project_id || "", external_id),
+    onSuccess: async (data, external_id) => {
+      chatsQuery.refetch();
+      if (path === `/project/${project_id}/chat/${external_id}`)
+        router.push(`/project/${project_id}`);
     },
-  );
+  });
 
   const deleteChat = (external_id: string) => {
     deleteChatMutation.mutate(external_id);
@@ -115,7 +110,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
             >
               <div className="flex flex-col items-end justify-center">
                 <img
-                  src={(storage.theme || storage.preferedTheme) === 0 ? (process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg") : (process.env.NEXT_PUBLIC_LOGO_DARK_URL || "/logo_white.svg")}
+                  src={
+                    storage?.theme != undefined
+                      ? storage?.theme === 0 || storage?.preferredTheme === 0
+                        ? process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg"
+                        : process.env.NEXT_PUBLIC_LOGO_DARK_URL ||
+                          "/logo_white.svg"
+                      : process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg"
+                  }
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />
@@ -139,8 +141,10 @@ export default function ChatSideBar(props: { project_id?: string }) {
             />
           </div>
           {!nonChatRoutes.includes(path || "") && (
-
-            <div id="scrollableDiv" className="overflow-y-auto px-2 hover-scrollbar">
+            <div
+              id="scrollableDiv"
+              className="overflow-y-auto px-2 hover-scrollbar"
+            >
               <InfiniteScroll
                 loadMore={() => {
                   chatsQuery.fetchNextPage();
@@ -150,8 +154,9 @@ export default function ChatSideBar(props: { project_id?: string }) {
                 threshold={10}
                 loader={
                   <div
-                    className={`${chatsQuery.isFetching ? "" : "hidden"
-                      } flex justify-center items-center mt-2 h-full`}
+                    className={`${
+                      chatsQuery.isFetching ? "" : "hidden"
+                    } flex justify-center items-center mt-2 h-full`}
                   >
                     <div
                       className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
@@ -165,7 +170,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                 }
               >
                 <div className="flex flex-col">
-                  {project_id && (
+                  {project_id &&
                     chatsQuery.fullData?.map((chat: Chat, j: number) => (
                       <div
                         key={j}
@@ -190,7 +195,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                           <i className="fad fa-trash-alt" />
                         </button>
                       </div>
-                    )))}
+                    ))}
                 </div>
               </InfiniteScroll>
             </div>
@@ -348,19 +353,24 @@ export default function ChatSideBar(props: { project_id?: string }) {
             }
           />
           <br />
-          Theme
+          {/* Theme
           <br />
-          <select
+           <select
             value={storage.theme}
             onChange={(e) => {
-              setStorage({ ...storage, theme: Number(e.target.value) === 2 ? undefined : Number(e.target.value) });
+              setStorage({
+                ...storage,
+                theme:
+                  Number(e.target.value) === 2
+                    ? undefined
+                    : Number(e.target.value),
+              });
             }}
             className="border border-secondary rounded-lg bg-primary p-2 px-4"
           >
-            <option value={2}>System</option>
             <option value={0}>Light</option>
             <option value={1}>Dark</option>
-          </select>
+          </select> */}
         </div>
       </Modal>
     </>

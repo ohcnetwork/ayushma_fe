@@ -1,31 +1,32 @@
+"use client";
+
 import "./globals.css";
 import Script from "next/script";
 import Providers from "@/utils/provider";
-import { cookies } from "next/headers";
 import { Storage } from "@/types/storage";
 import { Theme } from "@/types/themes";
 import { THEMECOMMONS, THEMES } from "@/utils/constants";
+import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { storageAtom } from "@/store";
 
-export const metadata = {
-  title: process.env.NEXT_PUBLIC_AI_NAME,
-  description: process.env.NEXT_PUBLIC_AI_DESCRIPTION || "Revolutionizing medical diagnosis through AI and Opensource",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_DOMAIN ?
-    'https://' + process.env.NEXT_PUBLIC_DOMAIN :
-    "http://localhost:3000"
-  ),
-};
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
+  const [storage, setStorage] = useAtom(storageAtom);
+  const [loading, setLoading] = useState(true);
 
-  const cookieStore = cookies()
-  const jsonstorage = cookieStore.get(process.env.NEXT_PUBLIC_COOKIE_STORAGE || "storage")?.value
+  useEffect(() => {
+    const preferences = localStorage.getItem("preferences");
+    if (preferences) {
+      setStorage(JSON.parse(preferences));
+    }
+    setLoading(false);
+  }, []);
 
-  const storage: Storage = JSON.parse(jsonstorage || "{}")
-
+  // Function to derive CSS variables from theme
   const getThemeVariables = (theme: Theme) => {
     const themeMain = theme.scheme;
     const themeVars = {
@@ -38,10 +39,11 @@ export default async function RootLayout({
       cssVars["--w-" + property] = val;
     }
     return cssVars;
-  }
+  };
 
-  const theme = storage?.theme || storage.preferedTheme || 0;
-  const themeVars = getThemeVariables(THEMES[theme])
+  // Fallback logic for theme selection
+  const theme = storage?.theme || storage?.preferredTheme || 0;
+  const themeVars = getThemeVariables(THEMES[theme]);
 
   return (
     <html lang="en" style={{ ...themeVars }}>
@@ -53,9 +55,15 @@ export default async function RootLayout({
         <Script src="https://www.writeroo.net/fawesome.js" />
       </head>
       <body className="font-inter bg-primary text-primaryFont">
-        <Providers initialStorage={storage}>
-          {children}
-        </Providers>
+        {loading ? (
+          <div className="flex items-center h-screen justify-center overflow-hidden">
+            <div className="w-4 h-4 mr-2 rounded-full bg-gray-900 animate-pulse"></div>
+            <div className="w-4 h-4 mr-2 rounded-full bg-gray-900 animate-pulse"></div>
+            <div className="w-4 h-4 rounded-full bg-gray-900 animate-pulse"></div>
+          </div>
+        ) : (
+          <Providers initialStorage={storage}>{children}</Providers>
+        )}
       </body>
     </html>
   );

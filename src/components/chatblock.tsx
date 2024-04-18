@@ -1,11 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// @ts-ignore
-import { ChatFeedback, ChatMessage, ChatMessageType } from "@/types/chat";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { ChatFeedbackType, ChatMessage, ChatMessageType } from "@/types/chat";
 import Image from "next/image";
-import rehypeRaw from "rehype-raw";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
 import Stats from "./stats";
@@ -16,6 +12,7 @@ import { API } from "@/utils/api";
 import { useParams } from "next/navigation";
 import { DocumentType } from "@/types/project";
 import useIsIOS from "@/utils/hooks/useIsIOS";
+import Markdown from "markdown-to-jsx";
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
@@ -35,56 +32,61 @@ export default function ChatBlock(props: {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [audioStatus, setAudioStatus] = useState<AudioStatus>("unloaded");
   const [percentagePlayed, setPercentagePlayed] = useState(0);
+  const highlightRef = React.createRef<HTMLDivElement>();
+
   const isIOS = useIsIOS();
 
   const shouldAutoplay = isIOS
     ? false
     : autoplay && (storage.tts_autoplay ?? true);
 
-  const isCompleteLetter = (str: string) => {
-    const regex = /^\p{L}$/u;
-    return regex.test(str);
-  };
+  function wrapCharacters(element: ChildNode | Element | HTMLElement) {
+    if (!element?.childNodes) return;
+    const children = Array.from(element.childNodes);
+    children.forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE && child.nodeValue?.trim() !== "") {
+        const fragment = document.createDocumentFragment();
+        Array.from(child.nodeValue ?? []).forEach((char) => {
+          const span = document.createElement("span");
+          span.textContent = char;
+          fragment.appendChild(span);
+        });
+        element.replaceChild(fragment, child);
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        wrapCharacters(child);
+      }
+    });
+  }
 
-  const chatMessage =
-    (message?.message != message?.original_message
-      ? message?.message
-      : message?.original_message) + cursorText;
+  useEffect(() => {
+    const content = highlightRef.current;
+    wrapCharacters(content as Element);
+  }, []);
 
-  const getMessageSegments = (): {
-    highlightText: string;
-    blackText: string;
-  } => {
-    const messageLength = chatMessage.length || 0;
-    const highlightLength =
-      percentagePlayed === 100
-        ? 0
-        : Math.floor((percentagePlayed / 100) * messageLength);
+  useEffect(() => {
+    if (!highlightRef.current) return;
 
-    let highlightText = chatMessage.slice(0, highlightLength) || "";
-    let blackText = chatMessage.slice(highlightLength) || "";
+    const spans = highlightRef.current?.querySelectorAll("span");
 
-    while (
-      highlightText &&
-      blackText &&
-      percentagePlayed < 100 &&
-      highlightText.length > 0 &&
-      !isCompleteLetter(highlightText.slice(-1))
-    ) {
-      highlightText += blackText[0];
-      blackText = blackText.slice(1);
+    function highlightBasedOnPercentPlayed() {
+      const spansToHighlight = Math.floor(
+        ((percentagePlayed === 100 ? 0 : percentagePlayed) / 100) *
+          spans.length,
+      );
+
+      spans.forEach((span) => span.classList.remove("text-green-600"));
+      for (let i = 0; i < spansToHighlight; i++) {
+        spans[i].classList.add("text-green-600");
+      }
     }
-
-    return { highlightText, blackText };
-  };
-
-  const { highlightText, blackText } = getMessageSegments();
+    highlightBasedOnPercentPlayed();
+  }, [highlightRef, percentagePlayed]);
 
   useEffect(() => {
     if (audio) {
       const interval = setInterval(() => {
         setPercentagePlayed((audio.currentTime / audio.duration) * 100);
-      }, 10);
+      }, 50);
       return () => {
         stopAudio();
         clearInterval(interval);
@@ -135,8 +137,13 @@ export default function ChatBlock(props: {
 
   return (
     <div
-      className={`flex flex-col gap-4 p-4 pt-8 md:p-6 md:pt-8 ${message?.messageType === ChatMessageType.USER ? "bg-gray-500/5" : ""
-        }`}
+      className={`flex flex-col gap-4 p-4 pt-8 md:p-6 md:pt-8 ${
+        message?.messageType === ChatMessageType.USER
+          ? "bg-gray-500/10"
+          : message?.messageType === ChatMessageType.SYSTEM
+            ? "bg-red-500/10 whitespace-pre-wrap"
+            : ""
+      }`}
     >
       <div className="flex gap-6 max-w-4xl mx-auto w-full">
         <div>
@@ -181,16 +188,13 @@ export default function ChatBlock(props: {
                 </div>
               )}
               {message?.messageType != ChatMessageType.SYSTEM && (
-                <ReactMarkdown
-                  rehypePlugins={[rehypeRaw]}
-                  remarkPlugins={[remarkGfm]}
-                  className="markdown-render"
-                >
-                  {audioStatus === "unloaded"
-                    ? (message?.message || message?.original_message) +
-                    cursorText || ""
-                    : `<span className="text-green-600">${highlightText}</span><span>${blackText}</span>`}
-                </ReactMarkdown>
+                <div ref={highlightRef} className="markdown-render">
+                  <Markdown
+                    options={{ wrapper: "article", forceWrapper: true }}
+                  >
+                    {message?.message || message?.original_message || ""}
+                  </Markdown>
+                </div>
               )}
               {message?.messageType === ChatMessageType.AYUSHMA &&
                 message?.audio && (
@@ -208,13 +212,13 @@ export default function ChatBlock(props: {
                       </button>
                       {(audioStatus === "paused" ||
                         audioStatus === "playing") && (
-                          <button
-                            onClick={stopAudio}
-                            className="flex items-center justify-center text-red-500 rounded-lg transition bg-secondaryActive hover:text-gray-700 hover:bg-gray-300 p-2 "
-                          >
-                            <i className="fa-regular fa-circle-stop text-xl"></i>
-                          </button>
-                        )}
+                        <button
+                          onClick={stopAudio}
+                          className="flex items-center justify-center text-red-500 rounded-lg transition bg-secondaryActive hover:text-gray-700 hover:bg-gray-300 p-2 "
+                        >
+                          <i className="fa-regular fa-circle-stop text-xl"></i>
+                        </button>
+                      )}
                     </div>
                     <div className="inline-flex gap-1 mt-2">
                       {message?.messageType === ChatMessageType.AYUSHMA && (
@@ -232,13 +236,9 @@ export default function ChatBlock(props: {
                 message?.message !== message?.original_message && (
                   <>
                     <hr className="border-gray-300 my-4" />
-                    <ReactMarkdown
-                      rehypePlugins={[rehypeRaw]}
-                      remarkPlugins={[remarkGfm]}
-                      className="markdown-render text-sm text-gray-700"
-                    >
-                      {message?.original_message || ""}
-                    </ReactMarkdown>
+                    <div className="markdown-render text-sm text-gray-700">
+                      <Markdown>{message?.original_message || ""}</Markdown>
+                    </div>
                   </>
                 )}
               {storage?.show_stats && message && (
@@ -277,7 +277,7 @@ export default function ChatBlock(props: {
                 );
               else if (doc.document_type === DocumentType.TEXT)
                 return (
-                  <div className="text-xs bg-secondaryActive text-gray-500 px-2 py-0.5 rounded-md hover:bg-primary">
+                  <div key={doc.external_id} className="text-xs bg-secondaryActive text-gray-500 px-2 py-0.5 rounded-md hover:bg-primary">
                     {doc.title}
                   </div>
                 );
@@ -293,12 +293,12 @@ const ChatFeedback = ({
   feedback,
   message_id,
   onSuccess,
-  contentLoading
+  contentLoading,
 }: {
   message_id: string;
-  feedback: ChatFeedback;
-  onSuccess?: (data: ChatFeedback) => void;
-  contentLoading?: string
+  feedback: ChatFeedbackType;
+  onSuccess?: (data: ChatFeedbackType) => void;
+  contentLoading?: string;
 }) => {
   const queryClient = useQueryClient();
   const [liked, setLiked] = useState<boolean | null>(null);
@@ -313,15 +313,14 @@ const ChatFeedback = ({
   });
   const { chat_id }: any = useParams();
 
-  const createChatFeedbackMutation = useMutation(
-    {
-      mutationFn: (feedback: Partial<ChatFeedback>) => API.feedback.create(feedback),
-      onSuccess: async (data: ChatFeedback) => {
-        await queryClient.invalidateQueries({ queryKey: ["chat", chat_id] });
-        onSuccess?.(data);
-      },
+  const createChatFeedbackMutation = useMutation({
+    mutationFn: (feedback: Partial<ChatFeedbackType>) =>
+      API.feedback.create(feedback),
+    onSuccess: async (data: ChatFeedbackType) => {
+      await queryClient.invalidateQueries({ queryKey: ["chat", chat_id] });
+      onSuccess?.(data);
     },
-  );
+  });
 
   if (!contentLoading) {
     return;

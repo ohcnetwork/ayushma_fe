@@ -1,4 +1,6 @@
-import { ChatConverseStream, ChatFeedback } from "@/types/chat";
+"use client"
+
+import { ChatConverseStream, ChatFeedbackType } from "@/types/chat";
 import {
   EventSourceMessage,
   FetchEventSourceInit,
@@ -54,46 +56,24 @@ const request = async (
   if (method === "GET") {
     const requestParams = data
       ? `?${Object.keys(data)
-        .filter((key) => data[key] !== null && data[key] !== undefined)
-        .map((key) => `${key}=${data[key]}`)
-        .join("&")}`
+          .filter((key) => data[key] !== null && data[key] !== undefined)
+          .map((key) => `${key}=${data[key]}`)
+          .join("&")}`
       : "";
     url += requestParams;
     payload = null;
   }
 
-  let storage: Storage;
+  let storage: Storage = JSON.parse(
+    localStorage.getItem("preferences") || "{}",
+  );
 
-  if (typeof document !== "undefined") {
-    storage = JSON.parse(
-      document.cookie
-        .split(";")
-        .find((c) =>
-          c
-            .trim()
-            .startsWith(
-              (process.env.NEXT_PUBLIC_COOKIE_STORAGE || "storage") + "="
-            )
-        )
-        ?.replace((process.env.NEXT_PUBLIC_COOKIE_STORAGE || "storage") + "=", "") || "{}"
-    );
-    console.log("client");
-  } else {
-    const { cookies } = require("next/headers");
-    const cookieStore = cookies();
-    const cookie = cookieStore.get(
-      process.env.NEXT_PUBLIC_COOKIE_STORAGE || "storage"
-    );
-    storage = JSON.parse(cookie?.value || "{}");
-    console.log("server");
-  }
-  console.log("storage", storage);
   const localToken = storage.auth_token;
   const auth =
     isAuth === false ||
-      !localToken ||
-      typeof localToken === "undefined" ||
-      localToken === null
+    !localToken ||
+    typeof localToken === "undefined" ||
+    localToken === null
       ? undefined
       : "Token " + localToken;
 
@@ -104,8 +84,8 @@ const request = async (
       ...(formdata === true
         ? {}
         : {
-          "Content-Type": "application/json",
-        }),
+            "Content-Type": "application/json",
+          }),
       ...(auth !== "" ? { Authorization: auth } : {}),
       ...headers,
     },
@@ -233,9 +213,9 @@ export const API = {
         offset?: number;
         archived?: boolean | null;
       } = {
-          ordering: "-created_at",
-          limit: 50,
-        },
+        ordering: "-created_at",
+        limit: 50,
+      },
     ) => request("projects", "GET", filters),
     get: (id: string) => request(`projects/${id}`),
     update: (id: string, project: Partial<Project>) =>
@@ -279,10 +259,10 @@ export const API = {
         { title },
         openai_api_key
           ? {
-            headers: {
-              "OpenAI-Key": openai_api_key,
-            },
-          }
+              headers: {
+                "OpenAI-Key": openai_api_key,
+              },
+            }
           : {},
       ),
     chats: (
@@ -303,8 +283,8 @@ export const API = {
       filters: {
         fetch: string;
       } = {
-          fetch: "all",
-        },
+        fetch: "all",
+      },
     ) => request(`projects/${project_id}/chats/${id}`, "GET", filters),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
       request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
@@ -337,8 +317,8 @@ export const API = {
           formdata: true,
           headers: openai_api_key
             ? {
-              "OpenAI-Key": openai_api_key,
-            }
+                "OpenAI-Key": openai_api_key,
+              }
             : {},
         },
         (e) => {
@@ -456,7 +436,7 @@ export const API = {
     },
   },
   feedback: {
-    create: (feedback: Partial<ChatFeedback>) =>
+    create: (feedback: Partial<ChatFeedbackType>) =>
       request(`feedback`, "POST", { ...feedback }),
   },
   users: {

@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Page({ params }: { params: { project_id: string } }) {
   const { project_id } = params;
@@ -78,18 +79,24 @@ export default function Page({ params }: { params: { project_id: string } }) {
 
   const handleProjectSave = async (project: Partial<Project>) => {
     await updateProjectMutation.mutateAsync(project);
+    toast.success("Project updated successfully");
   };
 
   const handleDelete = async () => {
     await deleteProjectMutation.mutateAsync();
+    toast.success("Project deleted successfully");
   };
 
   const handleArchive = async () => {
     await archiveProjectMutation.mutateAsync();
+    toast.success(
+      `Project ${project?.archived ? "unarchived" : "archived"} successfully`,
+    );
   };
 
   const handleSetAsDefault = async () => {
     await setAsDefautMutation.mutateAsync();
+    toast.success("Project set as default successfully");
   };
 
   return (
@@ -136,6 +143,12 @@ export default function Page({ params }: { params: { project_id: string } }) {
               <div className="text-xs text-gray-600 inline-flex items-center gap-2">
                 <i className="fa fa-spinner-third fa-spin"></i>
                 Uploading...
+              </div>
+            )}
+            {document.failed && (
+              <div className="text-xs text-red-600 inline-flex items-center gap-2">
+                <i className="fa fa-exclamation-triangle"></i>
+                Failed
               </div>
             )}
           </Link>
