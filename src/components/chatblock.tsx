@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { ChatFeedbackType, ChatMessage, ChatMessageType } from "@/types/chat";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import Image from "next/image";
 import { storageAtom } from "@/store";
 import { useAtom } from "jotai";
@@ -12,23 +15,19 @@ import { API } from "@/utils/api";
 import { useParams } from "next/navigation";
 import { DocumentType } from "@/types/project";
 import useIsIOS from "@/utils/hooks/useIsIOS";
-import Markdown from "markdown-to-jsx";
 
 type AudioStatus = "unloaded" | "loading" | "playing" | "paused" | "stopped";
 
-export default function ChatBlock(props: {
-  message?: ChatMessage;
-  loading?: boolean;
-  autoplay?: boolean;
-  cursor?: boolean;
-}) {
+export default function ChatBlock(
+  props: Readonly<{
+    message?: ChatMessage;
+    loading?: boolean;
+    autoplay?: boolean;
+    cursor?: boolean;
+  }>,
+) {
   const [storage] = useAtom(storageAtom);
   const { message, loading, cursor, autoplay } = props;
-  const cursorText = cursor
-    ? (message?.original_message?.length || 0) % 2 === 0
-      ? "|"
-      : ""
-    : "";
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [audioStatus, setAudioStatus] = useState<AudioStatus>("unloaded");
   const [percentagePlayed, setPercentagePlayed] = useState(0);
@@ -188,12 +187,14 @@ export default function ChatBlock(props: {
                 </div>
               )}
               {message?.messageType != ChatMessageType.SYSTEM && (
-                <div ref={highlightRef} className="markdown-render">
-                  <Markdown
-                    options={{ wrapper: "article", forceWrapper: true }}
+                <div ref={highlightRef}>
+                  <ReactMarkdown
+                    rehypePlugins={[rehypeRaw]}
+                    remarkPlugins={[remarkGfm]}
+                    className="markdown-render"
                   >
                     {message?.message || message?.original_message || ""}
-                  </Markdown>
+                  </ReactMarkdown>
                 </div>
               )}
               {message?.messageType === ChatMessageType.AYUSHMA &&
@@ -234,18 +235,24 @@ export default function ChatBlock(props: {
               {storage?.show_english &&
                 message?.message &&
                 message?.message !== message?.original_message && (
-                  <>
+                  <div>
                     <hr className="border-gray-300 my-4" />
-                    <div className="markdown-render text-sm text-gray-700">
-                      <Markdown>{message?.original_message || ""}</Markdown>
+                    <div className="text-sm text-gray-700">
+                      <ReactMarkdown
+                        rehypePlugins={[rehypeRaw]}
+                        remarkPlugins={[remarkGfm]}
+                        className="markdown-render"
+                      >
+                        {message?.original_message || ""}
+                      </ReactMarkdown>
                     </div>
-                  </>
+                  </div>
                 )}
               {storage?.show_stats && message && (
-                <>
+                <div>
                   <hr className="border-gray-300 my-4" />
                   <Stats message={message} />
-                </>
+                </div>
               )}
             </div>
           )}
@@ -277,7 +284,10 @@ export default function ChatBlock(props: {
                 );
               else if (doc.document_type === DocumentType.TEXT)
                 return (
-                  <div key={doc.external_id} className="text-xs bg-secondaryActive text-gray-500 px-2 py-0.5 rounded-md hover:bg-primary">
+                  <div
+                    key={doc.external_id}
+                    className="text-xs bg-secondaryActive text-gray-500 px-2 py-0.5 rounded-md hover:bg-primary"
+                  >
                     {doc.title}
                   </div>
                 );
@@ -340,7 +350,7 @@ const ChatFeedback = ({
       )}
     </div>
   ) : (
-    <>
+    <div>
       <Modal
         className="md:h-fit"
         show={liked !== null}
@@ -421,6 +431,6 @@ const ChatFeedback = ({
           className="far fa-thumbs-down cursor-pointer p-1 rounded text-gray-500 hover:text-gray-900 hover:bg-secondary"
         />
       </div>
-    </>
+    </div>
   );
 };

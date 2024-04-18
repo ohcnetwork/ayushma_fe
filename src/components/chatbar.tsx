@@ -40,7 +40,7 @@ export default function ChatBar(
   const language = forceLanguage || storage?.language || "en";
 
   return (
-    <>
+    <div>
       <div
         className={`fixed inset-0 flex items-center justify-center transition-all ${status === "recording" ? "visible opacity-100" : "invisible opacity-0"
           }`}
@@ -155,6 +155,6 @@ export default function ChatBar(
           }
         />
       </form>
-    </>
+    </div>
   );
 }
