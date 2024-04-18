@@ -8,7 +8,6 @@ import { storageAtom } from "@/store";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import AuthProvider from "./authprovider";
 import { Storage } from "@/types/storage";
-import { useHydrateAtoms } from "jotai/utils";
 import ThemeProvider from "./themeprovider";
 
 function Providers(
@@ -24,8 +23,6 @@ function Providers(
   );
 
   const [storage, setStorage] = useAtom(storageAtom);
-
-  useHydrateAtoms([[storageAtom, initialStorage || {}]]);
 
   useEffect(() => {
     if (JSON.stringify(storage) != "{}") {

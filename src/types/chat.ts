@@ -6,7 +6,7 @@ export type BaseModelType = {
   modified_at: string;
 };
 
-export type Chat = BaseModelType & {
+export type ChatType = BaseModelType & {
   title: string;
   namespace: string;
   chats?: ChatMessage[];

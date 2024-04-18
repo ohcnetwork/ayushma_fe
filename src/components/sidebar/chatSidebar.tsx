@@ -1,6 +1,6 @@
 "use client";
 
-import { Chat } from "@/types/chat";
+import { ChatType } from "@/types/chat";
 import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -171,7 +171,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
               >
                 <div className="flex flex-col">
                   {project_id &&
-                    chatsQuery.fullData?.map((chat: Chat, j: number) => (
+                    chatsQuery.fullData?.map((chat: ChatType, j: number) => (
                       <div
                         key={j}
                         className="w-full group hover:bg-secondary hover:border-secondaryActive rounded-lg overflow-hidden flex justify-between transition-all"

@@ -3,7 +3,6 @@
 import "./globals.css";
 import Script from "next/script";
 import Providers from "@/utils/provider";
-import { Storage } from "@/types/storage";
 import { Theme } from "@/types/themes";
 import { THEMECOMMONS, THEMES } from "@/utils/constants";
 import { useEffect, useState } from "react";
