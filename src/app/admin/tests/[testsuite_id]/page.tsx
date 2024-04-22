@@ -44,6 +44,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const [questionsCsv, setQuestionsCsv] = useState<any>([]);
   const testQuestions: TestQuestion[] =
     TestQuestionsQuery?.data?.pages?.flatMap((page) => page.results) ?? [];
+  const totalQuestions = TestQuestionsQuery?.data?.pages.reduce(
+    (acc, page) => acc + page.count,
+    0,
+  );
 
   const ProjectListQuery = useQuery({
     queryKey: ["projects"],
@@ -100,7 +104,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   };
 
   const fetchData = async ({ pageParam = 0 }) => {
-    const offset = pageParam ? pageParam : 0;
+    const offset = pageParam ?? 0;
     const res = await API.tests.runs.list(testsuite_id, {
       ordering: "-created_at",
       offset: offset,
@@ -115,7 +119,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading, refetch } =
     useInfiQuery({
-      queryKey: ["testruns"],
+      queryKey: ["fetch-testruns", testsuite_id],
       queryFn: fetchData,
     });
 
@@ -131,10 +135,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     }
   }, [data, refetch]);
 
-  const testRuns = useMemo(
-    () => (data ? data?.pages.flatMap((item) => item.results) : []),
-    [data],
-  );
+  useEffect(() => {
+    refetch();
+  }, [testSuite?.external_id]);
+
+  const testRuns = data ? data?.pages.flatMap((item) => item.results) : [];
 
   const observer = useRef<IntersectionObserver>();
   const lastElementRef = useCallback(
@@ -191,7 +196,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [fetchReferences, setFetchReferences] = useState(true);
   const [csvFileData, setCSVFileData] = useState<any>([]);
-  const [csvDisable,setCSVDisable] = useState<Boolean>(false);
+  const [csvDisable, setCSVDisable] = useState<Boolean>(false);
   useEffect(() => {
     if (testQuestions && testQuestions.length > 0) {
       setCurrentQuestions(
@@ -314,11 +319,12 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
   const getCompletionStatus = (testRun: TestRun) => {
     if (testRun.status === TestRunStatus.RUNNING) {
-      const totalQuestions = testQuestions?.length;
       const answeredQuestions = testRun.test_results?.length;
       const completedPercentage =
         ((answeredQuestions ?? 0) / (totalQuestions ?? 1)) * 100;
-      return `(${Math.round(Math.max(0, completedPercentage))}%)`;
+      return `${answeredQuestions}/${totalQuestions} (${Math.round(
+        Math.min(Math.max(0, completedPercentage), 100),
+      )}%)`;
     }
     return "";
   };
@@ -404,9 +410,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         csvFileData.length > 0 &&
           csvFileData.map((value: any, key: any) => {
             if (
-              value?.question != '' &&
-              value?.human_answer != '' &&
-              value?.language != ''
+              value?.question != "" &&
+              value?.human_answer != "" &&
+              value?.language != ""
             ) {
               handleAddQuestion(
                 value.question,
@@ -565,11 +571,13 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                               </div>
                             </div>
                             <div className="w-1/2">
-                              <img
-                                src={document?.file}
-                                alt="File"
-                                className="w-full"
-                              />
+                              <a href={document?.file} target="_blank">
+                                <img
+                                  src={document?.file}
+                                  alt="File"
+                                  className="max-h-32 w-auto object-contain"
+                                />
+                              </a>
                             </div>
                           </Link>
 
@@ -703,7 +711,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           >
             Add Question
           </Button>
-          <CSVReader setCSVFileData={setCSVFileData} disable={csvDisable}/>
+          <CSVReader setCSVFileData={setCSVFileData} disable={csvDisable} />
           <Button
             onClick={() => {
               handleSave();
@@ -718,11 +726,20 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
 
       <h1 className="text-3xl font-black mb-6">Runs for {testSuite?.name}</h1>
       <div className="text-gray-500 justify-center my-4">
-        {testRuns.length === 0 && (
+        {testRuns.length === 0 && !isLoading && (
           <p className="text-center">Test has not been run yet.</p>
         )}
 
+        {isLoading && (
+          <div className="flex items-center w-full justify-center">
+            <div className="w-4 h-4 mr-2 rounded-full bg-gray-900 animate-pulse"></div>
+            <div className="w-4 h-4 mr-2 rounded-full bg-gray-900 animate-pulse"></div>
+            <div className="w-4 h-4 rounded-full bg-gray-900 animate-pulse"></div>
+          </div>
+        )}
+
         {testRuns.length > 0 &&
+          !isLoading &&
           testRuns.map((testRun: TestRun, i) => {
             const date = new Date(testRun.created_at);
             const formattedDate = formatDate(date);
@@ -766,7 +783,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                   }
                 }}
               >
-                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-8 justify-between items-center my-2 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-100">
+                <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-9 justify-between items-center my-2 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-100">
                   <div className="flex col-span-3 items-baseline gap-1">
                     <span className="text-gray-700 font-bold">
                       {testRun.project_object.title}
@@ -809,7 +826,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                       )}
                     </span>
                   </div>
-                  <div className="flex col-span-1 items-baseline gap-1">
+                  <div className="flex col-span-2 items-baseline gap-1">
                     <span className="text-gray-500">Status: </span>
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
@@ -996,7 +1013,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         </div>
       </Modal>
 
-      <Toaster />
+      <Toaster position="top-right" />
     </div>
   );
 }

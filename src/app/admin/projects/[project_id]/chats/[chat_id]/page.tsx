@@ -1,10 +1,13 @@
 "use client";
 
+import loading from "@/components/ui/loading";
 import Loading from "@/components/ui/loading";
+import { ChatMessageType } from "@/types/chat";
 import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Page({
   params,
@@ -19,8 +22,7 @@ export default function Page({
 
   const projectQuery = useQuery({
     queryKey: ["project", project_id],
-    queryFn: () =>
-      API.projects.get(project_id),
+    queryFn: () => API.projects.get(project_id),
   });
   const project: Project = projectQuery.data;
   const chats: any | undefined = chatQuery.data;
@@ -53,13 +55,35 @@ export default function Page({
               {chats && chats?.chats?.length > 0 ? (
                 chats?.chats.map((chat: any, i: number) => (
                   <div key={i}>
-                    {chat.messageType === 1 ? (
-                      <div className="border border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4">
+                    {chat.messageType === ChatMessageType.USER ? (
+                      <div className="border border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4 flex gap-3 items-center">
+                        <div className="flex items-center justify-center w-10 h-10 text-2xl shrink-0 text-center bg-[#ffc688] rounded-full">
+                          <Image
+                            className="p-1.5"
+                            src="/person.svg"
+                            alt="User icon"
+                            width={100}
+                            height={100}
+                          />
+                        </div>
+                        {chat.message}
+                      </div>
+                    ) : chat.messageType === ChatMessageType.AYUSHMA ? (
+                      <div className="border border-gray-300 hover:bg-secondary bg-secondaryActive rounded-lg p-4 flex gap-3 items-center">
+                        <div className="flex items-center justify-center w-10 h-10 text-2xl shrink-0 text-center rounded-full">
+                          <Image
+                            className="p-0.5"
+                            src="/logo.svg"
+                            alt="Logo"
+                            width={100}
+                            height={100}
+                          />
+                        </div>
                         {chat.message}
                       </div>
                     ) : (
-                      <div className="border border-gray-300 hover:bg-secondary bg-secondaryActive rounded-lg p-4">
-                        {chat.message}
+                      <div className="flex items-center justify-center w-10 h-10 text-2xl shrink-0 text-center bg-gray-300 rounded-full">
+                        <i className="fa-solid fa-circle-exclamation"></i>
                       </div>
                     )}
                   </div>

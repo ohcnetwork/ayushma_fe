@@ -32,7 +32,7 @@ export default function Home() {
                     />
                     <br />
                     <h1 className="text-5xl md:text-7xl font-black break-words">
-                        Revolutionizing medical diagnosis through AI and Opensource
+                        {process.env.NEXT_PUBLIC_AI_DESCRIPTION}
                     </h1>
                     <br />
                     <div className='grid md:flex grid-cols-2 gap-4 mt-4'>

@@ -81,12 +81,12 @@ export default function Page() {
   const userQuery = useInfiQuery({
     queryKey: ["users"],
     queryFn: ({ pageParam = 1 }) => {
-      const offset = (pageParam - 1) * limit;
+      const offset = (pageParam) * limit;
       return API.users.list({
         search: searchString,
         limit: limit,
         offset: offset,
-        ordering: "-created_at",
+        ordering: "date_joined",
         is_staff: isAdmin ? true : null,
         is_reviewer: isReviewer ? true : null,
         allow_key: isKeyAllowed ? true : null,

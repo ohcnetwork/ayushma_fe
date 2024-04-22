@@ -19,15 +19,15 @@ export default function ThemeProvider(props: {
     useEffect(() => {
         setStorage((storage) => ({
             ...storage,
-            preferedTheme: isDark ? 1 : 0
+            preferredTheme: 0 // Prefer light theme
         }));
     }, [isDark]);
 
     useEffect(() => {
-        if (typeof storage.theme === "number" || typeof storage.preferedTheme === "number") {
-            setTheme(THEMES[(typeof storage.theme === "number" ? storage.theme : (typeof storage.preferedTheme === "number" ? storage.preferedTheme : undefined)) as any]);
+        if (typeof storage.theme === "number" || typeof storage.preferredTheme === "number") {
+            setTheme(THEMES[(typeof storage.theme === "number" ? storage.theme : 0) as any]);
         }
-    }, [storage.theme, storage.preferedTheme]);
+    }, [storage.theme, storage.preferredTheme]);
 
     return children
 }

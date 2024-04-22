@@ -162,7 +162,7 @@ export default function Page() {
                 </Button>
               </div>
             </div>
-            <Toaster />
+            <Toaster position="top-right" />
           </div>
         </div>
       </div>
