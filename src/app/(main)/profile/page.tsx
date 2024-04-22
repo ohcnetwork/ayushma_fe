@@ -86,7 +86,7 @@ export default function Page() {
                   <Input
                     right={
                       <button
-                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-1.5 right-1 px-3 py-2  rounded-md shadow-sm"
+                        className="bg-secondaryActive cursor-pointer hover:bg-gray-300 absolute top-1.5 right-1 px-3 py-2  rounded-md shadow-sm"
                         onClick={() => setShowPassword((prev) => !prev)}
                       >
                         <i
@@ -114,7 +114,7 @@ export default function Page() {
                   <Input
                     right={
                       <button
-                        className="bg-gray-200 cursor-pointer hover:bg-gray-300 absolute top-1.5 right-1 px-3 py-2  rounded-md shadow-sm "
+                        className="bg-secondaryActive cursor-pointer hover:bg-gray-300 absolute top-1.5 right-1 px-3 py-2  rounded-md shadow-sm "
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
                       >
                         <i
@@ -148,7 +148,7 @@ export default function Page() {
               <div className="flex flex-col md:flex-row gap-2 py-4">
                 <Button
                   onClick={() => router.push("/")}
-                  className="w-full bg-gray-200"
+                  className="w-full bg-secondaryActive"
                   variant="secondary"
                 >
                   Cancel
@@ -162,7 +162,7 @@ export default function Page() {
                 </Button>
               </div>
             </div>
-            <Toaster />
+            <Toaster position="top-right" />
           </div>
         </div>
       </div>

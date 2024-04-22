@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Page({ params }: { params: { project_id: string } }) {
   const { project_id } = params;
@@ -78,18 +79,24 @@ export default function Page({ params }: { params: { project_id: string } }) {
 
   const handleProjectSave = async (project: Partial<Project>) => {
     await updateProjectMutation.mutateAsync(project);
+    toast.success("Project updated successfully");
   };
 
   const handleDelete = async () => {
     await deleteProjectMutation.mutateAsync();
+    toast.success("Project deleted successfully");
   };
 
   const handleArchive = async () => {
     await archiveProjectMutation.mutateAsync();
+    toast.success(
+      `Project ${project?.archived ? "unarchived" : "archived"} successfully`,
+    );
   };
 
   const handleSetAsDefault = async () => {
     await setAsDefautMutation.mutateAsync();
+    toast.success("Project set as default successfully");
   };
 
   return (
@@ -98,7 +105,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
         <div className="flex gap-2 items-center">
           <h1 className="text-3xl font-black">{project?.title}</h1>
           {project?.is_default && (
-            <span className="text-xs ml-2 bg-gray-200 text-gray-500 px-2 py-1 rounded-full">
+            <span className="text-xs ml-2 bg-secondaryActive text-gray-500 px-2 py-1 rounded-full">
               Default
             </span>
           )}
@@ -123,7 +130,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
                 : `/admin/projects/${project_id}/documents/${document.external_id}`
             }
             key={i}
-            className="border border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4 flex items-center gap-2 justify-between"
+            className="border border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4 flex items-center gap-2 justify-between"
           >
             <div className="flex items-center gap-2">
               <i
@@ -138,12 +145,18 @@ export default function Page({ params }: { params: { project_id: string } }) {
                 Uploading...
               </div>
             )}
+            {document.failed && (
+              <div className="text-xs text-red-600 inline-flex items-center gap-2">
+                <i className="fa fa-exclamation-triangle"></i>
+                Failed
+              </div>
+            )}
           </Link>
         ))}
         {!project?.archived && (
           <Link
             href={`/admin/projects/${project_id}/documents/new`}
-            className="border border-dashed border-gray-300 hover:bg-gray-100 bg-white rounded-lg p-4"
+            className="border border-dashed border-gray-300 hover:bg-secondary bg-primary rounded-lg p-4"
           >
             <i className="far fa-plus" /> New Document
           </Link>
@@ -199,7 +212,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
               Cancel
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              className="bg-red-500 hover:bg-red-700 px-4 text-primary p-2 rounded-lg"
               onClick={() => {
                 handleDelete();
                 setShowDeleteModel(false);
@@ -228,7 +241,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
               Cancel
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-700 px-4 text-white p-2 rounded-lg"
+              className="bg-blue-500 hover:bg-blue-700 px-4 text-primary p-2 rounded-lg"
               onClick={() => {
                 handleArchive();
                 setShowArchiveModal(false);
@@ -254,7 +267,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
               Cancel
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-700 px-4 text-white p-2 rounded-lg"
+              className="bg-blue-500 hover:bg-blue-700 px-4 text-primary p-2 rounded-lg"
               onClick={() => {
                 handleSetAsDefault();
                 setShowSetDefaultModal(false);

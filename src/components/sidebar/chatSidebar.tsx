@@ -1,6 +1,6 @@
 "use client";
 
-import { Chat } from "@/types/chat";
+import { ChatType } from "@/types/chat";
 import { API } from "@/utils/api";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -24,17 +24,13 @@ export default function ChatSideBar(props: { project_id?: string }) {
   const chatsQuery = useInfiQuery({
     queryKey: ["search", debouncedSearchQuery],
     queryFn: ({ pageParam = 0 }) => {
-      return API.chat.list(
-        project_id || "",
-        {
-          offset: pageParam,
-          search: debouncedSearchQuery
-        },
-      );
+      return API.chat.list(project_id || "", {
+        offset: pageParam,
+        search: debouncedSearchQuery,
+      });
     },
     enabled: !!project_id,
-  },
-  );
+  });
 
   const nonChatRoutes = ["/profile"];
 
@@ -72,14 +68,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
     ...(storage?.user?.is_staff
       ? [
-        {
-          icon: "user-shield",
-          text: "Admin",
-          onclick: () => {
-            router.push("/admin");
+          {
+            icon: "user-shield",
+            text: "Admin",
+            onclick: () => {
+              router.push("/admin");
+            },
           },
-        },
-      ]
+        ]
       : []),
     {
       icon: "sign-out-alt",
@@ -89,16 +85,15 @@ export default function ChatSideBar(props: { project_id?: string }) {
     },
   ];
 
-  const deleteChatMutation = useMutation(
-    {
-      mutationFn: (external_id: string) => API.chat.delete(project_id || "", external_id),
-      onSuccess: async (data, external_id) => {
-        chatsQuery.refetch();
-        if (path === `/project/${project_id}/chat/${external_id}`)
-          router.push(`/project/${project_id}`);
-      },
+  const deleteChatMutation = useMutation({
+    mutationFn: (external_id: string) =>
+      API.chat.delete(project_id || "", external_id),
+    onSuccess: async (data, external_id) => {
+      chatsQuery.refetch();
+      if (path === `/project/${project_id}/chat/${external_id}`)
+        router.push(`/project/${project_id}`);
     },
-  );
+  });
 
   const deleteChat = (external_id: string) => {
     deleteChatMutation.mutate(external_id);
@@ -106,7 +101,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
 
   return (
     <>
-      <div className="bg-white bg-cover bg-top w-64 shrink-0 flex flex-col h-screen justify-between">
+      <div className="bg-primary bg-cover bg-top w-64 shrink-0 flex flex-col h-screen justify-between">
         <div className="flex flex-col flex-1 overflow-auto">
           <div className="flex flex-col p-3">
             <Link
@@ -115,7 +110,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
             >
               <div className="flex flex-col items-end justify-center">
                 <img
-                  src={process.env.NEXT_PUBLIC_LOGO_URL ?? "/logo_text.svg"}
+                  src={
+                    storage?.theme != undefined
+                      ? storage?.theme === 0 || storage?.preferredTheme === 0
+                        ? process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg"
+                        : process.env.NEXT_PUBLIC_LOGO_DARK_URL ||
+                          "/logo_white.svg"
+                      : process.env.NEXT_PUBLIC_LOGO_URL || "/logo_text.svg"
+                  }
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />
@@ -123,7 +125,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
             </Link>
             <Link
               href={project_id ? `/project/${project_id}` : "/"}
-              className="bg-gray-100 py-1 px-4 rounded-lg border border-gray-200 hover:bg-gray-200 transition-all text-center mb-2"
+              className="bg-secondary py-1 px-4 rounded-lg border border-secondaryActive hover:bg-secondaryActive transition-all text-center mb-2"
             >
               <i className="fad fa-pen-to-square" />
               &nbsp; New Chat
@@ -135,12 +137,14 @@ export default function ChatSideBar(props: { project_id?: string }) {
               onChange={(e) => {
                 setSearchQuery(e.target.value);
               }}
-              className="border-gray-200 py-1 px-4 rounded-lg border-2 hover:bg-gray-100 transition-all"
+              className="border-secondaryActive py-1 px-4 rounded-lg border-2 hover:bg-secondary bg-primary transition-all outline-none"
             />
           </div>
           {!nonChatRoutes.includes(path || "") && (
-
-            <div id="scrollableDiv" className="overflow-y-auto px-2 hover-scrollbar">
+            <div
+              id="scrollableDiv"
+              className="overflow-y-auto px-2 hover-scrollbar"
+            >
               <InfiniteScroll
                 loadMore={() => {
                   chatsQuery.fetchNextPage();
@@ -150,8 +154,9 @@ export default function ChatSideBar(props: { project_id?: string }) {
                 threshold={10}
                 loader={
                   <div
-                    className={`${chatsQuery.isFetching ? "" : "hidden"
-                      } flex justify-center items-center mt-2 h-full`}
+                    className={`${
+                      chatsQuery.isFetching ? "" : "hidden"
+                    } flex justify-center items-center mt-2 h-full`}
                   >
                     <div
                       className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
@@ -165,11 +170,11 @@ export default function ChatSideBar(props: { project_id?: string }) {
                 }
               >
                 <div className="flex flex-col">
-                  {project_id && (
-                    chatsQuery.fullData?.map((chat: Chat, j: number) => (
+                  {project_id &&
+                    chatsQuery.fullData?.map((chat: ChatType, j: number) => (
                       <div
                         key={j}
-                        className="w-full group hover:bg-gray-100 hover:border-gray-200 rounded-lg overflow-hidden flex justify-between transition-all"
+                        className="w-full group hover:bg-secondary hover:border-secondaryActive rounded-lg overflow-hidden flex justify-between transition-all"
                       >
                         <Link
                           href={`/project/${project_id}/chat/${chat.external_id}`}
@@ -190,7 +195,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
                           <i className="fad fa-trash-alt" />
                         </button>
                       </div>
-                    )))}
+                    ))}
                 </div>
               </InfiniteScroll>
             </div>
@@ -202,7 +207,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
               <button
                 key={i}
                 onClick={button.onclick}
-                className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center transition-all hover:bg-gray-200 border-gray-200 bg-gray-100 text-gray-500"
+                className="flex-1 py-2 px-4 border flex flex-col rounded-lg items-center text-lg justify-center transition-all hover:bg-secondaryActive border-secondaryActive bg-secondary text-gray-500"
               >
                 <i className={`fad fa-${button.icon}`} />
               </button>
@@ -225,7 +230,7 @@ export default function ChatSideBar(props: { project_id?: string }) {
               Cancel
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 px-4 text-white p-2 rounded-lg"
+              className="bg-red-500 hover:bg-red-700 px-4 text-primary p-2 rounded-lg"
               onClick={() => {
                 deleteChat(deleteModal.external_id);
                 onDeleteClose();
@@ -347,6 +352,25 @@ export default function ChatSideBar(props: { project_id?: string }) {
               })
             }
           />
+          <br />
+          {/* Theme
+          <br />
+           <select
+            value={storage.theme}
+            onChange={(e) => {
+              setStorage({
+                ...storage,
+                theme:
+                  Number(e.target.value) === 2
+                    ? undefined
+                    : Number(e.target.value),
+              });
+            }}
+            className="border border-secondary rounded-lg bg-primary p-2 px-4"
+          >
+            <option value={0}>Light</option>
+            <option value={1}>Dark</option>
+          </select> */}
         </div>
       </Modal>
     </>

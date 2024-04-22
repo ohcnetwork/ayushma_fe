@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Page({ params }: { params: { project_id: string } }) {
   const { project_id } = params;
@@ -37,6 +38,7 @@ export default function Page({ params }: { params: { project_id: string } }) {
     doc.document_type &&
       formData.append("document_type", `${doc.document_type}`);
     await createDocumentMutation.mutateAsync(formData as any);
+    toast.success("Document created successfully");
   };
 
   return (

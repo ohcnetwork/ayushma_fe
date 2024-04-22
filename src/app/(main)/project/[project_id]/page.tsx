@@ -32,19 +32,19 @@ export default function Chat(params: { params: { project_id: string } }) {
       router.push(`/project/${project_id}/chat/${chatID}?autoplay`);
   }, [chatID, isTyping, project_id, router]);
 
-  const projectQuery = useQuery(
-    {
-      queryKey: ["chat", project_id],
-      queryFn: () => API.projects.get(project_id),
-      refetchOnWindowFocus: false,
-    },
-  );
+  const projectQuery = useQuery({
+    queryKey: ["chat", project_id],
+    queryFn: () => API.projects.get(project_id),
+    refetchOnWindowFocus: false,
+  });
   const project: Project | undefined = projectQuery.data;
 
   const streamChatMessage = async (message: ChatConverseStream) => {
     if (chat === "") setChat(message.input);
     setChatMessage((prevChatMessage) => {
-      const updatedChatMessage = prevChatMessage + message.delta;
+      const updatedChatMessage = (prevChatMessage + message.delta)
+        .replaceAll(`${process.env.NEXT_PUBLIC_AI_NAME}:`, "")
+        .trimStart();
       return updatedChatMessage;
     });
     if (message.stop) setIsTyping(false);
@@ -54,39 +54,35 @@ export default function Chat(params: { params: { project_id: string } }) {
     }
   };
 
-  const newChatMutation = useMutation(
-    {
-      mutationFn: () =>
-        API.chat.create(
-          project_id,
-          chat !== "" ? chat.slice(0, 50) : "new chat",
-          storage.openai_api_key,
-        ),
-      retry: false,
-    },
-  );
+  const newChatMutation = useMutation({
+    mutationFn: () =>
+      API.chat.create(
+        project_id,
+        chat !== "" ? chat.slice(0, 50) : "new chat",
+        storage.openai_api_key,
+      ),
+    retry: false,
+  });
 
-  const converseMutation = useMutation(
-    {
-      mutationFn: (params: { external_id: string; formdata: FormData }) =>
-        API.chat.converse(
-          project_id,
-          params.external_id,
-          params.formdata,
-          openai_key,
-          streamChatMessage,
-          20,
-          !project?.assistant_id,
-        ),
-      retry: false,
-      onSuccess: async (data, vars) => {
-        if (!data) return;
-        setChatID(data.external_id);
-        await queryClient.invalidateQueries({ queryKey: ["chats"] });
-        setIsTyping(false);
-      },
+  const converseMutation = useMutation({
+    mutationFn: (params: { external_id: string; formdata: FormData }) =>
+      API.chat.converse(
+        project_id,
+        params.external_id,
+        params.formdata,
+        openai_key,
+        streamChatMessage,
+        20,
+        !project?.assistant_id,
+      ),
+    retry: false,
+    onSuccess: async (data, vars) => {
+      if (!data) return;
+      setChatID(data.external_id);
+      await queryClient.invalidateQueries({ queryKey: ["chats"] });
+      setIsTyping(false);
     },
-  );
+  });
 
   const getFormData = async (blobUrl?: string, text?: string) => {
     const fd = new FormData();
@@ -108,39 +104,43 @@ export default function Chat(params: { params: { project_id: string } }) {
     setIsTyping(true);
     e.preventDefault();
 
-    try{
-      const {external_id} = await newChatMutation.mutateAsync();
+    try {
+      const { external_id } = await newChatMutation.mutateAsync();
       setChatID(external_id);
-  
+
       const fd = await getFormData(undefined, chat);
       converseMutation.mutate({ external_id, formdata: fd });
-    }catch(e: any){
-      setApiError(e.message);
+    } catch (e: any) {
+      setIsTyping(false);
+      setApiError(e?.error?.error);
     }
-
   };
 
   const handleAudio = async (blobUrl: string) => {
     setIsTyping(true);
-    try{
-      const {external_id} =  await newChatMutation.mutateAsync();
+    try {
+      const { external_id } = await newChatMutation.mutateAsync();
       setChatID(external_id);
 
       const sttFormData = await getFormData(blobUrl);
-      const {transcript, stats} = await API.chat.speechToText(
+      const { transcript, stats } = await API.chat.speechToText(
         project_id,
         external_id,
         sttFormData,
-      )
+      );
+
       setChat(transcript);
 
       const fd = await getFormData(undefined, transcript);
-      fd.append("transcript_start_time", stats.transcript_start_time.toString());
+      fd.append(
+        "transcript_start_time",
+        stats.transcript_start_time.toString(),
+      );
       fd.append("transcript_end_time", stats.transcript_end_time.toString());
       converseMutation.mutate({ external_id, formdata: fd });
-    }
-    catch(e: any){
-      setApiError(e.message);
+    } catch (e: any) {
+      setIsTyping(false);
+      setApiError(e?.error?.error);
     }
   };
 
@@ -165,8 +165,9 @@ export default function Chat(params: { params: { project_id: string } }) {
                           setChat(prompt);
                           setIsTyping(true);
                           const fd = await getFormData(undefined, prompt);
-                          const {external_id} = await newChatMutation.mutateAsync();
-                          if(external_id === "") return;
+                          const { external_id } =
+                            await newChatMutation.mutateAsync();
+                          if (external_id === "") return;
                           setChatID(external_id);
 
                           converseMutation.mutate({
@@ -175,7 +176,7 @@ export default function Chat(params: { params: { project_id: string } }) {
                           });
                         }}
                         disabled={newChatMutation.isPending}
-                        className="bg-white hover:shadow-lg hover:bg-gray-100 hover:text-indigo-500 text-left border border-gray-200 rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
+                        className="bg-primary hover:shadow-lg hover:bg-secondary hover:text-indigo-500 text-left border border-secondaryActive rounded-lg p-4 transition disabled:opacity-50 disabled:hover:text-gray-400"
                         key={i}
                       >
                         {prompt}

@@ -26,8 +26,7 @@ export default function Page({
 
   const testRunQuery = useQuery({
     queryKey: ["testrun", testrun_id],
-    queryFn: () =>
-      API.tests.runs.get(testsuite_id, testrun_id),
+    queryFn: () => API.tests.runs.get(testsuite_id, testrun_id),
   });
   const [testRun, setTestRun] = useState<TestRun | undefined>(
     testRunQuery.data || undefined,
@@ -51,17 +50,17 @@ export default function Page({
   const [avgBleu, setAvgBleu] = useState(
     testRun && testRun.test_results
       ? testRun?.test_results?.reduce(
-        (acc: number, test: TestResult) => acc + (test.bleu_score || 0),
-        0,
-      ) / (testRun?.test_results?.length || 1)
+          (acc: number, test: TestResult) => acc + (test.bleu_score || 0),
+          0,
+        ) / (testRun?.test_results?.length || 1)
       : 0,
   );
   const [avgCosineSim, setAvgcosineSim] = useState(
     testRun && testRun.test_results
       ? testRun?.test_results?.reduce(
-        (acc: number, test: TestResult) => acc + (test.cosine_sim || 0),
-        0,
-      ) / (testRun?.test_results?.length || 1)
+          (acc: number, test: TestResult) => acc + (test.cosine_sim || 0),
+          0,
+        ) / (testRun?.test_results?.length || 1)
       : 0,
   );
 
@@ -75,6 +74,9 @@ export default function Page({
 
   const reportTemplateRef = useRef<HTMLDivElement>(null);
 
+  function jsonEscape(str: string) {
+    return str.replaceAll("\n", "\\n").replaceAll('"', "'");
+  }
   const handleGenerateCsv = () => {
     const testResults = testRun?.test_results || [];
 
@@ -98,9 +100,9 @@ export default function Page({
     );
 
     const data = testResults.map((test) => ({
-      question: test.question,
-      human_answer: test.human_answer,
-      answer: test.answer,
+      question: jsonEscape(test.question),
+      human_answer: jsonEscape(test.human_answer),
+      answer: jsonEscape(test.answer),
       documents: test.test_question?.documents
         ?.map((document) => document.title + " : " + document.file)
         .join(" ; "),
@@ -109,9 +111,14 @@ export default function Page({
       feedback: test.feedback
         ?.map(
           (feedback) =>
-            `(${feedback.created_at}) ${feedback.user_object.username}: [${feedback.rating}] ${feedback.notes}`,
+            `(${new Date(feedback.created_at).toLocaleString("en-GB")}) ${
+              feedback.user_object.username
+            }: [${
+              ratingOptions.find((option) => option.id === feedback.rating)
+                ?.label ?? feedback.rating
+            }] ${jsonEscape(feedback.notes)}`,
         )
-        .join(" , "),
+        .join(" ; "),
     }));
 
     let csv = json2csv.parse(data, { fields });
@@ -198,19 +205,17 @@ export default function Page({
     }
   }, [testRun]);
 
-  const createFeedbackMutation = useMutation(
-    {
-      mutationFn: (feedback: Partial<Feedback>) =>
-        API.tests.feedback.create(testsuite_id, testrun_id, feedback),
-      onSuccess: () => {
-        toast.success("Feedback submitted successfully");
-        fetchFeedback(feedbackTestResult?.external_id || "", true);
-      },
-      onError: () => {
-        toast.error("Failed to submit feedback");
-      },
+  const createFeedbackMutation = useMutation({
+    mutationFn: (feedback: Partial<Feedback>) =>
+      API.tests.feedback.create(testsuite_id, testrun_id, feedback),
+    onSuccess: () => {
+      toast.success("Feedback submitted successfully");
+      fetchFeedback(feedbackTestResult?.external_id || "", true);
     },
-  );
+    onError: () => {
+      toast.error("Failed to submit feedback");
+    },
+  });
 
   const fetchFeedback = async (test_result_id: string, refresh: boolean) => {
     const cachedFeedback = testRun?.test_results?.find(
@@ -250,9 +255,9 @@ export default function Page({
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   };
 
   const dateDifferenceInHHMMSS = (
@@ -269,12 +274,14 @@ export default function Page({
       result += `${hours} hour${hours > 1 ? "s" : ""}`;
     }
     if (minutes > 0) {
-      result += `${result ? ", " : ""}${minutes} minute${minutes > 1 ? "s" : ""
-        }`;
+      result += `${result ? ", " : ""}${minutes} minute${
+        minutes > 1 ? "s" : ""
+      }`;
     }
     if (seconds > 0) {
-      result += `${result ? " and " : ""}${seconds} second${seconds > 1 ? "s" : ""
-        }`;
+      result += `${result ? " and " : ""}${seconds} second${
+        seconds > 1 ? "s" : ""
+      }`;
     }
     return result || "N/A";
   };
@@ -301,7 +308,7 @@ export default function Page({
 
   return (
     <div ref={reportTemplateRef}>
-      <Toaster />
+      <Toaster position="top-right" />
       <div className="flex justify-between items-center mb-8 flex-col sm:flex-row">
         <h1 className="text-2xl font-black">Test Run Results</h1>
         <div
@@ -316,7 +323,7 @@ export default function Page({
           </Button>
           <Button
             variant="secondary"
-            className="bg-gray-100"
+            className="bg-secondary"
             onClick={() => {
               router.push(`/admin/tests/${testsuite_id}/`);
             }}
@@ -325,7 +332,7 @@ export default function Page({
           </Button>
         </div>
       </div>
-      <div className="border border-gray-300 bg-white p-4 rounded-lg my-4">
+      <div className="border border-gray-300 bg-primary p-4 rounded-lg my-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <div className="flex flex-col justify-end">
@@ -338,8 +345,9 @@ export default function Page({
               <div>
                 References:{" "}
                 <span
-                  className={`font-bold ${testRun?.references ? "text-green-500" : "text-red-500"
-                    }`}
+                  className={`font-bold ${
+                    testRun?.references ? "text-green-500" : "text-red-500"
+                  }`}
                 >
                   {testRun?.references ? "ENABLED" : "DISABLED"}
                 </span>
@@ -363,8 +371,9 @@ export default function Page({
               <div>
                 Average Cosine Similarity:{" "}
                 <span
-                  className={`font-bold ${avgCosineSim < 0.5 ? "text-red-500" : "text-green-500"
-                    }`}
+                  className={`font-bold ${
+                    avgCosineSim < 0.5 ? "text-red-500" : "text-green-500"
+                  }`}
                 >
                   {avgCosineSim.toFixed(3)}
                 </span>
@@ -397,8 +406,9 @@ export default function Page({
               <div>
                 Average BLEU Score:{" "}
                 <span
-                  className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                    }`}
+                  className={`font-bold ${
+                    avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                  }`}
                 >
                   {avgBleu.toFixed(3)}
                 </span>
@@ -414,7 +424,7 @@ export default function Page({
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-gray-300 bg-white p-3 rounded-lg my-4">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 border border-gray-300 bg-primary p-3 rounded-lg my-4">
         {feedbackStats.total !== -1 ? (
           <>
             {" "}
@@ -432,13 +442,13 @@ export default function Page({
                   {ratingOptions.map(
                     (rating: any) =>
                       rating.id ===
-                      Math.min(
-                        Math.max(Math.round(feedbackStats.average), 1),
-                        6,
-                      ) && (
+                        Math.min(
+                          Math.max(Math.round(feedbackStats.average), 1),
+                          6,
+                        ) && (
                         <span
                           key={rating.id}
-                          className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
+                          className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
                         >
                           {rating.label}
                         </span>
@@ -475,12 +485,12 @@ export default function Page({
       {testRun?.test_results?.map((test: TestResult, index) => (
         <div
           key={test.external_id}
-          className="bg-white rounded-lg border-gray-200 border p-6 my-4"
+          className="bg-primary rounded-lg border-secondaryActive border p-6 my-4"
         >
           <h3 className="text-lg font-bold text-center mb-2">
             Q{index + 1}. {test.question}
           </h3>
-          <div className="border-b border-gray-200 my-4"></div>
+          <div className="border-b border-secondaryActive my-4"></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <h3 className="text-md font-bold mb-2 text-center sm:text-left">
@@ -511,14 +521,17 @@ export default function Page({
                           }
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                          className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
                         >
                           {doc.title}
                         </a>
                       );
                     else if (doc.document_type === DocumentType.TEXT)
                       return (
-                        <div className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300">
+                        <div
+                          key={doc.external_id}
+                          className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                        >
                           {doc.title}
                         </div>
                       );
@@ -528,10 +541,10 @@ export default function Page({
               )}
             </div>
           </div>
-          <div className="border-b border-gray-200 my-4"></div>
+          <div className="border-b border-secondaryActive my-4"></div>
           {test.test_question?.documents?.map((document) => (
             <div
-              className="flex items-center mb-2 border border-gray-300 rounded-lg bg-white"
+              className="flex items-center mb-2 border border-gray-300 rounded-lg bg-primary"
               key={document.external_id}
             >
               <Link
@@ -558,15 +571,16 @@ export default function Page({
               </Link>
             </div>
           ))}
-          <div className="border-b border-gray-200 my-4"></div>
+          <div className="border-b border-secondaryActive my-4"></div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
             <div>
               <h3 className="text-md font-bold mb-2 text-center sm:text-left">
                 Cosine Similarity:
               </h3>
               <p
-                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${test.cosine_sim >= 0.5 ? "text-green-500" : "text-red-500"
-                  }`}
+                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${
+                  test.cosine_sim >= 0.5 ? "text-green-500" : "text-red-500"
+                }`}
               >
                 {test.cosine_sim.toFixed(3)}
               </p>
@@ -576,8 +590,9 @@ export default function Page({
                 BLEU Score:
               </h3>
               <p
-                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${test.bleu_score >= 0.5 ? "text-green-500" : "text-red-500"
-                  }`}
+                className={`font-bold text-center sm:text-left text-xl text-gray-700 ${
+                  test.bleu_score >= 0.5 ? "text-green-500" : "text-red-500"
+                }`}
               >
                 {test.bleu_score.toFixed(3)}
               </p>
@@ -603,16 +618,16 @@ export default function Page({
                     {ratingOptions.map(
                       (rating) =>
                         rating.id ===
-                        Math.min(
-                          Math.max(
-                            Math.round(getAverageFeedback(test.feedback)),
-                            1,
-                          ),
-                          6,
-                        ) && (
+                          Math.min(
+                            Math.max(
+                              Math.round(getAverageFeedback(test.feedback)),
+                              1,
+                            ),
+                            6,
+                          ) && (
                           <span
                             key={rating.id}
-                            className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
+                            className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
                           >
                             {rating.label}
                           </span>
@@ -639,8 +654,12 @@ export default function Page({
           <div className="mt-4">
             {test.feedback &&
               test.feedback.map((feedback, i) => (
-                <div key={i} className="p-4 border border-gray-200 rounded-lg">
-                  <b>{feedback.user_object.username}</b>{" "}
+                <div
+                  key={feedback.external_id}
+                  className="p-4 border border-secondaryActive rounded-lg my-2"
+                >
+                  <b>{feedback.user_object.username}</b> at{" "}
+                  {formatDate(feedback.created_at)}{" "}
                   <RatingLabel
                     rating={feedback.rating}
                     className="py-1 px-2 text-xs"
@@ -674,7 +693,7 @@ export default function Page({
                   <h3 className="text-md font-bold mb-2">AI Answer:</h3>
                   <p className="text-gray-700">{feedbackTestResult.answer}</p>
                 </div>
-                <hr className="my-2 bg-gray-200" />
+                <hr className="my-2 bg-secondaryActive" />
                 <div>
                   <h3 className="text-md font-bold mb-2">Human Answer:</h3>
                   <p className="text-gray-700">
@@ -685,7 +704,7 @@ export default function Page({
             )}
             {!showAddFeedbackSection && (
               <>
-                <hr className="my-4 bg-gray-200" />
+                <hr className="my-4 bg-secondaryActive" />
                 <div className="max-h-[600px] overflow-y-auto [&::-webkit-scrollbar]:hidden">
                   {feedbackItemsLoading && (
                     <div className="flex justify-center items-center">
@@ -697,7 +716,7 @@ export default function Page({
                     feedbackItems.map((feedback: Feedback) => (
                       <div
                         key={feedback.external_id}
-                        className="mb-4 border border-gray-200 rounded-lg p-3"
+                        className="mb-4 border border-secondaryActive rounded-lg p-3 my-2"
                       >
                         <div className="flex justify-between items-center">
                           <h3 className="text-md font-bold mb-2">
@@ -719,7 +738,7 @@ export default function Page({
                                 rating.id === feedback.rating && (
                                   <span
                                     key={rating.id}
-                                    className={`inline-block rounded-full px-3 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-white`}
+                                    className={`inline-block rounded-full px-3 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
                                   >
                                     {rating.label}
                                   </span>
@@ -740,7 +759,7 @@ export default function Page({
                 </div>
               </>
             )}
-            <hr className="my-4 bg-gray-200" />
+            <hr className="my-4 bg-secondaryActive" />
             {showAddFeedbackSection && (
               <>
                 <span className="text-black font-semibold mb-4">
@@ -773,7 +792,7 @@ export default function Page({
               {showAddFeedbackSection && (
                 <>
                   <Button
-                    className="mr-2 bg-gray-200"
+                    className="mr-2 bg-secondaryActive"
                     variant="secondary"
                     onClick={() => {
                       setShowAddFeedbackSection(false);

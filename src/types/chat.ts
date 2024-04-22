@@ -6,7 +6,7 @@ export type BaseModelType = {
   modified_at: string;
 };
 
-export type Chat = BaseModelType & {
+export type ChatType = BaseModelType & {
   title: string;
   namespace: string;
   chats?: ChatMessage[];
@@ -19,7 +19,7 @@ export enum ChatMessageType {
   AYUSHMA = 3,
 }
 
-export type ChatFeedback = {
+export type ChatFeedbackType = {
   chat_message: string;
   liked: boolean;
   message: string;
@@ -37,7 +37,7 @@ export type ChatMessage = BaseModelType & {
   meta?: ChatMessageMeta;
   top_k?: number;
   temperature?: number;
-  feedback?: ChatFeedback;
+  feedback?: ChatFeedbackType;
 };
 
 export type ChatConverseStream = {

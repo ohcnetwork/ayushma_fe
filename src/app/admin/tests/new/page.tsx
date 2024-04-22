@@ -32,7 +32,11 @@ export default function Page() {
       <h1 className="text-3xl font-black">New Test Suite</h1>
       <div className="mt-8">
         <TestSuiteForm
-          testSuite={{}}
+          testSuite={{
+            name: "",
+            temperature: 0.5,
+            topk: 50,
+          }}
           onSubmit={onSubmit}
           loading={createTestSuiteMutation.isPending}
           errors={(createTestSuiteMutation.error as any)?.error}

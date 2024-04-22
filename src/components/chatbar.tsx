@@ -40,14 +40,13 @@ export default function ChatBar(
   const language = forceLanguage || storage?.language || "en";
 
   return (
-    <>
+    <div>
       <div
-        className={`fixed inset-0 flex items-center justify-center transition-all ${
-          status === "recording" ? "visible opacity-100" : "invisible opacity-0"
-        }`}
+        className={`fixed inset-0 flex items-center justify-center transition-all ${status === "recording" ? "visible opacity-100" : "invisible opacity-0"
+          }`}
       >
         <div className="bg-black/40 absolute inset-0 -z-10" />
-        <div className="md:min-w-[300px] md:min-h-[300px] bg-white rounded-xl p-4 flex items-center flex-col gap-4">
+        <div className="md:min-w-[300px] md:min-h-[300px] bg-primary rounded-xl p-4 flex items-center flex-col gap-4">
           <div className="mb-4">
             <i className="fa-regular fa-language"></i>&nbsp;
             <strong>
@@ -67,7 +66,7 @@ export default function ChatBar(
           </div>
           Listening...
           <button
-            className="flex w-28 h-28 items-center justify-center text-4xl bg-red-500 rounded-full text-white hover:bg-red-600"
+            className="flex w-28 h-28 items-center justify-center text-4xl bg-red-500 rounded-full text-primary hover:bg-red-600"
             onClick={stopRecording}
           >
             <i className="fas fa-microphone-slash" />
@@ -92,7 +91,7 @@ export default function ChatBar(
             router.push(`/project/${projectId}`);
           }}
           disabled={forceLanguage !== undefined}
-          className="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline-blue focus:border-green-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+          className="block w-full bg-primary border border-gray-400 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline-blue focus:border-green-500 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
         >
           {supportedLanguages.map((language) => (
             <option key={language.value} value={language.value}>
@@ -121,12 +120,12 @@ export default function ChatBar(
             loading ? (
               <Loading />
             ) : (
-              <span className="flex justify-between border-t p-1">
+              <span className="flex justify-between border-t border-t-secondary p-1">
                 <span>
                   <button
                     title="Select Conversation Language"
                     type="button"
-                    className="w-12 h-12 p-1 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition"
+                    className="w-12 h-12 p-1 text-xl bg-secondary text-gray-500 rounded-lg hover:bg-secondaryActive transition"
                     onClick={() => {
                       setLangDialogOpen(true);
                     }}
@@ -136,9 +135,8 @@ export default function ChatBar(
                   <button
                     title="Search by Voice"
                     type="button"
-                    className={`w-12 h-12 p-1 ml-2 text-xl bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition ${
-                      status === "recording" ? "text-green-500" : ""
-                    }`}
+                    className={`w-12 h-12 p-1 ml-2 text-xl bg-secondary text-gray-500 rounded-lg hover:bg-secondaryActive transition ${status === "recording" ? "text-green-500" : ""
+                      }`}
                     onClick={
                       status === "recording" ? stopRecording : startRecording
                     }
@@ -147,7 +145,7 @@ export default function ChatBar(
                   </button>
                 </span>
                 <button
-                  className="w-12 h-12 p-1 text-xl ml-2 rounded-lg enabled:hover:bg-green-600 enabled:bg-green-500 enabled:text-white disabled:text-gray-300 transition"
+                  className="w-12 h-12 p-1 text-xl ml-2 rounded-lg enabled:hover:bg-green-600 enabled:bg-green-500 enabled:text-primary disabled:text-gray-300 transition"
                   disabled={(chat?.length || 0) < 1}
                 >
                   <i className="fal fa-paper-plane-top" />
@@ -157,6 +155,6 @@ export default function ChatBar(
           }
         />
       </form>
-    </>
+    </div>
   );
 }

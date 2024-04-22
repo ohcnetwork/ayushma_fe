@@ -3,7 +3,7 @@
 import ChatBar from "@/components/chatbar";
 import ChatBlock from "@/components/chatblock";
 import { storageAtom } from "@/store";
-import { Chat, ChatConverseStream, ChatMessageType } from "@/types/chat";
+import { ChatType, ChatConverseStream, ChatMessageType } from "@/types/chat";
 import { Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { getFormData } from "@/utils/converse";
@@ -40,7 +40,7 @@ export default function Chat(
   });
   const project: Project | undefined = projectQuery.data;
 
-  const chat: Chat | undefined = chatQuery.data;
+  const chat: ChatType | undefined = chatQuery.data;
   const [autoPlayIndex, setAutoPlayIndex] = useState<number>(-1);
 
   const openai_key =
@@ -136,7 +136,8 @@ export default function Chat(
       converseMutation.mutate({ formdata: fd });
     }
     catch(e: any){
-      setApiError(e.message);
+      setIsTyping(false);
+      setApiError(e?.error?.error);
     }
   };
 
@@ -158,7 +159,7 @@ export default function Chat(
   }, [autoPlayIndex]);
 
   return (
-    <div className="h-screen flex flex-col flex-1">
+    <div className="h-full flex flex-col flex-1">
       <div className="flex-1 overflow-auto" ref={messagesContainerRef}>
         {chat?.chats?.map((message, i) => (
           <ChatBlock
