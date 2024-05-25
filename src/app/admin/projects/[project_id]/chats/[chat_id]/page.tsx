@@ -114,7 +114,7 @@ export default function Page({
                           {chat.message}
                         </div>
                         <div>
-                          {Object?.keys(feedbacksMap[chat.external_id])
+                          {Object.keys(feedbacksMap[chat.external_id] || {})
                             .length !== 0 && (
                             <div className="flex gap-2">
                               {feedbacksMap[chat.external_id].liked ? (
