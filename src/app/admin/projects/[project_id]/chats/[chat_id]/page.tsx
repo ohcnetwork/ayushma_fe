@@ -9,6 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import Modal from "@/components/modal";
+import { Feedback } from "@/types/test";
 
 export default function Page({
   params,
@@ -33,18 +34,12 @@ export default function Page({
     queryFn: () => API.feedback.list(project_id, chat_id),
   });
   const feedbacks = feedbackQuery.data;
-  const feedbacksMap: { [chatId: string]: any } = {};
-
-  if (feedbacks) {
-    feedbacks.data.forEach((feedback: any) => {
-      console.log(feedback);
-      const chatId = feedback.chat_message;
-      if (!feedbacksMap[chatId]) {
-        feedbacksMap[chatId] = {};
-      }
-      feedbacksMap[chatId] = feedback;
-    });
-  }
+  const feedbacksMap = feedbacks?.data
+    .map((feedback: any) => ({ [feedback.chat_message]: feedback }))
+    .reduce(
+      (acc: string, feedbackObj: any) => Object.assign(acc, feedbackObj),
+      {},
+    );
 
   const [showFeedBackModal, setShowFeedBackModal] = useState({
     open: false,
