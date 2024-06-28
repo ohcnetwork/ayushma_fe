@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "yarn prettier ./src --write",
+    "format": "prettier ./src --write",
     "prepare": "husky install"
   },
   "dependencies": {

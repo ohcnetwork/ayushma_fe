@@ -6,12 +6,9 @@ RUN apk add --no-cache libc6-compat python3 build-base
 
 WORKDIR /app
 
-RUN mkdir chatbot
+COPY package.json pnpm-lock.yaml ./
 
-COPY package.json yarn.lock ./
-COPY ./chatbot/package.json ./chatbot/yarn.lock ./chatbot/
-
-RUN yarn i-all
+RUN pnpm i
 
 FROM base AS builder
 
@@ -21,7 +18,7 @@ COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
 
-RUN yarn build
+RUN pnpm build
 
 FROM base AS runner
 
