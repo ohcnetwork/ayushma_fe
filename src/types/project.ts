@@ -40,6 +40,7 @@ export const MODELS = [
   { id: 4, label: "GPT-4-32k", friendly_name: "GPT 4 32k" },
   { id: 5, label: "GPT-4-VISUAL", friendly_name: "GPT 4 Vision" },
   { id: 6, label: "GPT-4-TURBO", friendly_name: "GPT 4 Turbo" },
+  { id: 8, label: "GPT-4O-MINI", friendly_name: "GPT 4 Omni Mini" },
 ];
 export const ASSISTANT_MODELS = [
   { id: "gpt-3.5-turbo-1106", label: "gpt-3.5-turbo-1106" },
