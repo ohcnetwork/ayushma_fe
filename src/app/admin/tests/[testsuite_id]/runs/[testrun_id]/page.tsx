@@ -54,17 +54,17 @@ export default function Page({
   const [avgBleu, setAvgBleu] = useState(
     testRun && testRun.test_results
       ? testRun?.test_results?.reduce(
-        (acc: number, test: TestResult) => acc + (test.bleu_score || 0),
-        0,
-      ) / (testRun?.test_results?.length || 1)
+          (acc: number, test: TestResult) => acc + (test.bleu_score || 0),
+          0,
+        ) / (testRun?.test_results?.length || 1)
       : 0,
   );
   const [avgCosineSim, setAvgcosineSim] = useState(
     testRun && testRun.test_results
       ? testRun?.test_results?.reduce(
-        (acc: number, test: TestResult) => acc + (test.cosine_sim || 0),
-        0,
-      ) / (testRun?.test_results?.length || 1)
+          (acc: number, test: TestResult) => acc + (test.cosine_sim || 0),
+          0,
+        ) / (testRun?.test_results?.length || 1)
       : 0,
   );
 
@@ -115,9 +115,11 @@ export default function Page({
       feedback: test.feedback
         ?.map(
           (feedback) =>
-            `(${new Date(feedback.created_at).toLocaleString("en-GB")}) ${feedback.user_object.username
-            }: [${ratingOptions.find((option) => option.id === feedback.rating)
-              ?.label ?? feedback.rating
+            `(${new Date(feedback.created_at).toLocaleString("en-GB")}) ${
+              feedback.user_object.username
+            }: [${
+              ratingOptions.find((option) => option.id === feedback.rating)
+                ?.label ?? feedback.rating
             }] ${jsonEscape(feedback.notes)}`,
         )
         .join(" ; "),
@@ -257,9 +259,9 @@ export default function Page({
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   };
 
   const dateDifferenceInHHMMSS = (
@@ -276,12 +278,14 @@ export default function Page({
       result += `${hours} hour${hours > 1 ? "s" : ""}`;
     }
     if (minutes > 0) {
-      result += `${result ? ", " : ""}${minutes} minute${minutes > 1 ? "s" : ""
-        }`;
+      result += `${result ? ", " : ""}${minutes} minute${
+        minutes > 1 ? "s" : ""
+      }`;
     }
     if (seconds > 0) {
-      result += `${result ? " and " : ""}${seconds} second${seconds > 1 ? "s" : ""
-        }`;
+      result += `${result ? " and " : ""}${seconds} second${
+        seconds > 1 ? "s" : ""
+      }`;
     }
     return result || "N/A";
   };
@@ -308,7 +312,8 @@ export default function Page({
 
   const resultsGroupedByQuestion = testRun?.test_results?.reduce(
     (acc: { [key: string]: TestResult[] }, test: TestResult) => {
-      if (!acc[test.test_question.external_id]) acc[test.test_question.external_id] = [];
+      if (!acc[test.test_question.external_id])
+        acc[test.test_question.external_id] = [];
       acc[test.test_question.external_id].push(test);
       return acc;
     },
@@ -354,8 +359,9 @@ export default function Page({
               <div>
                 References:{" "}
                 <span
-                  className={`font-bold ${testRun?.references ? "text-green-500" : "text-red-500"
-                    }`}
+                  className={`font-bold ${
+                    testRun?.references ? "text-green-500" : "text-red-500"
+                  }`}
                 >
                   {testRun?.references ? "ENABLED" : "DISABLED"}
                 </span>
@@ -379,8 +385,9 @@ export default function Page({
               <div>
                 Average Cosine Similarity:{" "}
                 <span
-                  className={`font-bold ${avgCosineSim < 0.5 ? "text-red-500" : "text-green-500"
-                    }`}
+                  className={`font-bold ${
+                    avgCosineSim < 0.5 ? "text-red-500" : "text-green-500"
+                  }`}
                 >
                   {avgCosineSim.toFixed(3)}
                 </span>
@@ -413,8 +420,9 @@ export default function Page({
               <div>
                 Average BLEU Score:{" "}
                 <span
-                  className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                    }`}
+                  className={`font-bold ${
+                    avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                  }`}
                 >
                   {avgBleu.toFixed(3)}
                 </span>
@@ -448,10 +456,10 @@ export default function Page({
                   {ratingOptions.map(
                     (rating: any) =>
                       rating.id ===
-                      Math.min(
-                        Math.max(Math.round(feedbackStats.average), 1),
-                        6,
-                      ) && (
+                        Math.min(
+                          Math.max(Math.round(feedbackStats.average), 1),
+                          6,
+                        ) && (
                         <span
                           key={rating.id}
                           className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
@@ -488,206 +496,216 @@ export default function Page({
           </div>
         )}
       </div>
-      {Object.entries(resultsGroupedByQuestion || [])?.map(([q, test], index) => (
-        <div
-          key={index}
-          className="bg-primary rounded-lg border-secondaryActive border p-6 my-4"
-        >
-          <h3 className="text-lg font-bold text-center mb-2">
-            Q{index + 1}. {test[0].question}
-          </h3>
-          <div className="border-b border-secondaryActive my-4" />
-          <div>
-            <h3 className="text-md font-bold mb-2 text-center sm:text-left text-sm">
-              Human:
-            </h3>
-            <p className="text-gray-700">{test[0].human_answer}</p>
-          </div>
-          <div className="border-b border-secondaryActive my-4" />
+      {Object.entries(resultsGroupedByQuestion || [])?.map(
+        ([q, test], index) => (
           <div
-            className={`grid grid-cols-1 ${test.length === 2 ? "md:grid-cols-2" : test.length === 3 ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"} gap-4`}
-
+            key={index}
+            className="bg-primary rounded-lg border-secondaryActive border p-6 my-4"
           >
-            {test.map((t, j) => (
-              <div key={j} className="flex flex-col justify-between">
-                <div className="flex-1 border-b border-secondaryActive mb-4">
-                  <h3 className="text-md font-bold mb-2 text-center sm:text-left text-sm">
-                    {MODELS.find(m => m.id === t.model)?.friendly_name} :
-                  </h3>
-                  <ReactMarkdown
-                    rehypePlugins={[rehypeRaw]}
-                    remarkPlugins={[remarkGfm]}
-                    className="markdown-render"
-                  >
-                    {t.answer}
-                  </ReactMarkdown>
-                  {t?.references && t?.references.length > 0 && (
-                    <div className="flex gap-2 mt-3 items-center pb-4">
-                      <p className="mr-1 text-sm italic">References:</p>
-                      {t?.references.map((doc, i) => {
-                        if (
-                          doc.document_type === DocumentType.FILE ||
-                          doc.document_type === DocumentType.URL
-                        )
-                          return (
-                            <a
-                              key={i}
-                              href={
-                                doc.document_type === DocumentType.FILE
-                                  ? doc.file
-                                  : doc.text_content
-                              }
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
-                            >
-                              {doc.title}
-                            </a>
-                          );
-                        else if (doc.document_type === DocumentType.TEXT)
-                          return (
-                            <div
-                              key={doc.external_id}
-                              className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
-                            >
-                              {doc.title}
-                            </div>
-                          );
-                        else return null;
-                      })}
-                    </div>
-                  )}
-                  <div className="my-4"></div>
-                  {t.test_question?.documents?.map((document) => (
-                    <div
-                      className="flex items-center mb-2 border border-gray-300 rounded-lg bg-primary"
-                      key={document.external_id}
-                    >
-                      <Link
-                        href={document.file}
-                        target="_blank"
-                        key={document.external_id}
-                        className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md justify-between"
-                      >
-                        <div className="flex items-center justify-center">
-                          <i className="fas fa-paperclip mr-2 text-gray-600"></i>
-                          <div className="text-gray-700">{document.title}</div>
-                        </div>
-                        <div className="w-1/2 h-1/2">
-                          <img
-                            src={
-                              document.file.split("?")[0] +
-                              "?r=" +
-                              Math.floor(Math.random() * 100000)
-                            }
-                            alt="File"
-                            crossOrigin="anonymous"
-                          />
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <h3 className="text-md font-bold text-center sm:text-left text-xs">
-                      Cosine Similarity:
+            <h3 className="text-lg font-bold text-center mb-2">
+              Q{index + 1}. {test[0].question}
+            </h3>
+            <div className="border-b border-secondaryActive my-4" />
+            <div>
+              <h3 className="text-md font-bold mb-2 text-center sm:text-left text-sm">
+                Human:
+              </h3>
+              <p className="text-gray-700">{test[0].human_answer}</p>
+            </div>
+            <div className="border-b border-secondaryActive my-4" />
+            <div
+              className={`grid grid-cols-1 ${test.length === 2 ? "md:grid-cols-2" : test.length === 3 ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"} gap-4`}
+            >
+              {test.map((t, j) => (
+                <div key={j} className="flex flex-col justify-between">
+                  <div className="flex-1 border-b border-secondaryActive mb-4">
+                    <h3 className="text-md font-bold mb-2 text-center sm:text-left text-sm">
+                      {MODELS.find((m) => m.id === t.model)?.friendly_name} :
                     </h3>
-                    <p
-                      className={`font-bold text-center sm:text-left text-xl text-gray-700 ${t.cosine_sim >= 0.5 ? "text-green-500" : "text-red-500"
-                        }`}
+                    <ReactMarkdown
+                      rehypePlugins={[rehypeRaw]}
+                      remarkPlugins={[remarkGfm]}
+                      className="markdown-render"
                     >
-                      {t.cosine_sim.toFixed(3)}
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-md font-bold text-center sm:text-left text-xs">
-                      BLEU Score:
-                    </h3>
-                    <p
-                      className={`font-bold text-center sm:text-left text-xl text-gray-700 ${t.bleu_score >= 0.5 ? "text-green-500" : "text-red-500"
-                        }`}
-                    >
-                      {t.bleu_score.toFixed(3)}
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-md text-center sm:text-left font-bold mb-2 text-xs">
-                      Total Feedback:
-                    </h3>
-                    <p className="font-bold text-center sm:text-left text-xl text-gray-700">
-                      {t.feedback?.length || "-"}
-                    </p>
-                  </div>
-                  <div className="">
-                    <div className="flex flex-col">
-                      <h3 className="text-md font-bold mb-2 text-center sm:text-left text-xs">
-                        Avg Feedback:
-                      </h3>
-                      <div className="text-sm font-bold text-gray-700 mb-1 flex justify-center sm:block">
-                        <p className="text-gray-700">
-                          {t.feedback?.length === 0 ? "-" : ""}
-                          {ratingOptions.map(
-                            (rating) =>
-                              rating.id ===
-                              Math.min(
-                                Math.max(
-                                  Math.round(getAverageFeedback(t.feedback)),
-                                  1,
-                                ),
-                                6,
-                              ) && (
-                                <span
-                                  key={rating.id}
-                                  className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
-                                >
-                                  {rating.label}
-                                </span>
-                              ),
-                          )}
-                        </p>
+                      {t.answer}
+                    </ReactMarkdown>
+                    {t?.references && t?.references.length > 0 && (
+                      <div className="flex gap-2 mt-3 items-center pb-4">
+                        <p className="mr-1 text-sm italic">References:</p>
+                        {t?.references.map((doc, i) => {
+                          if (
+                            doc.document_type === DocumentType.FILE ||
+                            doc.document_type === DocumentType.URL
+                          )
+                            return (
+                              <a
+                                key={i}
+                                href={
+                                  doc.document_type === DocumentType.FILE
+                                    ? doc.file
+                                    : doc.text_content
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                              >
+                                {doc.title}
+                              </a>
+                            );
+                          else if (doc.document_type === DocumentType.TEXT)
+                            return (
+                              <div
+                                key={doc.external_id}
+                                className="text-xs bg-secondaryActive text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300"
+                              >
+                                {doc.title}
+                              </div>
+                            );
+                          else return null;
+                        })}
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="">
-                  <Button
-                    data-html2canvas-ignore="true"
-                    className="w-full text-xs"
-                    variant="secondary"
-                    onClick={() => {
-                      fetchFeedback(t.external_id, false);
-                      setFeedbackTestResult(t);
-                      setShowFeedbackModal(true);
-                    }}
-                  >
-                    <i className="fa-duotone fa-comments mr-2"></i>Feedback
-                  </Button>
-                </div>
-                <div className="mt-4">
-                  {t.feedback &&
-                    t.feedback.map((feedback, i) => (
+                    )}
+                    <div className="my-4"></div>
+                    {t.test_question?.documents?.map((document) => (
                       <div
-                        key={feedback.external_id}
-                        className="p-4 border border-secondaryActive rounded-lg my-2"
+                        className="flex items-center mb-2 border border-gray-300 rounded-lg bg-primary"
+                        key={document.external_id}
                       >
-                        <b>{feedback.user_object.username}</b> at{" "}
-                        {formatDate(feedback.created_at)}{" "}
-                        <RatingLabel
-                          rating={feedback.rating}
-                          className="py-1 px-2 text-xs"
-                        />
-                        <br />
-                        {feedback.notes}
+                        <Link
+                          href={document.file}
+                          target="_blank"
+                          key={document.external_id}
+                          className="flex-grow flex items-center hover:bg-slate-200 py-1 px-3 rounded-md justify-between"
+                        >
+                          <div className="flex items-center justify-center">
+                            <i className="fas fa-paperclip mr-2 text-gray-600"></i>
+                            <div className="text-gray-700">
+                              {document.title}
+                            </div>
+                          </div>
+                          <div className="w-1/2 h-1/2">
+                            <img
+                              src={
+                                document.file.split("?")[0] +
+                                "?r=" +
+                                Math.floor(Math.random() * 100000)
+                              }
+                              alt="File"
+                              crossOrigin="anonymous"
+                            />
+                          </div>
+                        </Link>
                       </div>
                     ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <h3 className="text-md font-bold text-center sm:text-left text-xs">
+                        Cosine Similarity:
+                      </h3>
+                      <p
+                        className={`font-bold text-center sm:text-left text-xl text-gray-700 ${
+                          t.cosine_sim >= 0.5
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {t.cosine_sim.toFixed(3)}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-md font-bold text-center sm:text-left text-xs">
+                        BLEU Score:
+                      </h3>
+                      <p
+                        className={`font-bold text-center sm:text-left text-xl text-gray-700 ${
+                          t.bleu_score >= 0.5
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {t.bleu_score.toFixed(3)}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-md text-center sm:text-left font-bold mb-2 text-xs">
+                        Total Feedback:
+                      </h3>
+                      <p className="font-bold text-center sm:text-left text-xl text-gray-700">
+                        {t.feedback?.length || "-"}
+                      </p>
+                    </div>
+                    <div className="">
+                      <div className="flex flex-col">
+                        <h3 className="text-md font-bold mb-2 text-center sm:text-left text-xs">
+                          Avg Feedback:
+                        </h3>
+                        <div className="text-sm font-bold text-gray-700 mb-1 flex justify-center sm:block">
+                          <p className="text-gray-700">
+                            {t.feedback?.length === 0 ? "-" : ""}
+                            {ratingOptions.map(
+                              (rating) =>
+                                rating.id ===
+                                  Math.min(
+                                    Math.max(
+                                      Math.round(
+                                        getAverageFeedback(t.feedback),
+                                      ),
+                                      1,
+                                    ),
+                                    6,
+                                  ) && (
+                                  <span
+                                    key={rating.id}
+                                    className={`inline-block rounded-full px-2 py-1 mr-2 font-semibold ${rating.bgcolor} border-black text-primary`}
+                                  >
+                                    {rating.label}
+                                  </span>
+                                ),
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="">
+                    <Button
+                      data-html2canvas-ignore="true"
+                      className="w-full text-xs"
+                      variant="secondary"
+                      onClick={() => {
+                        fetchFeedback(t.external_id, false);
+                        setFeedbackTestResult(t);
+                        setShowFeedbackModal(true);
+                      }}
+                    >
+                      <i className="fa-duotone fa-comments mr-2"></i>Feedback
+                    </Button>
+                  </div>
+                  <div className="mt-4">
+                    {t.feedback &&
+                      t.feedback.map((feedback, i) => (
+                        <div
+                          key={feedback.external_id}
+                          className="p-4 border border-secondaryActive rounded-lg my-2"
+                        >
+                          <b>{feedback.user_object.username}</b> at{" "}
+                          {formatDate(feedback.created_at)}{" "}
+                          <RatingLabel
+                            rating={feedback.rating}
+                            className="py-1 px-2 text-xs"
+                          />
+                          <br />
+                          {feedback.notes}
+                        </div>
+                      ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ),
+      )}
       {feedbackTestResult && (
         <Modal
           className="md:h-auto"
