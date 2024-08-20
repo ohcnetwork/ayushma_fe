@@ -3,7 +3,7 @@
 import { supportedLanguages } from "@/utils/constants";
 import Modal from "@/components/modal";
 import { Button, CheckBox, TextArea } from "@/components/ui/interactive";
-import { Document, DocumentType, Project } from "@/types/project";
+import { Document, DocumentType, MODELS, Project } from "@/types/project";
 import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -193,6 +193,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
   const [testSuiteProject, setTestSuiteProject] = useState<
     string | undefined
   >();
+  const [testAgainstModels, setTestAgainstModels] = useState<number[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [fetchReferences, setFetchReferences] = useState(true);
   const [csvFileData, setCSVFileData] = useState<any>([]);
@@ -313,6 +314,7 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     TestRunCreateMutation.mutate({
       project: testSuiteProject as any,
       references: fetchReferences,
+      models: testAgainstModels,
     });
     setShowRunTestSuite(false);
   };
@@ -321,8 +323,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     if (testRun.status === TestRunStatus.RUNNING) {
       const answeredQuestions = testRun.test_results?.length;
       const completedPercentage =
-        ((answeredQuestions ?? 0) / (totalQuestions ?? 1)) * 100;
-      return `${answeredQuestions}/${totalQuestions} (${Math.round(
+        ((answeredQuestions ?? 0) / ((totalQuestions * (testRun.models?.length || 1)))) * 100;
+      return `${answeredQuestions}/${totalQuestions * (testRun.models?.length || 0)} (${Math.round(
         Math.min(Math.max(0, completedPercentage), 100),
       )}%)`;
     }
@@ -335,9 +337,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-      .getHours()
-      .toString()
-      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -637,11 +639,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${
-                            document?.state === "selected"
-                              ? "cursor-pointer"
-                              : "cursor-not-allowed"
-                          }`}
+                          className={`text-sm text-gray-700 flex justify-center items-center ${document?.state === "selected"
+                            ? "cursor-pointer"
+                            : "cursor-not-allowed"
+                            }`}
                           onClick={async () => {
                             if (document?.state === "uploading") return;
                             setDocument({
@@ -682,11 +683,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         )}
         <div className="flex flex-col items-center mb-4">
           <button
-            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${
-              TestQuestionsQuery.hasNextPage
-                ? "bg-green-400 text-white"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
+            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${TestQuestionsQuery.hasNextPage
+              ? "bg-green-400 text-white"
+              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              }`}
             onClick={() => TestQuestionsQuery.fetchNextPage()}
             disabled={!TestQuestionsQuery.hasNextPage}
           >
@@ -746,18 +746,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.bleu_score || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.bleu_score || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                    (acc: number, test: TestResult) =>
-                      acc + (test.cosine_sim || 0),
-                    0,
-                  ) / (testRun?.test_results?.length || 1)
+                  (acc: number, test: TestResult) =>
+                    acc + (test.cosine_sim || 0),
+                  0,
+                ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -799,11 +799,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgCosineSim < 0.5
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgCosineSim < 0.5
+                            ? "text-red-500"
+                            : "text-green-500"
+                            }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -817,9 +816,8 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${
-                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                          }`}
+                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                            }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -831,10 +829,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
-                      )} ${
-                        testRun.status === TestRunStatus.RUNNING &&
-                        "animate-pulse"
-                      }`}
+                      )} ${testRun.status === TestRunStatus.RUNNING &&
+                      "animate-pulse"
+                        }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED
@@ -987,10 +984,33 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
           >
             {projects.map((project) => (
               <option key={project.external_id} value={project.external_id}>
-                {project.title}
+                {project.title} {project.is_default ? "(Default)" : ""}
               </option>
             ))}
           </select>
+          <div>
+            <label className="block font-medium text-gray-700 mt-4 mb-2">
+              Models
+            </label>
+            <div className="flex flex-col gap-2">
+              {MODELS.map((model, i) => (
+                <CheckBox
+                  key={i}
+                  checked={testAgainstModels.includes(model.id)}
+                  onChange={() => {
+                    if (testAgainstModels.includes(model.id)) {
+                      setTestAgainstModels(
+                        testAgainstModels.filter((id) => id !== model.id),
+                      );
+                    } else {
+                      setTestAgainstModels([...testAgainstModels, model.id]);
+                    }
+                  }}
+                  label={model.friendly_name}
+                />
+              ))}
+            </div>
+          </div>
           <div className="flex space-x-4 mt-5 justify-end items-center">
             <CheckBox
               checked={fetchReferences}
