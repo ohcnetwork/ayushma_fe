@@ -8,7 +8,7 @@ import { API } from "@/utils/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import {
   TestSuite,
@@ -323,7 +323,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     if (testRun.status === TestRunStatus.RUNNING) {
       const answeredQuestions = testRun.test_results?.length;
       const completedPercentage =
-        ((answeredQuestions ?? 0) / ((totalQuestions * (testRun.models?.length || 1)))) * 100;
+        ((answeredQuestions ?? 0) /
+          (totalQuestions * (testRun.models?.length || 1))) *
+        100;
       return `${answeredQuestions}/${totalQuestions * (testRun.models?.length || 0)} (${Math.round(
         Math.min(Math.max(0, completedPercentage), 100),
       )}%)`;
@@ -337,9 +339,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
     )
       .toString()
       .padStart(2, "0")}-${date.getFullYear()} at ${date
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
   }
 
   function getStatusClassName(status: number): string {
@@ -639,10 +641,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     >
                       {has_new_document ? (
                         <div
-                          className={`text-sm text-gray-700 flex justify-center items-center ${document?.state === "selected"
-                            ? "cursor-pointer"
-                            : "cursor-not-allowed"
-                            }`}
+                          className={`text-sm text-gray-700 flex justify-center items-center ${
+                            document?.state === "selected"
+                              ? "cursor-pointer"
+                              : "cursor-not-allowed"
+                          }`}
                           onClick={async () => {
                             if (document?.state === "uploading") return;
                             setDocument({
@@ -683,10 +686,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
         )}
         <div className="flex flex-col items-center mb-4">
           <button
-            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${TestQuestionsQuery.hasNextPage
-              ? "bg-green-400 text-white"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
+            className={`mt-4 px-4 py-2 rounded-md focus:outline-none ${
+              TestQuestionsQuery.hasNextPage
+                ? "bg-green-400 text-white"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
             onClick={() => TestQuestionsQuery.fetchNextPage()}
             disabled={!TestQuestionsQuery.hasNextPage}
           >
@@ -746,18 +750,18 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
             const avgBleu =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.bleu_score || 0),
-                  0,
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.bleu_score || 0),
+                    0,
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             const avgCosineSim =
               testRun && testRun.test_results
                 ? testRun?.test_results?.reduce(
-                  (acc: number, test: TestResult) =>
-                    acc + (test.cosine_sim || 0),
-                  0,
-                ) / (testRun?.test_results?.length || 1)
+                    (acc: number, test: TestResult) =>
+                      acc + (test.cosine_sim || 0),
+                    0,
+                  ) / (testRun?.test_results?.length || 1)
                 : 0;
             return (
               <button
@@ -799,10 +803,11 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgCosineSim < 0.5
-                            ? "text-red-500"
-                            : "text-green-500"
-                            }`}
+                          className={`font-bold ${
+                            avgCosineSim < 0.5
+                              ? "text-red-500"
+                              : "text-green-500"
+                          }`}
                         >
                           {avgCosineSim.toFixed(3)}
                         </span>
@@ -816,8 +821,9 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                         <span className="font-bold">-</span>
                       ) : (
                         <span
-                          className={`font-bold ${avgBleu < 0.5 ? "text-red-500" : "text-green-500"
-                            }`}
+                          className={`font-bold ${
+                            avgBleu < 0.5 ? "text-red-500" : "text-green-500"
+                          }`}
                         >
                           {avgBleu.toFixed(3)}
                         </span>
@@ -829,9 +835,10 @@ export default function Page({ params }: { params: { testsuite_id: string } }) {
                     <span
                       className={`capitalize text-sm font-bold ${getStatusClassName(
                         testRun.status ?? TestRunStatus.FAILED,
-                      )} ${testRun.status === TestRunStatus.RUNNING &&
-                      "animate-pulse"
-                        }`}
+                      )} ${
+                        testRun.status === TestRunStatus.RUNNING &&
+                        "animate-pulse"
+                      }`}
                     >
                       {TestRunStatus[
                         testRun.status ?? TestRunStatus.COMPLETED
