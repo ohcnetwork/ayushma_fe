@@ -56,7 +56,7 @@ You can also register as a new user.
 
 ## 💎 Backend
 
-Ayushma's backend is built on Django. You can find documentation on the [Backend Repository](https://github.com/coronasafe/ayushma)
+Ayushma's backend is built on Django. You can find documentation on the [Backend Repository](https://github.com/ohcnetwork/ayushma)
 
 ## 🚀 Production
 
