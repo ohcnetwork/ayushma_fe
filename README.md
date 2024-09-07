@@ -12,7 +12,7 @@
 <hr>
 <h3 align="center"><a href="https://ayushma-staging.ohc.network" target="_blank">🚀 Staging Deployment</a></h3>
 <p align="center"><img src="https://vercelbadge.vercel.app/api/coronasafe/ayushma_fe"></p>
-<p align="center">Auto deployed to <a href="https://ayushma.ohc.network">ayushma.ohc.in</a> for <code>production</code> branch. All pull requests have preview builds powered by <a href="https://vercel.com">Vercel</a>.</p>
+<p align="center">Auto deployed to <a href="https://ayushma.ohc.network">ayushma.ohc.network</a> for <code>production</code> branch. All pull requests have preview builds powered by <a href="https://vercel.com">Vercel</a>.</p>
 
 ## Getting started
 
