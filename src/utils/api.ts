@@ -56,9 +56,9 @@ const request = async (
   if (method === "GET") {
     const requestParams = data
       ? `?${Object.keys(data)
-          .filter((key) => data[key] !== null && data[key] !== undefined)
-          .map((key) => `${key}=${data[key]}`)
-          .join("&")}`
+        .filter((key) => data[key] !== null && data[key] !== undefined)
+        .map((key) => `${key}=${data[key]}`)
+        .join("&")}`
       : "";
     url += requestParams;
     payload = null;
@@ -71,9 +71,9 @@ const request = async (
   const localToken = storage.auth_token;
   const auth =
     isAuth === false ||
-    !localToken ||
-    typeof localToken === "undefined" ||
-    localToken === null
+      !localToken ||
+      typeof localToken === "undefined" ||
+      localToken === null
       ? undefined
       : "Token " + localToken;
 
@@ -84,8 +84,8 @@ const request = async (
       ...(formdata === true
         ? {}
         : {
-            "Content-Type": "application/json",
-          }),
+          "Content-Type": "application/json",
+        }),
       ...(auth !== "" ? { Authorization: auth } : {}),
       ...headers,
     },
@@ -213,9 +213,9 @@ export const API = {
         offset?: number;
         archived?: boolean | null;
       } = {
-        ordering: "-created_at",
-        limit: 50,
-      },
+          ordering: "-created_at",
+          limit: 50,
+        },
     ) => request("projects", "GET", filters),
     get: (id: string) => request(`projects/${id}`),
     update: (id: string, project: Partial<Project>) =>
@@ -259,10 +259,10 @@ export const API = {
         { title },
         openai_api_key
           ? {
-              headers: {
-                "OpenAI-Key": openai_api_key,
-              },
-            }
+            headers: {
+              "OpenAI-Key": openai_api_key,
+            },
+          }
           : {},
       ),
     chats: (
@@ -283,8 +283,8 @@ export const API = {
       filters: {
         fetch: string;
       } = {
-        fetch: "all",
-      },
+          fetch: "all",
+        },
     ) => request(`projects/${project_id}/chats/${id}`, "GET", filters),
     update: (project_id: string, id: string, fields: ChatUpdateFields) =>
       request(`projects/${project_id}/chats/${id}`, "PATCH", fields),
@@ -317,8 +317,8 @@ export const API = {
           formdata: true,
           headers: openai_api_key
             ? {
-                "OpenAI-Key": openai_api_key,
-              }
+              "OpenAI-Key": openai_api_key,
+            }
             : {},
         },
         (e) => {
@@ -455,15 +455,5 @@ export const API = {
       } = { ordering: "-created_at" },
     ) => request(`users`, "GET", filters),
     delete: (username: string) => request(`users/${username}`, "DELETE"),
-  },
-  chatbot: {
-    temptoken: (api_key: string, user_ip: string) =>
-      request(
-        `temptokens`,
-        "POST",
-        { ip: user_ip },
-        { headers: { "X-API-KEY": api_key }, auth: false },
-      ),
-    token: () => request(`/api/chatbot-token`, "GET", {}, { external: true }),
   },
 };

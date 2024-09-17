@@ -12,7 +12,7 @@
 <hr>
 <h3 align="center"><a href="https://ayushma-staging.ohc.network" target="_blank">🚀 Staging Deployment</a></h3>
 <p align="center"><img src="https://vercelbadge.vercel.app/api/coronasafe/ayushma_fe"></p>
-<p align="center">Auto deployed to <a href="https://ayushma.ohc.network">ayushma.ohc.in</a> for <code>production</code> branch. All pull requests have preview builds powered by <a href="https://vercel.com">Vercel</a>.</p>
+<p align="center">Auto deployed to <a href="https://ayushma.ohc.network">ayushma.ohc.network</a> for <code>production</code> branch. All pull requests have preview builds powered by <a href="https://vercel.com">Vercel</a>.</p>
 
 ## Getting started
 
@@ -22,13 +22,13 @@
 #### Install the required dependencies
 
 ```sh
-yarn i-all
+pnpm i
 ```
 
 #### 🏃 Run the app in development mode
 
 ```sh
-yarn dev
+pnpm dev
 ```
 
 Once the development server has started, open [localhost:3000](http://localhost:3000) in your browser. The page will be automatically reloaded when you make edits and save. You will also see any lint errors in the console.
@@ -56,14 +56,14 @@ You can also register as a new user.
 
 ## 💎 Backend
 
-Ayushma's backend is built on Django. You can find documentation on the [Backend Repository](https://github.com/coronasafe/ayushma)
+Ayushma's backend is built on Django. You can find documentation on the [Backend Repository](https://github.com/ohcnetwork/ayushma)
 
 ## 🚀 Production
 
 #### Build the app for production
 
 ```sh
-yarn build
+pnpm build
 ```
 
 Builds the app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -71,7 +71,7 @@ Builds the app for production to the `build` folder. It correctly bundles React 
 #### Start a production `http-server`
 
 ```sh
-yarn start
+pnpm start
 ```
 
 Starts a production http-server in local to run the project with Service worker.
@@ -85,19 +85,19 @@ Ayushma is a white label product. You can customize the app to your needs by cha
 
 ### Images
 
-| Path | Description
-| --- | ---
-| `public/logo_text.svg` | Logo with text
-| `public/logo_white.svg` | Logo with white text
-| `public/logo.svg` | Logo without text
+| Path                    | Description          |
+| ----------------------- | -------------------- |
+| `public/logo_text.svg`  | Logo with text       |
+| `public/logo_white.svg` | Logo with white text |
+| `public/logo.svg`       | Logo without text    |
 
 ### Environment Variables (place in `.env` / `.env.local` file)
 
-| Variable | Description | Default
-| --- | --- | ---
-| `NEXT_PUBLIC_API_URL` | Backend API URL | `https://ayushma-api.ohc.network/api/`
-| `NEXT_PUBLIC_LOCAL_STORAGE` | Local storage key name | `ayushma-storage`
-| `NEXT_PUBLIC_AI_NAME`| Name of the AI | Ayushma
-| `NEXT_PUBLIC_AI_DESCRIPTION` | Description of the AI | Revolutionizing medical diagnosis through AI and Opensource
-| `NEXT_PUBLIC_AI_WARNING` | Warning message for accuracy | Please be aware that Ayushma AI may generate inaccurate information; kindly report any concerns to support@ohc.network
-| `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` | Google Recaptcha Site Key | `6Lerts4nAAAAAKyXaNZkYj4XfRO0M2R-XYIA3qv8`
+| Variable                                | Description                  | Default                                                                                                                |
+| --------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`                   | Backend API URL              | `https://ayushma-api.ohc.network/api/`                                                                                 |
+| `NEXT_PUBLIC_LOCAL_STORAGE`             | Local storage key name       | `ayushma-storage`                                                                                                      |
+| `NEXT_PUBLIC_AI_NAME`                   | Name of the AI               | Ayushma                                                                                                                |
+| `NEXT_PUBLIC_AI_DESCRIPTION`            | Description of the AI        | Revolutionizing medical diagnosis through AI and Opensource                                                            |
+| `NEXT_PUBLIC_AI_WARNING`                | Warning message for accuracy | Please be aware that Ayushma AI may generate inaccurate information; kindly report any concerns to support@ohc.network |
+| `NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY` | Google Recaptcha Site Key    | `6Lerts4nAAAAAKyXaNZkYj4XfRO0M2R-XYIA3qv8`                                                                             |

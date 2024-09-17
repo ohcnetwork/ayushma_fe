@@ -10,7 +10,6 @@ export type Storage = {
   show_english?: boolean;
   temperature?: number;
   top_k?: number;
-  chatbot_token?: string;
   tts_autoplay?: boolean;
   theme?: number;
   preferredTheme?: number;

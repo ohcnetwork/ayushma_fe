@@ -39,6 +39,7 @@ export type TestRun = BaseModelType & {
   test_results?: TestResult[];
   status?: TestRunStatus;
   references?: boolean;
+  models?: number[];
 };
 
 export type TestResult = BaseModelType & {
@@ -52,6 +53,7 @@ export type TestResult = BaseModelType & {
   bleu_score: number;
   feedback?: Feedback[];
   references?: Document[];
+  model?: number;
 };
 
 export type Feedback = BaseModelType & {

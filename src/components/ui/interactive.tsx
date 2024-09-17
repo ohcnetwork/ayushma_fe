@@ -85,7 +85,7 @@ export function Button(
   const primaryClasses =
     "bg-green-500 enabled:hover:bg-green-600 transition-all text-primary disabled:cursor-not-allowed";
   const secondaryClasses =
-    "bg-primary enabled:hover:bg-slate-200 transition-all text-gray-700 disabled:cursor-not-allowed";
+    "bg-secondary enabled:hover:bg-slate-200 transition-all text-gray-700 disabled:cursor-not-allowed";
   const dangerClasses =
     "bg-red-500 enabled:hover:bg-red-600 transition-all text-primary disabled:cursor-not-allowed";
   const classes = twMerge(
