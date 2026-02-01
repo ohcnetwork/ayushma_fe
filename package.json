@@ -38,7 +38,7 @@
     "remark-gfm": "^4.0.0",
     "shadergradient": "^1.2.5",
     "tailwind-merge": "^2.2.1",
-    "three": "^0.150.0"
+    "three": "0.160.0"
   },
   "devDependencies": {
     "@types/eslint": "^8",
